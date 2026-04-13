@@ -1,6 +1,7 @@
 /**
- * Vercel / CI：把 frontend 同步到 public/frontend，并写入 public/index.html，
- * 与 vercel.json 的 outputDirectory: public 配合，避免「根 index 不进产物」与仅 public 为空的问题。
+ * Vercel / CI：生成 public/ 作为唯一发布目录。
+ * - 保留 public/frontend/ 供 /frontend/* 访问；
+ * - 将 css、js、app.html、index.html 同步到 public 根目录，使地址栏为 /app 时相对路径 css/、js/ 解析为 /css、/js（与本地 FastAPI 根挂载一致）。
  */
 const fs = require("fs");
 const path = require("path");
@@ -16,26 +17,14 @@ if (!fs.existsSync(fe)) {
 
 fs.rmSync(pub, { recursive: true, force: true });
 fs.mkdirSync(pub, { recursive: true });
+
 fs.cpSync(fe, path.join(pub, "frontend"), { recursive: true });
 
-const landing = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>现金流预测 Agent</title>
-  <meta http-equiv="refresh" content="0;url=/frontend/index.html" />
-  <script>
-    location.replace("/frontend/index.html" + (location.search || "") + (location.hash || ""));
-  </script>
-</head>
-<body>
-  <p style="font-family: system-ui, sans-serif; padding: 2rem;">
-    <a href="/frontend/index.html">进入应用</a>
-  </p>
-</body>
-</html>
-`;
+fs.cpSync(path.join(fe, "css"), path.join(pub, "css"), { recursive: true });
+fs.cpSync(path.join(fe, "js"), path.join(pub, "js"), { recursive: true });
+fs.copyFileSync(path.join(fe, "app.html"), path.join(pub, "app.html"));
+fs.copyFileSync(path.join(fe, "index.html"), path.join(pub, "index.html"));
 
-fs.writeFileSync(path.join(pub, "index.html"), landing, "utf8");
-console.log("vercel-build-static: wrote public/index.html and public/frontend/");
+console.log(
+  "vercel-build-static: public/{frontend,css,js,app.html,index.html} ready"
+);

@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css?v=202604103" />
   <link rel="stylesheet" href="css/components.css?v=202604147" />
-  <link rel="stylesheet" href="css/pages.css?v=202604150" />
+  <link rel="stylesheet" href="css/pages.css?v=202604160" />
   <link rel="stylesheet" href="css/embed.css" />
-  <link rel="stylesheet" href="css/copilot.css?v=202604156" />
+  <link rel="stylesheet" href="css/copilot.css?v=202604159" />
   <link rel="stylesheet" href="css/tour.css?v=202604153" />
   <script src="js/echarts.min.js"></script>
 </head>
@@ -403,6 +403,15 @@
               <button type="button" class="btn btn-sm" id="int-btn-ai-parse" disabled title="规划中：自动解析非结构化文件并映射字段">AI 解析</button>
             </div>
           </div>
+
+          <p class="int-loop-simple" aria-label="数据整合闭环">接入源 <span class="int-loop-simple__sep">→</span> 映射规则 <span class="int-loop-simple__sep">→</span> 同步 / 导入 <span class="int-loop-simple__sep">→</span> 日志 <span class="int-loop-simple__sep">→</span> 定时任务</p>
+
+          <details class="int-fold int-fold--sources">
+            <summary class="int-fold__summary">
+              <span class="int-fold__title">接入源与系统状态</span>
+              <span class="int-fold__meta">TMS · 银企 · ERP · BI · 点击展开</span>
+            </summary>
+            <div class="int-fold__body">
           <div class="grid-2 integration-systems-grid" id="int-systems">
             <div class="integration-card" data-sys="tms">
               <div class="integration-icon integration-icon--sm">🏦</div>
@@ -425,8 +434,8 @@
               <span class="integration-status integration-status--dot pending">待配置</span>
             </div>
           </div>
-
-          <p class="int-loop-simple" aria-label="数据整合闭环">接入源 <span class="int-loop-simple__sep">→</span> 映射规则 <span class="int-loop-simple__sep">→</span> 同步 / 导入 <span class="int-loop-simple__sep">→</span> 日志 <span class="int-loop-simple__sep">→</span> 定时任务</p>
+            </div>
+          </details>
 
           <details class="card card--compact int-integration-flow">
             <summary class="card-top card-top--compact int-integration-flow__summary"><span class="card-title card-title--subtle">使用说明（展开）</span></summary>
@@ -483,20 +492,28 @@
                 <div class="card-title card-title--subtle">映射规则</div>
                 <p class="int-card-rules__subtitle">来源 + 单据类型，用于拉取</p>
               </div>
-              <div class="btn-group integration-rule-toolbar">
-                <button class="btn btn-sm" id="int-btn-sync" title="须先有启用的映射规则。来源：资金管理系统 → 集成拉取接口">手动同步</button>
-                <button class="btn btn-sm" id="int-btn-sync-bank" title="须先有启用的映射规则。来源：银企直连 → 集成拉取接口">银企取数</button>
-                <button type="button" class="btn btn-sm" id="int-btn-excel" title="与顶部「数据导入」相同，打开文件选择">Excel</button>
+              <div class="btn-group integration-rule-toolbar int-toolbar-sync">
+                <button class="btn btn-sm int-toolbar-pill" id="int-btn-sync" title="须先有启用的映射规则。来源：资金管理系统 → 集成拉取接口">手动同步</button>
+                <button class="btn btn-sm int-toolbar-pill" id="int-btn-sync-bank" title="须先有启用的映射规则。来源：银企直连 → 集成拉取接口">银企取数</button>
+                <button type="button" class="btn btn-sm int-toolbar-pill" id="int-btn-excel" title="与顶部「数据导入」相同，打开文件选择">Excel</button>
                 <label class="form-group int-force-label" title="勾选后：集成拉取与 Excel 导入可对重复单据执行覆盖（写审计）"><input type="checkbox" id="int-force-override" /> 强制覆盖</label>
               </div>
               <button class="btn btn-sm btn-primary" id="int-btn-add-rule">+ 新增规则</button>
             </div>
             <p class="int-rules-hint" id="int-rules-hint" data-state="ok" role="status">加载中…</p>
+            <details class="int-fold int-fold--rules-detail" open>
+              <summary class="int-fold__summary int-fold__summary--rules">
+                <span class="int-fold__title">字段说明与规则明细表</span>
+                <span class="int-fold__meta">表结构 · 列表 · 可收起</span>
+              </summary>
+              <div class="int-fold__body int-fold__body--rules">
             <details class="int-excel-help">
               <summary>Excel 导入字段说明</summary>
               <p class="muted" style="font-size:11px;margin:8px 12px 10px;line-height:1.5;">落库为手工来源（优先级 4）。表头须含 <span class="mono">单位</span>、<span class="mono">金额</span> 或 <span class="mono">金额(万元)</span>；可选币种、交易日期、业务编码/名称、状态、备注、单据号、对方账号、交易行名、摘要。重复单据号默认跳过，勾选「强制覆盖」可更新。</p>
             </details>
             <div class="card-body-flush int-rules-table-wrap"><table class="data-table data-table--dense data-table--zebra"><thead><tr><th>编码</th><th>名称</th><th>来源系统</th><th>单据类型</th><th>状态</th><th>操作</th></tr></thead><tbody id="int-rules-body"></tbody></table></div>
+              </div>
+            </details>
           </div>
           </div>
 
@@ -505,15 +522,21 @@
               <h3 class="int-section-title">日志与定时任务</h3>
               <p class="int-section-desc">同步留痕；定时任务可自动拉取入账。</p>
             </div>
-            <div class="grid-2 integration-bottom-grid">
-            <div class="card card--compact int-card-monitor">
-              <div class="card-top card-top--compact"><div class="card-title card-title--subtle">同步日志</div><span class="int-card-badge">审计</span></div>
-              <div class="card-body card-body--compact card-body--scroll" id="int-sync-log"></div>
-            </div>
-            <div class="card card--compact int-card-monitor">
-              <div class="card-top card-top--compact"><div class="card-title card-title--subtle">定时任务</div><button class="btn btn-sm btn-primary" id="int-btn-add-task">+ 任务</button></div>
+            <div class="integration-bottom-stack">
+            <div class="card card--compact int-card-monitor int-card-monitor--tasks">
+              <div class="card-top card-top--compact int-card-monitor__head"><div class="card-title card-title--subtle">定时任务</div><button class="btn btn-sm btn-primary" id="int-btn-add-task">+ 任务</button></div>
               <div class="card-body-flush"><table class="data-table data-table--dense data-table--zebra"><thead><tr><th>任务名</th><th>类型</th><th>调度</th><th>状态</th><th>操作</th></tr></thead><tbody id="int-tasks-body"></tbody></table></div>
             </div>
+            <details class="int-fold int-fold--logs card card--compact int-card-monitor">
+              <summary class="card-top card-top--compact int-log-fold-summary">
+                <div class="int-log-fold-summary__main">
+                  <span class="card-title card-title--subtle">同步日志</span>
+                  <span class="int-card-badge int-card-badge--warm">审计</span>
+                  <span class="int-sync-log-meta" id="int-sync-log-meta"></span>
+                </div>
+              </summary>
+              <div class="card-body card-body--compact card-body--scroll" id="int-sync-log"></div>
+            </details>
           </div>
           </div>
         </div>
@@ -761,7 +784,7 @@
   <script src="js/charts.js?v=202604106"></script>
   <script src="js/copilot.js?v=202604144"></script>
   <script src="js/agent-loop.js?v=202604151"></script>
-  <script src="js/ai.js?v=202604156"></script>
+  <script src="js/ai.js?v=202604159"></script>
   <script src="js/tour.js?v=202604153"></script>
   <script src="js/app.js?v=202604151"></script>
 </body>

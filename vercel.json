@@ -2,14 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/app", "destination": "/frontend/app.html" },
-    { "source": "/app/", "destination": "/frontend/app.html" },
+    { "source": "/app", "destination": "/app.html" },
+    { "source": "/app/", "destination": "/app.html" },
     { "source": "/frontend/app", "destination": "/frontend/app.html" },
     { "source": "/frontend/app/", "destination": "/frontend/app.html" }
   ],
   "headers": [
     {
-      "source": "/frontend/(.*)\\.(js|css|svg|png|jpg|jpeg|gif|webp|ico|woff2?)",
+      "source": "/(.*)\\.(js|css|svg|png|jpg|jpeg|gif|webp|ico|woff2?)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
   ]
