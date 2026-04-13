@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="css/components.css?v=202604147" />
   <link rel="stylesheet" href="css/pages.css?v=202604150" />
   <link rel="stylesheet" href="css/embed.css" />
-  <link rel="stylesheet" href="css/copilot.css?v=202604148" />
-  <link rel="stylesheet" href="css/tour.css?v=202604108" />
+  <link rel="stylesheet" href="css/copilot.css?v=202604154" />
+  <link rel="stylesheet" href="css/tour.css?v=202604153" />
   <script src="js/echarts.min.js"></script>
 </head>
 <body>
@@ -563,9 +563,14 @@
               </aside>
               <div class="liq-risk-main">
                 <div class="liq-risk-ai-head">
-                  <span class="liq-risk-ai-badge" title="由已配置的模型根据左侧引擎快照生成">大模型解读</span>
-                  <span class="liq-risk-ai-hint">连接后端并完成预测后自动生成；需在设置中配置 AI</span>
-                  <button type="button" class="liq-risk-ai-refresh" id="liq-risk-ai-refresh" disabled title="需先成功完成一次预测">重新生成解读</button>
+                  <div class="liq-risk-ai-head__text">
+                    <span class="liq-risk-ai-badge" title="由已配置的模型根据左侧引擎快照生成">大模型解读</span>
+                    <span class="liq-risk-ai-hint">连接后端并完成预测后自动生成；需在设置中配置 AI</span>
+                  </div>
+                  <button type="button" class="liq-risk-ai-refresh" id="liq-risk-ai-refresh" disabled title="需先成功完成一次预测">
+                    <span class="liq-risk-ai-refresh__ico" aria-hidden="true">↻</span>
+                    <span>重新生成解读</span>
+                  </button>
                 </div>
                 <div class="liq-risk-interpret" id="liq-risk-alerts">
                   <p class="muted" style="margin:0;">加载预测后将在此展示 <strong>AI 风险解读</strong>（多段结构：流动性结论 · 模型要点 · 审慎建议）。</p>
@@ -690,10 +695,10 @@
             <div class="copilot-chat-scroll">
               <div class="copilot-messages" id="copilot-messages">
                 <div class="copilot-welcome-minimal" id="copilot-welcome" role="status">
-                  <h3 class="copilot-q-guide-title">用对话驱动主台</h3>
-                  <p class="copilot-welcome-line">说出目标即可；缺数会提示去「数据整合 / 现金流事件」，需要时自动跳转页面。</p>
-                  <div class="copilot-guide-track" aria-label="交互顺序">目标 <span class="copilot-guide-sep">→</span> 补数 <span class="copilot-guide-sep">→</span> 执行 <span class="copilot-guide-sep">→</span> 核对</div>
-                  <p class="copilot-guide-hint"><span class="copilot-guide-hint__label">引导</span>总部未来90天流动性预测，数据不够请说明要补什么；或直接问头寸与预警概况。</p>
+                  <h3 class="copilot-q-guide-title">先说明业务目标，再让 Agent 落地</h3>
+                  <p class="copilot-welcome-line">业务顺序是：数据同源 → 现金流确认 → 看板判断 → 分析归因 → 预测预警。缺数会先引导你到「数据整合 / 现金流事件」，再自动跳转执行。</p>
+                  <div class="copilot-guide-track" aria-label="业务闭环">有据 <span class="copilot-guide-sep">→</span> 确认 <span class="copilot-guide-sep">→</span> 判断 <span class="copilot-guide-sep">→</span> 预案</div>
+                  <p class="copilot-guide-hint"><span class="copilot-guide-hint__label">例</span>我要做总部未来 90 天流动性预测，数据不够请告诉我要补哪一步；或直接问当前头寸与待处理预警。</p>
                 </div>
               </div>
             </div>
@@ -756,8 +761,8 @@
   <script src="js/charts.js?v=202604106"></script>
   <script src="js/copilot.js?v=202604144"></script>
   <script src="js/agent-loop.js?v=202604151"></script>
-  <script src="js/ai.js?v=202604151"></script>
-  <script src="js/tour.js?v=202604151"></script>
+  <script src="js/ai.js?v=202604154"></script>
+  <script src="js/tour.js?v=202604153"></script>
   <script src="js/app.js?v=202604151"></script>
 </body>
 </html>

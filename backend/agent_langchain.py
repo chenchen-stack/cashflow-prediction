@@ -5,9 +5,10 @@ LangChain Harness：DeepSeek ChatOpenAI + 多轮工具调用（与 agent_core.TO
 环境变量：
 - CF_USE_LANGCHAIN=0 — 强制使用 OpenAI SDK 循环（不走 LangChain）
 - 未设置或=1 — 且已安装 langchain-openai 时优先 LangChain
-- CF_AGENT_MAX_TOOL_ROUNDS — 单次请求内「模型推理 ↔ 工具执行」最大循环次数（默认 5，范围 1～48）。
+- CF_AGENT_MAX_TOOL_ROUNDS — 单次请求内「模型推理 ↔ 工具执行」最大循环次数（默认 5）。
+  正整数：上限 1～1_000_000；**0 / -1 / unlimited / inf** 表示**不限制轮次**（内部按 100 万轮封顶，正常会在终答前结束）。
   每轮若模型仍发起 tool_calls 则计为一轮；达上限仍未输出纯文字终答则返回「处理轮次已达上限」。
-  读代码、多步排查时可适当调大（如 12）；过大将增加延迟与 API 费用，不设「无限」以防失控。
+  无上限会显著增加延迟与 API 费用，仅建议在深度读代码、长链排查时开启。
 """
 
 from __future__ import annotations
@@ -30,14 +31,38 @@ def _preview(s: Any, n: int = 480) -> str:
     return (t[:n] + "…") if len(t) > n else t
 
 
+# 「无上限」时内部使用的足够大上限（避免真无限循环拖死进程）；一般请求远不会触达。
+_EFFECTIVE_UNLIMITED_ROUNDS = 1_000_000
+
+
 def _max_tool_rounds() -> int:
-    """单次请求内 LLM↔工具循环上限。CF_AGENT_MAX_TOOL_ROUNDS，默认 5， clamp 1～48。"""
+    """
+    CF_AGENT_MAX_TOOL_ROUNDS：
+    - 默认 5
+    - 正整数：1～1_000_000
+    - 0、-1、或 unlimited/inf/infinity（大小写不敏感）：工程意义上的无上限（内部 _EFFECTIVE_UNLIMITED_ROUNDS）
+    """
     raw = (os.getenv("CF_AGENT_MAX_TOOL_ROUNDS") or "5").strip()
+    low = raw.lower()
+    if low in ("0", "-1", "unlimited", "inf", "infinity"):
+        return _EFFECTIVE_UNLIMITED_ROUNDS
     try:
         n = int(raw)
     except ValueError:
         return 5
-    return max(1, min(n, 48))
+    if n < 0:
+        return _EFFECTIVE_UNLIMITED_ROUNDS
+    return max(1, min(n, _EFFECTIVE_UNLIMITED_ROUNDS))
+
+
+def _is_unlimited_round_mode(max_rounds: int) -> bool:
+    return max_rounds >= _EFFECTIVE_UNLIMITED_ROUNDS
+
+
+def _llm_trace_title(round_i: int, max_rounds: int, suffix: str) -> str:
+    if _is_unlimited_round_mode(max_rounds):
+        return f"第 {round_i + 1} 轮 · {suffix}"
+    return f"第 {round_i + 1}/{max_rounds} 轮 · {suffix}"
 
 
 def _result_dict(reply: str, trace: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -127,8 +152,9 @@ async def _run_agent_openai_sdk(
         trace.append(
             {
                 "phase": "llm",
-                "title": f"第 {round_i + 1}/{max_rounds} 轮 · 模型推理",
-                "detail": "DeepSeek deepseek-chat + tools=auto",
+                "title": _llm_trace_title(round_i, max_rounds, "模型推理"),
+                "detail": "DeepSeek deepseek-chat + tools=auto"
+                + (" · 无上限模式" if _is_unlimited_round_mode(max_rounds) else ""),
                 "ts": _ts(),
             }
         )
@@ -207,14 +233,25 @@ async def _run_agent_openai_sdk(
         {
             "phase": "limit",
             "title": "达到最大工具轮次",
-            "detail": f"本轮上限为 {max_rounds} 轮（环境变量 CF_AGENT_MAX_TOOL_ROUNDS）。已停止，请简化问题或拆步提问。",
+            "detail": (
+                "已达到单次请求允许的最大工具轮次（无上限模式下的工程安全顶）。请简化问题、拆步提问，或检查是否陷入重复工具调用。"
+                if _is_unlimited_round_mode(max_rounds)
+                else f"本轮上限为 {max_rounds} 轮（环境变量 CF_AGENT_MAX_TOOL_ROUNDS）。已停止，请简化问题或拆步提问。"
+            ),
             "ts": _ts(),
         }
     )
-    return _result_dict(
-        f"分析完成，但处理轮次已达上限（当前最多 {max_rounds} 轮，可通过环境变量 CF_AGENT_MAX_TOOL_ROUNDS 调整，最大 48）。",
-        trace,
-    )
+    if _is_unlimited_round_mode(max_rounds):
+        reply = (
+            "分析完成，但工具链轮次已达单次请求的工程安全上限（无上限模式仍设有防失控顶）。"
+            "若任务合理却反复触顶，请拆成多轮对话或检查模型是否重复调用工具。"
+        )
+    else:
+        reply = (
+            f"分析完成，但处理轮次已达上限（当前最多 {max_rounds} 轮）。"
+            "可通过环境变量 CF_AGENT_MAX_TOOL_ROUNDS 调大；设为 0 或 unlimited 表示不限制轮次（仍受工程安全顶保护）。"
+        )
+    return _result_dict(reply, trace)
 
 
 async def _run_agent_langchain(
@@ -278,8 +315,9 @@ async def _run_agent_langchain(
         trace.append(
             {
                 "phase": "llm",
-                "title": f"第 {round_i + 1}/{max_rounds} 轮 · LangChain 推理",
-                "detail": "ainvoke + 可选工具调用",
+                "title": _llm_trace_title(round_i, max_rounds, "LangChain 推理"),
+                "detail": "ainvoke + 可选工具调用"
+                + (" · 无上限模式" if _is_unlimited_round_mode(max_rounds) else ""),
                 "ts": _ts(),
             }
         )
@@ -369,14 +407,25 @@ async def _run_agent_langchain(
         {
             "phase": "limit",
             "title": "达到最大工具轮次",
-            "detail": f"本轮上限为 {max_rounds} 轮（环境变量 CF_AGENT_MAX_TOOL_ROUNDS）。已停止，请简化问题或拆步提问。",
+            "detail": (
+                "已达到单次请求允许的最大工具轮次（无上限模式下的工程安全顶）。请简化问题、拆步提问，或检查是否陷入重复工具调用。"
+                if _is_unlimited_round_mode(max_rounds)
+                else f"本轮上限为 {max_rounds} 轮（环境变量 CF_AGENT_MAX_TOOL_ROUNDS）。已停止，请简化问题或拆步提问。"
+            ),
             "ts": _ts(),
         }
     )
-    return _result_dict(
-        f"分析完成，但处理轮次已达上限（当前最多 {max_rounds} 轮，可通过环境变量 CF_AGENT_MAX_TOOL_ROUNDS 调整，最大 48）。",
-        trace,
-    )
+    if _is_unlimited_round_mode(max_rounds):
+        reply = (
+            "分析完成，但工具链轮次已达单次请求的工程安全上限（无上限模式仍设有防失控顶）。"
+            "若任务合理却反复触顶，请拆成多轮对话或检查模型是否重复调用工具。"
+        )
+    else:
+        reply = (
+            f"分析完成，但处理轮次已达上限（当前最多 {max_rounds} 轮）。"
+            "可通过环境变量 CF_AGENT_MAX_TOOL_ROUNDS 调大；设为 0 或 unlimited 表示不限制轮次（仍受工程安全顶保护）。"
+        )
+    return _result_dict(reply, trace)
 
 
 async def run_agent(

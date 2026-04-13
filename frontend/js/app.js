@@ -3118,7 +3118,7 @@
       '<dt>期初余额</dt><dd>' +
       fmtAmt(res.opening_balance) +
       '</dd>' +
-      '<dt>警戒线</dt><dd>' +
+      '<dt class="liq-risk-dt-warn">警戒线</dt><dd class="liq-risk-dd-warn">' +
       fmtAmt(res.warn_line) +
       '</dd>' +
       '<dt>区间最低</dt><dd>' +
@@ -3224,6 +3224,15 @@
         typeof AI.renderMarkdown === 'function'
           ? AI.renderMarkdown(String(text).trim())
           : '<p>' + String(text).replace(/</g, '&lt;') + '</p>';
+      if (typeof AI._postprocessCopilotHtml === 'function') {
+        html = AI._postprocessCopilotHtml(html);
+      }
+      if (html.indexOf('>快捷操作<') !== -1) {
+        html = html.replace(
+          /(<div class="ai-h2">快捷操作<\/div>[\s\S]*)$/,
+          '<div class="liq-risk-quick" role="region" aria-label="快捷操作">$1</div>'
+        );
+      }
       risk.innerHTML =
         '<div class="liq-risk-ai-md">' +
         html +

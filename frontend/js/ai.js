@@ -1017,8 +1017,351 @@ window.AI = {
       html = html.replace(/(\d+(?:,\d{3})*(?:\.\d+)?[亿万](?:元)?)/g, '<span class="ai-kpi">$1</span>');
       html = html.replace(/(上升|增长|回升|走高|扩大|攀升)/g, '<span class="ai-trend ai-trend-up">$1</span>');
       html = html.replace(/(下降|回落|收窄|走低|减少|下滑)/g, '<span class="ai-trend ai-trend-down">$1</span>');
+      html = this._postprocessCopilotHeadings(html);
     } catch (e) {}
     return html;
+  },
+
+  /** 协作区：## 标题略加强调，便于扫读 */
+  _postprocessCopilotHeadings: function (html) {
+    if (!html || html.indexOf('ai-h2') === -1) return html;
+    return html.replace(/<div class="ai-h2">/g, '<div class="ai-h2 copilot-md-h2">');
+  },
+
+  /** 协作区：助手回复是否叠加「数据快照」可视化（问数/概况类） */
+  _shouldShowCopilotSnapshot: function (rawText) {
+    if (!rawText || typeof AppData === 'undefined' || !AppData.stats) return false;
+    var t = String(rawText);
+    return /净头寸|总流入|总流出|资金概况|现金流概况|待处理预警|资金计划/.test(t);
+  },
+
+  /** 与快照重复时去掉纯文本列表，避免同一屏堆两遍数字 */
+  _stripRedundantCopilotStatsMarkdown: function (text) {
+    var t = String(text);
+    var orig = t;
+    t = t.replace(/\*\*当前资金概况\*\*\s*\n(?:[-•][^\n]+\n)+/m, '');
+    t = t.replace(/\*\*现金流概况\*\*\s*\n(?:[-•][^\n]+\n)+/m, '');
+    if (t.replace(/\s/g, '').length < 35 && orig.replace(/\s/g, '').length > 70) return orig;
+    return t;
+  },
+
+  _copilotVizSeq: 0,
+
+  /**
+   * 协作区：数据快照（ECharts 双图 + 规范卡片；无 echarts 时 CSS 回退）
+   */
+  _buildCopilotSnapshotHtml: function () {
+    try {
+      var s = AppData.stats || {};
+      var inf = Number(s.total_inflow) || 0;
+      var outf = Number(s.total_outflow) || 0;
+      var net = Number(s.net_position);
+      if (isNaN(net)) net = inf - outf;
+      var sum = inf + outf;
+      var pin = sum > 0 ? (inf / sum) * 100 : 50;
+      var plans = AppData.plans || [];
+      var alertAll = AppData.alertQueue || [];
+      var pending = alertAll.filter(function (a) {
+        return a.status === '待处理';
+      });
+      this._copilotVizSeq = (this._copilotVizSeq || 0) + 1;
+      var vid = this._copilotVizSeq;
+      var esc = function (x) {
+        return String(x == null ? '' : x)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/"/g, '&quot;');
+      };
+      var netClass = net >= 0 ? 'copilot-viz-net--pos' : 'copilot-viz-net--neg';
+      var netStr = _fmtWan(net);
+      var alertsHtml =
+        pending.length === 0
+          ? '<span class="copilot-viz-badge copilot-viz-badge--ok"><span class="copilot-viz-badge-ico" aria-hidden="true">✓</span>预警 0 条</span>'
+          : '<span class="copilot-viz-badge copilot-viz-badge--warn"><span class="copilot-viz-badge-ico" aria-hidden="true">!</span>待处理 ' +
+            pending.length +
+            ' 条</span>';
+
+      var planChips = '';
+      var nShow = Math.min(3, plans.length);
+      for (var i = 0; i < nShow; i++) {
+        var p = plans[i];
+        var u = esc(String(p.unit || '').slice(0, 16));
+        var st = String(p.status || '');
+        var cls = 'copilot-viz-plan';
+        if (/执行|生效|已批|进行中/.test(st)) cls += ' copilot-viz-plan--run';
+        else if (/草稿|编制|待审/.test(st)) cls += ' copilot-viz-plan--draft';
+        else cls += ' copilot-viz-plan--other';
+        planChips +=
+          '<li class="' +
+          cls +
+          '" title="' +
+          esc(st) +
+          '"><span class="copilot-viz-plan-dot" aria-hidden="true"></span><span class="copilot-viz-plan-txt">' +
+          u +
+          '</span></li>';
+      }
+      var planMore =
+        plans.length > 3
+          ? '<li class="copilot-viz-plan copilot-viz-plan--more" title="更多计划"><span>+' + (plans.length - 3) + '</span></li>'
+          : '';
+
+      var barFallback =
+        sum > 0
+          ? '<div class="copilot-viz-flow" role="img" aria-hidden="true"><div class="copilot-viz-flow-track"><span class="copilot-viz-flow-in" style="width:' +
+            pin.toFixed(2) +
+            '%"></span><span class="copilot-viz-flow-out" style="width:' +
+            (100 - pin).toFixed(2) +
+            '%"></span></div><div class="copilot-viz-flow-legend"><span class="copilot-viz-flow-legend-in">流入 ' +
+            esc(_fmtWan(inf)) +
+            '</span><span class="copilot-viz-flow-legend-out">流出 ' +
+            esc(_fmtWan(outf)) +
+            '</span></div></div>'
+          : '<div class="copilot-viz-flow copilot-viz-flow--empty">暂无流入/流出分项</div>';
+
+      var chartIoId = 'cfCopilotChartIO_' + vid;
+      var chartPlId = 'cfCopilotChartPL_' + vid;
+
+      return (
+        '<div class="copilot-viz-snapshot copilot-viz-snapshot--pro" role="region" aria-label="数据快照" data-copilot-viz-root="1" data-viz-id="' +
+        vid +
+        '" data-io-in="' +
+        inf +
+        '" data-io-out="' +
+        outf +
+        '">' +
+        '<div class="copilot-viz-snapshot__head">' +
+        '<div class="copilot-viz-snapshot__head-text">' +
+        '<span class="copilot-viz-snapshot__label">数据快照</span>' +
+        '<span class="copilot-viz-snapshot__sub">主台缓存 · 与问数口径一致</span>' +
+        '</div>' +
+        '</div>' +
+        '<div class="copilot-viz-kpi-row">' +
+        '<div class="copilot-viz-net ' +
+        netClass +
+        '">' +
+        '<div class="copilot-viz-net-left"><span class="copilot-viz-net-label">净头寸</span><span class="copilot-viz-net-hint">流入 − 流出</span></div>' +
+        '<span class="copilot-viz-net-val">' +
+        esc(netStr) +
+        '</span>' +
+        '</div>' +
+        '<div class="copilot-viz-chart-grid">' +
+        '<div class="copilot-viz-chart-cell">' +
+        '<div class="copilot-viz-chart-title">流入 / 流出</div>' +
+        '<div id="' +
+        chartIoId +
+        '" class="copilot-viz-echart" role="img" aria-label="流入流出占比图"></div>' +
+        '<div class="copilot-viz-chart-fallback" hidden>' +
+        barFallback +
+        '</div>' +
+        '</div>' +
+        '<div class="copilot-viz-chart-cell">' +
+        '<div class="copilot-viz-chart-title">资金计划 · 按主体</div>' +
+        '<div id="' +
+        chartPlId +
+        '" class="copilot-viz-echart" role="img" aria-label="计划主体分布"></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="copilot-viz-stats-row">' +
+        '<div class="copilot-viz-stat"><span class="copilot-viz-stat-label">资金流记录</span><strong>' +
+        (s.record_count != null ? esc(String(s.record_count)) : '—') +
+        '</strong><span class="copilot-viz-stat-sub">笔</span></div>' +
+        '<div class="copilot-viz-stat"><span class="copilot-viz-stat-label">资金计划</span><strong>' +
+        plans.length +
+        '</strong><span class="copilot-viz-stat-sub">个</span></div>' +
+        '<div class="copilot-viz-stat copilot-viz-stat--badge">' +
+        alertsHtml +
+        '</div>' +
+        '</div>' +
+        (plans.length
+          ? '<ul class="copilot-viz-plan-list" aria-label="计划抽样">' + planChips + planMore + '</ul>'
+          : '') +
+        '<p class="copilot-viz-foot">数据来源：浏览器 AppData；与后端实时库可能存在秒级差异，审批以主台为准。</p>' +
+        '</div>'
+      );
+    } catch (e) {
+      return '';
+    }
+  },
+
+  /** 挂载 ECharts；失败或无库时展示 CSS 条形回退 */
+  _mountCopilotSnapshotCharts: function (snapEl) {
+    if (!snapEl || !snapEl.getAttribute || snapEl.getAttribute('data-copilot-viz-root') !== '1') return;
+    var ioEl = snapEl.querySelector('.copilot-viz-echart[id^="cfCopilotChartIO_"]');
+    var plEl = snapEl.querySelector('.copilot-viz-echart[id^="cfCopilotChartPL_"]');
+    var fb = snapEl.querySelector('.copilot-viz-chart-fallback');
+    var inf = Number(snapEl.getAttribute('data-io-in')) || 0;
+    var outf = Number(snapEl.getAttribute('data-io-out')) || 0;
+    var plans = (typeof AppData !== 'undefined' && AppData.plans) || [];
+    var byUnit = {};
+    plans.forEach(function (p) {
+      var u = (p && p.unit) || '未分类';
+      byUnit[u] = (byUnit[u] || 0) + 1;
+    });
+    var piePlan = Object.keys(byUnit).map(function (k) {
+      return { name: k.length > 8 ? k.slice(0, 8) + '…' : k, value: byUnit[k] };
+    });
+
+    var showFallbackBar = function () {
+      if (fb) {
+        fb.hidden = false;
+        if (ioEl) ioEl.style.display = 'none';
+      }
+    };
+
+    if (typeof echarts === 'undefined') {
+      showFallbackBar();
+      if (plEl) {
+        var escN = function (t) {
+          return String(t == null ? '' : t)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        };
+        plEl.innerHTML =
+          '<div class="copilot-viz-chart-empty">' +
+          (piePlan.length
+            ? piePlan
+                .map(function (d) {
+                  return (
+                    '<div class="copilot-viz-mini-row"><span>' +
+                    escN(d.name) +
+                    '</span><b>' +
+                    escN(String(d.value)) +
+                    '</b></div>'
+                  );
+                })
+                .join('')
+            : '暂无计划') +
+          '</div>';
+      }
+      return;
+    }
+
+    var palette = ['#F26522', '#34C759', '#5AC8FA', '#AF52DE', '#FFCC00', '#FF3B30', '#8E8E93'];
+    var baseOpt = {
+      textStyle: { fontFamily: 'inherit', fontSize: 10 },
+      animation: true,
+      animationDuration: 380,
+    };
+
+    if (ioEl) {
+      try {
+        var chartIo = echarts.init(ioEl, null, { renderer: 'svg', useDirtyRect: true });
+        var sum = inf + outf;
+        if (sum <= 0) {
+          chartIo.setOption({
+            title: {
+              text: '暂无分项',
+              left: 'center',
+              top: 'center',
+              textStyle: { color: '#86868b', fontSize: 11, fontWeight: 500 },
+            },
+          });
+        } else {
+          chartIo.setOption(
+            Object.assign({}, baseOpt, {
+              color: ['#34C759', '#FF3B30'],
+              tooltip: {
+                trigger: 'item',
+                formatter: function (p) {
+                  return p.name + '<br/>' + _fmtWan(p.value);
+                },
+              },
+              series: [
+                {
+                  type: 'pie',
+                  radius: ['44%', '70%'],
+                  center: ['50%', '52%'],
+                  avoidLabelOverlap: true,
+                  itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
+                  label: {
+                    formatter: function (x) {
+                      var pct = x.percent != null ? x.percent.toFixed(0) : '';
+                      return x.name + '\n' + pct + '%';
+                    },
+                    fontSize: 10,
+                    color: '#6e6e73',
+                  },
+                  labelLine: { length: 8, length2: 6 },
+                  data: [
+                    { name: '流入', value: inf },
+                    { name: '流出', value: outf },
+                  ],
+                },
+              ],
+            })
+          );
+        }
+        snapEl._cfChartIO = chartIo;
+        if (typeof ResizeObserver !== 'undefined') {
+          var ro = new ResizeObserver(function () {
+            try {
+              chartIo.resize();
+            } catch (e2) {}
+          });
+          ro.observe(ioEl);
+          snapEl._cfRoIO = ro;
+        }
+      } catch (e1) {
+        showFallbackBar();
+      }
+    }
+
+    if (plEl) {
+      try {
+        var chartPl = echarts.init(plEl, null, { renderer: 'svg', useDirtyRect: true });
+        if (!piePlan.length) {
+          chartPl.setOption({
+            title: {
+              text: '暂无计划',
+              left: 'center',
+              top: 'center',
+              textStyle: { color: '#86868b', fontSize: 11, fontWeight: 500 },
+            },
+          });
+        } else {
+          chartPl.setOption(
+            Object.assign({}, baseOpt, {
+              color: palette,
+              tooltip: { trigger: 'item', formatter: '{b}: {c} 个' },
+              series: [
+                {
+                  type: 'pie',
+                  radius: ['42%', '68%'],
+                  center: ['50%', '52%'],
+                  avoidLabelOverlap: true,
+                  itemStyle: { borderRadius: 3, borderColor: '#fff', borderWidth: 2 },
+                  label: { fontSize: 9, color: '#6e6e73' },
+                  data: piePlan,
+                },
+              ],
+            })
+          );
+        }
+        snapEl._cfChartPL = chartPl;
+        if (typeof ResizeObserver !== 'undefined') {
+          var roP = new ResizeObserver(function () {
+            try {
+              chartPl.resize();
+            } catch (e3) {}
+          });
+          roP.observe(plEl);
+          snapEl._cfRoPL = roP;
+        }
+      } catch (e4) {
+        plEl.innerHTML = '<div class="copilot-viz-chart-empty muted">图表不可用</div>';
+      }
+    }
+
+    setTimeout(function () {
+      try {
+        if (snapEl._cfChartIO) snapEl._cfChartIO.resize();
+      } catch (e5) {}
+      try {
+        if (snapEl._cfChartPL) snapEl._cfChartPL.resize();
+      } catch (e6) {}
+    }, 120);
   },
 
   _appendMsg: function (text, role) {
@@ -1040,8 +1383,18 @@ window.AI = {
         srcText = ch.text;
         if (ch.choices.length) choiceExtra = this._renderChoiceBar(ch.choices);
       }
-      var mdHtml = this._renderMarkdown(srcText);
-      if (body.id === 'copilot-messages') mdHtml = this._postprocessCopilotHtml(mdHtml);
+      var mdSource = srcText;
+      if (body.id === 'copilot-messages' && this._shouldShowCopilotSnapshot(srcText)) {
+        mdSource = this._stripRedundantCopilotStatsMarkdown(srcText);
+      }
+      var mdHtml = this._renderMarkdown(mdSource);
+      if (body.id === 'copilot-messages') {
+        mdHtml = this._postprocessCopilotHtml(mdHtml);
+        if (this._shouldShowCopilotSnapshot(srcText)) {
+          var snap = this._buildCopilotSnapshotHtml();
+          if (snap) mdHtml = snap + mdHtml;
+        }
+      }
       if (choiceExtra) mdHtml += choiceExtra;
       el.innerHTML = avatarHtml + '<div class="ai-msg-content' + richClass + '">' + mdHtml + '</div>';
     } else {
@@ -1049,6 +1402,15 @@ window.AI = {
     }
 
     body.appendChild(el);
+    if (role === 'assistant' && body.id === 'copilot-messages') {
+      var snapMount = el.querySelector('[data-copilot-viz-root="1"]');
+      if (snapMount) {
+        var self = this;
+        requestAnimationFrame(function () {
+          self._mountCopilotSnapshotCharts(snapMount);
+        });
+      }
+    }
     requestAnimationFrame(function () { el.classList.remove('ai-msg-enter'); });
     var wrap = body.closest('.copilot-chat-scroll');
     if (wrap) wrap.scrollTop = wrap.scrollHeight;
