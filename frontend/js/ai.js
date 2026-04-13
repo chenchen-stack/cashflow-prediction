@@ -1238,7 +1238,8 @@ window.AI = {
       return;
     }
 
-    var palette = ['#F26522', '#34C759', '#5AC8FA', '#AF52DE', '#FFCC00', '#FF3B30', '#8E8E93'];
+    /* 快照内图表：低饱和、与极简 UI 一致 */
+    var palette = ['#5c6b66', '#8a9590', '#a8b0ab', '#c5cbc7', '#6e6e73', '#8e8e93', '#aeaeb2'];
     var baseOpt = {
       textStyle: { fontFamily: 'inherit', fontSize: 10 },
       animation: true,
@@ -1261,7 +1262,7 @@ window.AI = {
         } else {
           chartIo.setOption(
             Object.assign({}, baseOpt, {
-              color: ['#34C759', '#FF3B30'],
+              color: ['#6d7f74', '#c4a99e'],
               tooltip: {
                 trigger: 'item',
                 formatter: function (p) {
@@ -1274,14 +1275,14 @@ window.AI = {
                   radius: ['44%', '70%'],
                   center: ['50%', '52%'],
                   avoidLabelOverlap: true,
-                  itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
+                  itemStyle: { borderRadius: 2, borderColor: '#fff', borderWidth: 1 },
                   label: {
                     formatter: function (x) {
                       var pct = x.percent != null ? x.percent.toFixed(0) : '';
                       return x.name + '\n' + pct + '%';
                     },
                     fontSize: 10,
-                    color: '#6e6e73',
+                    color: '#86868b',
                   },
                   labelLine: { length: 8, length2: 6 },
                   data: [
@@ -1331,8 +1332,8 @@ window.AI = {
                   radius: ['42%', '68%'],
                   center: ['50%', '52%'],
                   avoidLabelOverlap: true,
-                  itemStyle: { borderRadius: 3, borderColor: '#fff', borderWidth: 2 },
-                  label: { fontSize: 9, color: '#6e6e73' },
+                  itemStyle: { borderRadius: 2, borderColor: '#fff', borderWidth: 1 },
+                  label: { fontSize: 9, color: '#86868b' },
                   data: piePlan,
                 },
               ],
@@ -1582,9 +1583,11 @@ window.AI = {
         req
           .then(function (res) {
             Toast.success('接口已执行');
-            try {
-              console.info('agent api_write', method, path, res);
-            } catch (e) {}
+            if (typeof window !== 'undefined' && window.__CF_DEBUG_AGENT__) {
+              try {
+                console.debug('[CF_DEBUG_AGENT] api_write', method, path, res);
+              } catch (e) {}
+            }
             if (typeof window.loadFromBackend === 'function') {
               window.loadFromBackend().catch(function () {});
             }
