@@ -1,0 +1,70 @@
+/* ═══ Design Tokens ═══
+   对齐《资金预测-产品需求说明书 PRD》「设计规范」：
+   亿流橙 #F26522 · 白 #FFFFFF · 墨色 #1D1D1F · 成功绿 #34C759 · 警示红 #FF3B30
+   布局：侧栏 220px · 顶栏 60px · 圆角 4/8/12px · PingFang SC / Microsoft YaHei
+*/
+:root {
+  /* ── 背景（主内容区浅灰，卡片白底，与 PRD 极简阅读区一致）── */
+  --bg-app:          #F5F5F7;
+  --bg-surface:      #FFFFFF;
+  --bg-hover:        #FFF8F5;
+  --bg-muted:        #F5F5F7;
+
+  /* ── 边框（PRD --line 系）── */
+  --border:          #E8E8ED;
+  --border-hover:    #D2D2D7;
+  --border-strong:   #C7C7CC;
+
+  /* ── 文字（PRD 墨色 / 次级灰）── */
+  --text-main:       #1D1D1F;
+  --text-secondary:  #6E6E73;
+  --text-muted:      #86868B;
+  --text-light:      #AEAEB2;
+
+  /* ── 品牌：亿流橙 ── */
+  --primary:         #F26522;
+  --primary-hover:   #D9480F;
+  --primary-bg:      #FFF6F0;
+  --primary-border:  #FDDCC8;
+
+  /* ── 语义色（与 PRD 色板一致）── */
+  --danger:          #FF3B30;
+  --danger-bg:       #FFF2F1;
+  --danger-border:   #FFD4D2;
+  --warn:            #E68600; /* 与图表琥珀强调一致，区别于亿流橙 */
+  --warn-bg:         #FFF9F0;
+  --warn-border:     #F5E0C4;
+  --success:         #34C759;
+  --success-bg:      #F0FAF2;
+  --success-border:  #C8E6CD;
+  /* 表格金额：低饱和，避免与主色橙争抢 */
+  --num-positive:    #2f6f52;
+  --num-negative:    #a84848;
+  --info:            #86868B;
+  --info-bg:         #F5F5F7;
+  --info-border:     #E8E8ED;
+
+  /* ── 圆角（PRD：4px / 8px / 12px）── */
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius:      4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-full: 9999px;
+
+  /* ── 阴影（极简：尽量轻）── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* ── 字体（PRD：PingFang SC / Microsoft YaHei）── */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* ── 布局（PRD）── */
+  --sidebar-w: 220px;
+  --topbar-h:  60px;
+  --ai-panel-w: 440px;
+
+  --transition: 0.2s ease;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>现金流预测 Agent · 登录</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-container">
+      <div class="login-header">
+        <div class="login-brand">CF</div>
+        <h1>现金流预测 Agent</h1>
+        <p class="login-subtitle-en">Cash flow forecasting Agent</p>
+        <p class="login-subtitle-zh">预测 + 决策 + 执行闭环 · 选择身份进入</p>
+        <p class="login-skip" style="margin-top:12px;font-size:13px;">
+          <a href="app?embed=1" style="color:var(--primary);font-weight:600;">直接进入工作台（Accio 侧栏）</a>
+          <span style="color:var(--text-muted);font-size:12px;margin-left:8px;">默认司库经理</span>
+        </p>
+      </div>
+      <div class="role-grid" id="role-grid"></div>
+      <div class="login-footer">亿流科技 · 司库智能化解决方案</div>
+    </div>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById('role-grid');
+      var roles = AppData.roles;
+      Object.keys(roles).forEach(function (rid) {
+        var r = roles[rid];
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'role-card';
+        card.dataset.role = rid;
+        card.setAttribute('aria-label', r.name + ' - ' + r.desc);
+        var svg = (window.AppData.roleSvg && window.AppData.roleSvg[rid]) || '';
+        card.innerHTML =
+          '<div class="role-icon" aria-hidden="true">' + svg + '</div>' +
+          '<div class="role-card-body">' +
+          '<div class="role-name">' + r.name + '</div>' +
+          '<div class="role-desc">' + r.desc + '</div>' +
+          '</div>';
+        card.addEventListener('click', function () { Auth.login(rid); });
+        grid.appendChild(card);
+      });
+    })();
+  </script>
+<!-- YL-CROSS-NAV -->
+<nav id="_ylN" style="position:fixed;bottom:16px;left:16px;z-index:99999;font-family:system-ui,-apple-system,'PingFang SC',sans-serif;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,.06);border-radius:8px;padding:4px 6px;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:all .25s cubic-bezier(.22,1,.36,1)" aria-label="跨页面导航">
+<button id="_ylT" onclick="var n=document.getElementById('_ylN'),l=document.getElementById('_ylL'),t=this;if(l.style.display==='none'){l.style.display='flex';t.textContent='✕';n.style.padding='4px 12px'}else{l.style.display='none';t.textContent='↗';n.style.padding='4px 6px'}" style="all:unset;cursor:pointer;font-size:13px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;color:#888;transition:all .15s" title="展开/收起跳转链接">↗</button>
+<div id="_ylL" style="display:none;align-items:center;gap:4px">
+<a href="../03-资金预测-Accio风格工作台/index.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">工作台</a>
+<a href="../01-文档-现金流预测/资金预测-业务需求说明书-BRD.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">BRD</a>
+<a href="../01-文档-现金流预测/资金预测-产品需求说明书-PRD.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">PRD</a>
+<a href="../02-工程-现金流预测-全栈系统/PPT/brief-v2.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">PPT</a>
+<a href="../02-工程-现金流预测-全栈系统/frontend/index.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">全栈</a>
+<a href="../04-司库流动性预测-MVP/web/index.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">MVP</a>
+<a href="../05-亿流AI平台-官网/index.html" target="_blank" style="font-size:12px;color:#555;text-decoration:none;padding:3px 7px;border-radius:4px;white-space:nowrap;transition:all .15s">官网</a>
+</div>
+</nav>
+<script>!function(){var t=document.getElementById("_ylT");t.onmouseover=function(){this.style.color="#e8541b"};t.onmouseout=function(){this.style.color="#888"};document.querySelectorAll("#_ylL a").forEach(function(a){a.onmouseover=function(){this.style.background="rgba(243,110,33,.1)";this.style.color="#e8541b"};a.onmouseout=function(){this.style.background="none";this.style.color="#555"}})}()</script>
+<!-- /YL-CROSS-NAV -->
+
+</body>
+</html>

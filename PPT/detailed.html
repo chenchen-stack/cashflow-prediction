@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>资金预测智能体 · 演讲稿（详细）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="deck.css" />
+</head>
+<body>
+  <div id="deck" aria-live="polite">
+    <section class="slide slide--void is-on">
+      <div class="slide__inner">
+        <p class="kicker">亿流科技 · 详细路演（客户版）</p>
+        <h1 class="headline">资金预测<span class="tx-a">智能体</span>。</h1>
+        <p class="whisper">一页一个重点。带产品画面的：<span class="tx-a">左栏讲看什么、怎么用</span>，右栏实机与左栏条目对照即可。</p>
+        <aside class="slide__notes">声明：页数多，但仍是「一页一观点」的演讲稿。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm"><span class="tx-a">今天——</span><br />走完全链路。</h1>
+        <p class="whisper">从看板到流水底座，再到分析、计划、外汇、主数据、集成、模型与助手。</p>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">预测的前提——<br />是<span class="tx-a">可信的流水</span>。</h1>
+        <aside class="slide__notes">为「资金流」「数据集成」两张实机埋伏笔。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 总览看板</p>
+        <h2 class="headline-xs"><span class="tx-a">一屏水位：</span>头寸、进出、趋势与闭环指标</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>顶部 KPI / 卡片</strong>：当前余额、区间流入流出、预警或完成率——先回答「现在够不够花」。</li>
+              <li><span class="num">2</span><strong>趋势与结构图</strong>：按时间看水位变化，按类型看钱从哪来、到哪去。</li>
+              <li><span class="num">3</span><strong>入口或快捷区</strong>：下钻到资金流、分析或计划——演示时口播「从这一屏能去哪」。</li>
+            </ol>
+            <p class="pain-hook">以前<strong>Excel 拼表、月底才对齐</strong>——这里把「此刻水位 + 近期走势」固定在第一屏。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 总览看板</div>
+            <div class="stage-viewport">
+              <iframe title="总览" src="../frontend/app.html?embed=1#dashboard"></iframe>
+              <img class="shot" src="assets/detail-01-dashboard.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">可提一键刷新、对接司库/银行余额接口。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">底座——<br />是<span class="tx-a">流水本身</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 资金流</p>
+        <h2 class="headline-xs"><span class="tx-a">进、出、预测记录</span>落在同一张叙事里</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>筛选与工具条</strong>：时间、账户、类型——先缩小范围再读表。</li>
+              <li><span class="num">2</span><strong>表格主体</strong>：每笔金额、科目/标签、是否预测生成——对应「可追溯」话术。</li>
+              <li><span class="num">3</span><strong>录入 / 导入入口</strong>：手工补录与批量导入并存时，强调<strong>留痕与版本</strong>。</li>
+            </ol>
+            <p class="pain-hook">预测再漂亮，<strong>底账对不上</strong>——管理层不信；这一屏对准「单一事实来源」。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 资金流管理</div>
+            <div class="stage-viewport">
+              <iframe title="资金流" src="../frontend/app.html?embed=1#cashflow"></iframe>
+              <img class="shot" src="assets/detail-02-cashflow.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">看清趋势——<br />才敢<span class="tx-a">拍板</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 分析预测</p>
+        <h2 class="headline-xs"><span class="tx-a">区间、场景、图表</span>联动——假设摆在台面上</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>时间区间与粒度</strong>：周/月/季——与客户汇报节奏对齐。</li>
+              <li><span class="num">2</span><strong>场景或参数区</strong>：乐观/中性/保守或自定义系数——口播「可解释」。</li>
+              <li><span class="num">3</span><strong>主图与明细</strong>：曲线 + 下钻表格——回答「数从哪来、区间多大」。</li>
+            </ol>
+            <p class="pain-hook">避免<strong>黑箱一个数</strong>——UI 上能看见区间与假设，才好过投委会 / 财委。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 分析预测</div>
+            <div class="stage-viewport">
+              <iframe title="分析" src="../frontend/app.html?embed=1#analysis"></iframe>
+              <img class="shot" src="assets/detail-03-analysis.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">工程内 calculator / charts 可与口播互指。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">预测——<br />必须<span class="tx-a">落进计划</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 资金计划</p>
+        <h2 class="headline-xs"><span class="tx-a">编、审、执行对账</span>——预测与业务节奏闭合</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>计划列表或版本</strong>：草稿、已批、执行中——变更要有痕迹。</li>
+              <li><span class="num">2</span><strong>行项目维度</strong>：部门、项目、币种——与预算或 ERP 对口径时讲清映射。</li>
+              <li><span class="num">3</span><strong>对账或执行反馈</strong>：计划 vs 实际偏差——闭环「预测不是写完就完」。</li>
+            </ol>
+            <p class="pain-hook">常见痛点：<strong>预测在 PPT，计划在邮件</strong>——系统里要把两条线接起来。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 资金计划</div>
+            <div class="stage-viewport">
+              <iframe title="计划" src="../frontend/app.html?embed=1#plan"></iframe>
+              <img class="shot" src="assets/detail-04-plan.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">全球经营——<br /><span class="tx-a">汇率是第二种现金</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 外汇敞口</p>
+        <h2 class="headline-xs"><span class="tx-a">币种与敞口</span>摊开——与本币预测同屏叙事</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>汇总指标</strong>：净敞口、对冲比例或风险标签——CFO 先抓总量。</li>
+              <li><span class="num">2</span><strong>按币种 / 实体拆分</strong>：哪块暴露大、是否集中——口播集中度风险。</li>
+              <li><span class="num">3</span><strong>与流水或计划联动</strong>：汇率假设变更时，下游预测如何重算——提「可追溯假设」。</li>
+            </ol>
+            <p class="pain-hook">跨国经营场景下<strong>只报人民币</strong>往往不够——这一屏补「第二层现金」。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 外汇敞口</div>
+            <div class="stage-viewport">
+              <iframe title="外汇" src="../frontend/app.html?embed=1#fx"></iframe>
+              <img class="shot" src="assets/detail-05-fx.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">主数据不乱——<br />后面才<span class="tx-a">不会乱</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 基础数据</p>
+        <h2 class="headline-xs"><span class="tx-a">科目、组织、币种</span>先立规矩，再谈模型</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>科目或现金流类别树</strong>：与报表、预算科目映射关系要讲清。</li>
+              <li><span class="num">2</span><strong>组织 / 成本中心</strong>：谁编计划、谁看哪一段——权限与口径前置。</li>
+              <li><span class="num">3</span><strong>币种与汇率源</strong>：用哪套中间价、何时刷新——与外汇敞口页呼应。</li>
+            </ol>
+            <p class="pain-hook">集成再强，<strong>主数据各写各的</strong>——汇总永远对不齐；交付前先锁「词表」。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 基础数据</div>
+            <div class="stage-viewport">
+              <iframe title="基础数据" src="../frontend/app.html?embed=1#basedata"></iframe>
+              <img class="shot" src="assets/detail-06-basedata.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">集成——<br />不是<span class="tx-a">一次性项目</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 数据集成</p>
+        <h2 class="headline-xs"><span class="tx-a">多源进一套叙事：</span>状态可见、冲突可审计</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>连接器 / 任务列表</strong>：银行、ERP、资金系统——哪路通、哪路断一眼看见。</li>
+              <li><span class="num">2</span><strong>同步时间与批次</strong>：最近一次成功、失败原因——IT 与财务共用语言。</li>
+              <li><span class="num">3</span><strong>冲突与覆盖策略</strong>：多源字段谁优先、人工覆盖是否留痕——对口「可审计」评审题。</li>
+            </ol>
+            <p class="pain-hook">管道不稳时，<strong>上层智能只是空话</strong>——先证明「数据每天能到账」。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 数据集成</div>
+            <div class="stage-viewport">
+              <iframe title="集成" src="../frontend/app.html?embed=1#integration"></iframe>
+              <img class="shot" src="assets/detail-07-integration.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">多源冲突与人工覆盖策略可口述「可审计」。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">方法论——<br />要写进<span class="tx-a">产品</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 两阶段模型</p>
+        <h2 class="headline-xs"><span class="tx-a">两阶段：</span>结构上看得见、对外讲得清</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>阶段划分说明</strong>：例如基准拟合 vs 情景外推——对应你们白皮书或交付文档章节。</li>
+              <li><span class="num">2</span><strong>参数与开关</strong>：哪些给客户可调、哪些仅实施可配——管理预期。</li>
+              <li><span class="num">3</span><strong>输出对接</strong>：结果写回哪张表、哪张看板——闭环到前面的分析 / 计划页。</li>
+            </ol>
+            <p class="pain-hook">评审常问：<strong>「你们的模型和 Excel 差在哪」</strong>——用界面把阶段与假设钉死。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · 两阶段模型</div>
+            <div class="stage-viewport">
+              <iframe title="两阶段" src="../frontend/app.html?embed=1#stages"></iframe>
+              <img class="shot" src="assets/detail-08-stages.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">还有一个角色——<br /><span class="tx-a">一直在线</span>。</h1>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · DataAgent</p>
+        <h2 class="headline-xs"><span class="tx-a">问数、问因、问下一步</span>——抽屉里完成，不切屏</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>对照说明</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>主界面</strong>：仍停留在看板或业务页——助手是增强，不是另一个孤岛。</li>
+              <li><span class="num">2</span><strong>右侧抽屉</strong>：自然语言追问，回答应能指回<strong>指标定义或数据来源</strong>。</li>
+              <li><span class="num">3</span><strong>路演参数</strong>：<code>ai=1</code> 可自动展开抽屉；生产环境由用户手动打开。</li>
+            </ol>
+            <p class="pain-hook">合规话术：<strong>建议不等于决裁</strong>；异常时明确「查不了」而非编造数字。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">实时演示 · DataAgent</div>
+            <div class="stage-viewport">
+              <iframe title="助手" src="../frontend/app.html?embed=1&amp;ai=1#dashboard"></iframe>
+              <img class="shot" src="assets/detail-09-agent.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">后端 <code>/api/agent/chat</code>；失败走降级链可口述。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <p class="kicker">交付前</p>
+        <h1 class="headline-sm"><span class="tx-a">四个追问——</span><br />要在评审里站得住。</h1>
+        <div class="checklist">
+          <p><strong>数据权威</strong>——多源冲突时谁优先？覆盖能不能审计？</p>
+          <p><strong>预测可解释</strong>——假设、区间、回测在 UI 上是否可见？</p>
+          <p><strong>Agent 边界</strong>——指令是否白名单？失败兜底话术是否合规？</p>
+          <p><strong>性能</strong>——万级记录下列表与图表是否仍可用？</p>
+        </div>
+        <aside class="slide__notes">细节展开讲，屏上只保留骨架。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <h1 class="headline-sm">谢谢。</h1>
+        <p class="whisper"><a href="brief.html" class="deck-link">精简版 →</a> · <a href="index.html" class="deck-link-muted">入口</a> · 技术说明见<span class="tx-a">工程 README</span></p>
+        <aside class="slide__notes">离线：全屏打开对应 URL，截图另存为 <code>PPT/assets/</code> 同名 PNG 即可。</aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="deck-ui">
+    <a class="deck-exit" href="index.html">返回</a>
+    <div class="deck-progress" aria-hidden="true"><span></span></div>
+    <span class="deck-meta" id="deck-idx">1 / 22</span>
+    <span class="deck-hint">→ 或点击 · N 讲稿 · ?presenter=1</span>
+  </div>
+  <script src="deck.js"></script>
+</body>
+</html>

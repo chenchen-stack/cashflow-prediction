@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>亿流 · 资金结果交付引擎（完整版 · 五幕叙事 × FAB × 市场调研 × 价值闭环）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="deck.css?v=202604139" />
+  <style>
+    .mr-kpi-row{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0}
+    .mr-kpi{text-align:center;padding:1rem 1.5rem;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);min-width:140px;flex:1;max-width:220px}
+    .mr-kpi__val{font-size:2rem;font-weight:700;color:#f36e21;line-height:1.1}
+    .mr-kpi__val--sub{font-size:1.1rem;color:#a3a3a3;margin-top:.15rem}
+    .mr-kpi__label{font-size:.78rem;color:#737373;margin-top:.35rem}
+    .mr-region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+    .mr-region{padding:1rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-region__title{font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:#e8e8e8}
+    .mr-region__stat{font-size:.75rem;color:#a3a3a3;line-height:1.6}
+    .mr-region__stat strong{color:#f4f4f3}
+    .mr-region--accent{border-color:rgba(243,110,33,.35);background:rgba(243,110,33,.06)}
+    .mr-tier-strip{display:flex;gap:.75rem;margin:1rem 0}
+    .mr-tier{flex:1;padding:.85rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-tier--hi{border-color:rgba(243,110,33,.4);background:rgba(243,110,33,.06)}
+    .mr-tier__tag{font-size:.7rem;color:#737373;margin-bottom:.3rem}
+    .mr-tier__city{font-size:.85rem;font-weight:600;color:#e8e8e8;margin-bottom:.4rem}
+    .mr-tier__range{font-size:.95rem;font-weight:700;color:#f36e21}
+    .mr-tier__note{font-size:.7rem;color:#737373;margin-top:.3rem}
+    .mr-ladder{display:flex;align-items:end;gap:0;margin:1rem auto;justify-content:center}
+    .mr-ladder__step{display:flex;flex-direction:column;align-items:center;padding:.5rem .8rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+    .mr-ladder__step:first-child{border-radius:0 0 0 10px}
+    .mr-ladder__step:last-child{border-radius:0 10px 0 0}
+    .mr-ladder__step--accent{border-color:rgba(243,110,33,.4);background:rgba(243,110,33,.08)}
+    .mr-ladder__mult{font-size:1.1rem;font-weight:700;color:#f36e21}
+    .mr-ladder__name{font-size:.72rem;color:#a3a3a3;margin-top:.2rem}
+    .mr-split-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+    .mr-split-2__col{padding:1rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-split-2__col h3{font-size:.85rem;font-weight:600;color:#e8e8e8;margin:0 0 .5rem}
+    .mr-industry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1rem 0}
+    .mr-ind{padding:.75rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center}
+    .mr-ind__name{font-size:.78rem;font-weight:600;color:#e8e8e8;margin-bottom:.3rem}
+    .mr-ind__pct{font-size:1.3rem;font-weight:700;color:#f36e21}
+    .mr-ind__sub{font-size:.65rem;color:#737373;margin-top:.2rem}
+    .mr-ind__range{font-size:.72rem;color:#a3a3a3;margin-top:.3rem}
+    @media(max-width:900px){.mr-region-grid,.mr-industry-grid{grid-template-columns:repeat(2,1fr)}.mr-tier-strip{flex-direction:column}.price-grid,.roi-grid{grid-template-columns:repeat(2,1fr)}}
+
+    /* ── pricing cards ── */
+    .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1rem 0}
+    .price-card{padding:1.15rem 1rem;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;position:relative}
+    .price-card--pop{border-color:rgba(243,110,33,.55);background:rgba(243,110,33,.05);box-shadow:0 0 24px rgba(243,110,33,.08)}
+    .price-card--pop::after{content:'推荐';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#f36e21;color:#fff;font-size:.7rem;font-weight:700;padding:3px 14px;border-radius:5px;letter-spacing:.06em}
+    .price-card__tier{font-size:.7rem;color:#737373;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.15rem}
+    .price-card__name{font-size:1.1rem;font-weight:700;color:#e8e8e8}
+    .price-card__price{font-size:1.8rem;font-weight:700;color:#f36e21;margin:.35rem 0 .08rem;line-height:1.1}
+    .price-card__unit{font-size:.72rem;color:#737373}
+    .price-card__sep{height:1px;background:rgba(255,255,255,.07);margin:.65rem 0}
+    .price-card__feat{list-style:none;padding:0;margin:0;flex:1}
+    .price-card__feat li{font-size:.8rem;color:#b0b0b0;line-height:1.9;padding-left:1.1rem;position:relative}
+    .price-card__feat li::before{content:'✓';position:absolute;left:0;color:#10b981;font-weight:700;font-size:.8rem}
+    .price-card__feat li.feat--dim{color:#606060}
+    .price-card__feat li.feat--dim::before{content:'–';color:#525252}
+    .price-card__target{font-size:.72rem;color:#737373;margin-top:.5rem;padding-top:.5rem;border-top:1px solid rgba(255,255,255,.07);font-style:italic}
+
+    /* ── add-on chips ── */
+    .addon-strip{display:flex;gap:.6rem;flex-wrap:wrap;margin:.7rem 0}
+    .addon-chip{padding:.45rem .85rem;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);font-size:.78rem;color:#a3a3a3}
+    .addon-chip strong{color:#e8e8e8;font-weight:600}
+    .addon-chip .chip-price{color:#f36e21;font-weight:700}
+
+    /* ── combo callout ── */
+    .combo-bar{display:flex;gap:1.5rem;justify-content:center;align-items:center;flex-wrap:wrap;margin:.7rem 0;padding:.7rem 1.2rem;border-radius:10px;background:rgba(243,110,33,.07);border:1px solid rgba(243,110,33,.3)}
+    .combo-bar__item{font-size:.85rem;color:#b0b0b0}
+    .combo-bar__item strong{color:#f36e21}
+    .combo-bar__label{font-size:.85rem;font-weight:700;color:#e8e8e8;margin-right:.3rem}
+
+    /* ── ROI cards ── */
+    .roi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1rem 0}
+    .roi-card{padding:1rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column}
+    .roi-card__persona{font-size:.85rem;font-weight:600;color:#e8e8e8;margin-bottom:.25rem}
+    .roi-card__plan{font-size:.8rem;color:#f36e21;font-weight:700;margin:.15rem 0}
+    .roi-card__price{font-size:.72rem;color:#a3a3a3}
+    .roi-card__sep{height:1px;background:rgba(255,255,255,.07);margin:.5rem 0}
+    .roi-card__row{display:flex;justify-content:space-between;font-size:.72rem;color:#a3a3a3;line-height:1.9}
+    .roi-card__row strong{color:#e8e8e8}
+    .roi-card__save{font-size:.95rem;color:#10b981;font-weight:700;margin-top:.45rem;padding-top:.45rem;border-top:1px solid rgba(16,185,129,.2)}
+    .roi-card__payback{font-size:.68rem;color:#737373;margin-top:.15rem}
+  </style>
+</head>
+<body class="deck-jobs">
+  <script type="application/json" id="deck-chapters-config">
+    [
+      {"label": "一、开场", "slide": 1, "hint": "悬念 · 身份 · 战略锚点 · FAB 纪律"},
+      {"label": "二、破局", "slide": 5, "hint": "痛点 · 对比 · 市场规模"},
+      {"label": "三、立局", "slide": 13, "hint": "产品定义 · 演示 · 竞品概览"},
+      {"label": "四、定价", "slide": 39, "hint": "市场调研 · 范式 · 报价 · 策略"},
+      {"label": "五、升华", "slide": 54, "hint": "信任 · 部署 · 终章"},
+      {"label": "附录", "slide": 61, "hint": "调研 · 竞品详情 · 内部待办"}
+    ]
+  </script>
+
+  <div id="deck" aria-live="polite">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACT 1  开场（4 页）：悬念 → 身份 → 战略 → FAB 纪律
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- S1 Hero -->
+    <section class="slide slide--void slide--story slide--hero slide--hero--refined is-on">
+      <div class="slide__inner slide__inner--hero-tight">
+        <p class="story-hook story-hook--hero">YILIU · 2026</p>
+        <p class="story-line story-line--hero">
+          <span class="hero-line__base">请您只听</span><span class="hero-line__accent">一件事</span><span class="hero-line__base">。</span>
+        </p>
+        <p class="story-sub story-sub--hero">钱 · 被看见 · 被推演 · <span class="hero-sub__end">可汇报</span></p>
+        <aside class="slide__notes">黑场约 2 秒。乔布斯式开场：先立「高度」与悬念——不是功能清单，而是「您的钱」如何被交付成可汇报结论。面向 CFO / 资金主管；资金结果交付引擎；2026 年 4 月 · 亿流。</aside>
+      </div>
+    </section>
+
+    <!-- S2 身份定义 -->
+    <section class="slide slide--void slide--jobs-beat">
+      <div class="slide__inner">
+        <p class="story-hook">先替您回答一个问题</p>
+        <h1 class="headline-sm">我们<strong>不是</strong>又一个资金系统。<br />我们是<strong class="tx-a">资金结果交付引擎</strong>。</h1>
+        <aside class="slide__notes">口播：两句钉死身份；细节留给下一页战略总纲与 FAB。</aside>
+      </div>
+    </section>
+
+    <!-- S3 战略总纲 + 价值主张（合并原 S3 + S5） -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--strategic-prism">
+      <div class="slide__inner slide__inner--wide slide__inner--strategic-prism">
+        <p class="section-ribbon section-ribbon--fab">开场 · 战略总纲</p>
+        <p class="story-hook">先对齐一件事</p>
+        <h1 class="headline-sm">买<strong class="tx-a">结果</strong>，不买菜单</h1>
+        <p class="strategic-prism__tagline">卖的是<strong>结果与确定性</strong>，不是 Agent 本身 · 范式重构落在三处</p>
+        <ul class="strategic-judgments strategic-judgments--prism" aria-label="产品 · 商业 · 叙事">
+          <li><span class="strategic-judgments__k">产品</span> 堆模块 → <strong>直接交结果</strong></li>
+          <li><span class="strategic-judgments__k">商业</span> 卖许可 → <strong>订阅与算力服务</strong></li>
+          <li><span class="strategic-judgments__k">叙事</span> 晒能力 → <strong>解财务焦虑</strong></li>
+        </ul>
+        <aside class="slide__notes">口播：对齐订阅 + Token 商业叙事；不讲裸卖模型。先立「高度」。</aside>
+      </div>
+    </section>
+
+    <!-- S4 FAB 纪律（保留） -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--fab-guide">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">开场 · FAB 纪律</p>
+        <h1 class="headline-sm" style="margin:0 0 0.5rem;">每一点都回答：<span class="tx-a">F → A → B</span></h1>
+        <div class="fab-guide-table-wrap">
+          <table class="fab-guide-table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">易错说法</th>
+                <th scope="col">正确说法</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">F</th>
+                <td>「我们有一个 Agent 中台，支持多模态。」</td>
+                <td>「能听懂人话、能调取 <strong>ERP</strong> 数据的现金流预测助手。」</td>
+              </tr>
+              <tr>
+                <th scope="row">A</th>
+                <td>「传统是模块化，我们是智能化。」</td>
+                <td>「不在模块间搬数据；<strong>直接交付结果</strong>——例如 30 秒一版带分析的预测草案。」</td>
+              </tr>
+              <tr>
+                <th scope="row">B</th>
+                <td>「提升了效率。」</td>
+                <td>「主管从半天做表到<strong>快速决策</strong>；CFO 提前 <strong>7 天</strong>看到缺口，避免逾期（示例口径）。」</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACT 2  破局（8 页）：纯痛点 · 否定旧世界 · 市场规模
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- S5 旧世界 vs 新世界 -->
+    <section class="slide slide--void slide--memo slide--fab-act slide--fab-act--pain">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">二、破局 · FAB Ⅰ 矛盾</p>
+        <p class="story-hook" style="margin-bottom:1rem;">旧世界 · 新世界</p>
+        <div class="compare-grid">
+          <div class="compare-col compare-col--old">
+            <p class="compare-col__tag">过去 · GUI 范式</p>
+            <h3 class="headline-xs" style="margin:0 0 0.5rem;">模块。菜单。Excel。</h3>
+            <p class="memo-lede" style="margin:0;">痛点深、口径散；老板问缺口，答不上来。</p>
+            <div class="viz-mini viz-mini--oldwide" aria-hidden="true">
+              <div class="viz-excel-maze">
+                <div class="viz-excel-maze__tag">Excel / 多 Sheet</div>
+                <div class="viz-excel-maze__cols"><span></span><span>A</span><span>B</span><span>C</span><span>D</span></div>
+                <div class="viz-excel-maze__sheet">
+                  <div class="viz-excel-maze__row"><span>1</span><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell viz-excel-maze__cell--err"></div><div class="viz-excel-maze__cell"></div></div>
+                  <div class="viz-excel-maze__row"><span>2</span><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div></div>
+                  <div class="viz-excel-maze__row"><span>3</span><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div><div class="viz-excel-maze__cell"></div></div>
+                </div>
+                <svg class="viz-excel-maze__zig" viewBox="0 0 120 72" aria-hidden="true"><path d="M8 8 L40 8 L40 28 L88 28 L88 52 L108 52" fill="none" stroke="rgba(243,110,33,0.45)" stroke-width="2" stroke-dasharray="4 3" /></svg>
+              </div>
+              <p class="viz-mini-legend">多表跳转 · 口径不一 · 老板问缺口要对半天</p>
+            </div>
+          </div>
+          <div class="compare-col compare-col--new">
+            <p class="compare-col__tag compare-col__tag--accent">亿流 · NUI + Agent</p>
+            <h3 class="headline-xs" style="margin:0 0 0.5rem;">听懂人话。接 ERP。出结果。</h3>
+            <p class="memo-lede" style="margin:0;">同一套真相——可汇报、可对账、可复核。</p>
+            <div class="viz-mini viz-mini--newwide" aria-hidden="true">
+              <div class="viz-intent-board">
+                <div class="viz-intent-board__user">「把这版预测同步给 CFO」</div>
+                <div class="viz-intent-board__chain">
+                  <span>ERP</span><i>→</i><span>解析</span><i>→</i><span>快照</span><i>→</i><span class="viz-intent-board__hl">留痕</span>
+                </div>
+                <div class="viz-intent-board__audit">✓ 可审计链路 · 可导出前确认</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">口播补 B：时间从「半天」到「一屏收口」（按客户举例）。</aside>
+      </div>
+    </section>
+
+    <!-- S6 对比表 -->
+    <section class="slide slide--void slide--memo slide--launch-table">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">二、破局 · 对比</p>
+        <p class="story-hook">您可能在想——和「传统资金系统」差在哪？</p>
+        <h1 class="headline-sm" style="margin:0 0 0.5rem;">传统资金系统 <span class="tx-a">vs</span> 资金结果交付引擎</h1>
+        <p class="memo-caption" style="margin:0 0 0.65rem;">每一行都按 <strong>F → A → B</strong> 可讲：是什么、比旧强在哪、您得到什么。</p>
+        <div class="memo-table-wrap">
+          <table class="memo-table memo-table--launch-compare" aria-label="传统系统与结果交付引擎对比">
+            <thead>
+              <tr>
+                <th scope="col">维度</th>
+                <th scope="col">传统资金系统（常见形态）</th>
+                <th scope="col">资金结果交付引擎（亿流）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">您买到什么</th>
+                <td><strong>F</strong> 模块与权限 · <strong>B</strong> 您仍为「拼结果」付隐性工时</td>
+                <td><strong>F</strong> 可汇报的预测报表与缺口预警 · <strong>B</strong> 您买的是<strong>结论与确定性</strong></td>
+              </tr>
+              <tr>
+                <th scope="row">起点</th>
+                <td><strong>A</strong> 从菜单与配置开始，路径长</td>
+                <td><strong>A</strong> 从您要回答的问题开始，<strong>先结果后手段</strong></td>
+              </tr>
+              <tr>
+                <th scope="row">数据路径</th>
+                <td><strong>A</strong> 多模块间搬运、Excel 勾稽</td>
+                <td><strong>A</strong> 系统承担搬运，您做判断与签核</td>
+              </tr>
+              <tr>
+                <th scope="row">时间感</th>
+                <td><strong>B</strong> 半日到数日一版</td>
+                <td><strong>B</strong> 分钟级迭代草案（视数据与对接）</td>
+              </tr>
+              <tr>
+                <th scope="row">商业</th>
+                <td>许可证 / 模块扩容</td>
+                <td><strong>订阅 + Token</strong> · 盈利来自<strong>算力价差</strong>的持续服务</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="slide__notes">董事长场：强调「先卖结果不卖菜单」；数字与工时举例需与客户共创校准。</aside>
+      </div>
+    </section>
+
+    <!-- S7 脉搏 -->
+    <section class="slide slide--void slide--atmosphere">
+      <div class="slide__inner">
+        <h1 class="headline">企业的现金——<br />从来不是数字。<br />是<span class="tx-a">脉搏</span>。</h1>
+        <aside class="slide__notes">一词一屏的力量。</aside>
+      </div>
+    </section>
+
+    <!-- S8 猜 -->
+    <section class="slide slide--void slide--atmosphere">
+      <div class="slide__inner">
+        <h1 class="headline">可这份脉搏——<br />最忌一件事：<br /><span class="tx-a">猜</span>。</h1>
+        <p class="story-sub" style="margin-top:1.75rem;"><strong>您</strong>的表在 Excel、真相在会后——<strong>最怕「好像还行」。</strong></p>
+        <aside class="slide__notes">停顿。让痛点坐实。</aside>
+      </div>
+    </section>
+
+    <!-- S9 否定纯聊天 -->
+    <section class="slide slide--void slide--story">
+      <div class="slide__inner">
+        <p class="story-hook">所以——</p>
+        <p class="story-line">如果 AI <span class="dot">只会聊天</span>，<br />钱——照样乱。</p>
+        <p class="story-sub">对话要<strong>长在业务上</strong>。预测要<strong>落在单据上</strong>。</p>
+        <aside class="slide__notes">否定「纯聊天」，再引出路。</aside>
+      </div>
+    </section>
+
+    <!-- S10 两层 -->
+    <section class="slide slide--void slide--atmosphere">
+      <div class="slide__inner">
+        <p class="story-hook">答案——</p>
+        <h1 class="headline" style="margin-top:0.5rem;"><span class="tx-a">两层</span>。</h1>
+        <p class="whisper" style="margin-top:2rem;">人会问、会协作。<br />组织能跑、能审、能闭环。</p>
+        <aside class="slide__notes">两个字比「两个产品」更抓耳。</aside>
+      </div>
+    </section>
+
+    <!-- S11 叙事弧线（弱化子幕编号） -->
+    <section class="slide slide--void slide--keynote">
+      <div class="slide__inner slide__inner--wide">
+        <p class="story-hook">一条线</p>
+        <h1 class="headline-sm story-arc__head">看见钱。<br />敢用钱。</h1>
+        <div class="story-arc" role="img" aria-label="叙事弧">
+          <div class="story-arc__step">
+            <span class="story-arc__n">序</span>
+            <p class="story-arc__title">焦虑</p>
+            <p class="story-arc__desc">预测焦虑、口径分散。</p>
+          </div>
+          <div class="story-arc__arrow" aria-hidden="true"></div>
+          <div class="story-arc__step story-arc__step--accent">
+            <span class="story-arc__n">▸</span>
+            <p class="story-arc__title">中台</p>
+            <p class="story-arc__desc">对话长在业务上。</p>
+          </div>
+          <div class="story-arc__arrow" aria-hidden="true"></div>
+          <div class="story-arc__step story-arc__step--accent">
+            <span class="story-arc__n">▸</span>
+            <p class="story-arc__title">预测</p>
+            <p class="story-arc__desc">推演 · 预警 · 闭环。</p>
+          </div>
+          <div class="story-arc__arrow" aria-hidden="true"></div>
+          <div class="story-arc__step">
+            <span class="story-arc__n">▸</span>
+            <p class="story-arc__title">上手</p>
+            <p class="story-arc__desc">聚光灯 + DataAgent。</p>
+          </div>
+        </div>
+        <aside class="slide__notes">手势从左扫到右；不再强调「三幕」结构，用旅程线自然带过。</aside>
+      </div>
+    </section>
+
+    <!-- 市场规模（市场调研融入 · 破局收尾 → 机会有多大） -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">二、破局 · 市场规模</p>
+        <p class="story-hook">中国金融 AI Agent 市场</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">2025 <strong class="tx-a">287 亿</strong> → 2026 <strong class="tx-a">450 亿</strong></h1>
+        <div class="mr-kpi-row">
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">287<span style="font-size:.9rem;color:#a3a3a3">亿</span></div>
+            <div class="mr-kpi__label">2025 市场规模</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">450<span style="font-size:.9rem;color:#a3a3a3">亿</span></div>
+            <div class="mr-kpi__label">2026 预计规模</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">57%</div>
+            <div class="mr-kpi__label">YoY 增速</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">12%<span style="font-size:.85rem;color:#a3a3a3"> → </span>23%</div>
+            <div class="mr-kpi__label">渗透率跃升</div>
+          </div>
+        </div>
+        <p class="viz-caption" style="margin-top:1rem;">中国企业 AI 平均投入 <strong>4,280 万美元</strong>（全球第一，超美国 3,700 万）· AI 占 IT 预算 <strong>12%</strong>（约 6,600 万元）· 预计 2026 增长 <strong>21%</strong></p>
+        <p class="memo-caption">数据来源：艾瑞咨询 2025；员工 AI 采用率中国 <strong>87%</strong>（全球 72%）。</p>
+        <aside class="slide__notes">痛点坐实后亮出市场规模——「机会有多大」。过渡到产品。</aside>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACT 3  立局（26 页）：产品定义 → 演示 → 竞品
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- ——— 产品定义区（从 ACT1/ACT2 归位至此） ——— -->
+
+    <!-- S12 定位：我们是谁（原 ACT1） -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--product-position">
+      <div class="slide__inner slide__inner--wide slide__inner--product-split">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · 定位</p>
+        <p class="story-hook">我们是谁</p>
+        <h1 class="headline-sm product-position__hero">面向企业财务负责人的<br /><strong class="tx-a">资金结果交付引擎</strong></h1>
+        <p class="product-position__scope">不替代 ERP / 网银 · 不是功能型司库</p>
+        <p class="product-position__payoff">收掉<strong>您和团队</strong>用 Excel 做计划的那<strong>半天</strong>，与现金流<strong>不确定性</strong>焦虑。</p>
+        <aside class="slide__notes">口播：与 ERP、网银分工各一句；强调「收掉」的是时间与焦虑。</aside>
+      </div>
+    </section>
+
+    <!-- S13 产品结构四层（原 ACT1） -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--value-pyramid slide--product-stack">
+      <div class="slide__inner slide__inner--wide slide__inner--value-pyramid">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · 产品结构</p>
+        <p class="story-hook">从「谁买单」到「底座」</p>
+        <div class="value-pyramid value-pyramid--compact" role="img" aria-label="产品结构四层">
+          <div class="value-pyramid__layer value-pyramid__layer--deliver">
+            <span class="value-pyramid__tag">价值交付</span>
+            <p>资金计划报表 · 缺口预警 · <strong>预测结果</strong></p>
+            <span class="value-pyramid__hint">客户买单</span>
+          </div>
+          <div class="value-pyramid__layer value-pyramid__layer--scene">
+            <span class="value-pyramid__tag">场景应用</span>
+            <p>现金流预测 · 资金计划 · BI 分析</p>
+            <span class="value-pyramid__hint">客户看见</span>
+          </div>
+          <div class="value-pyramid__layer value-pyramid__layer--agent">
+            <span class="value-pyramid__tag">Agent 中台</span>
+            <p>交互 · 调度 · 记忆 · 工具调用</p>
+            <span class="value-pyramid__hint">实现手段</span>
+          </div>
+          <div class="value-pyramid__layer value-pyramid__layer--conn">
+            <span class="value-pyramid__tag">连接集成</span>
+            <p>ERP API · 银行接口 · 文件解析</p>
+            <span class="value-pyramid__hint">基础设施</span>
+          </div>
+        </div>
+        <aside class="slide__notes">自上而下：买单 → 看见 → 手段 → 底座；投屏可指层。</aside>
+      </div>
+    </section>
+
+    <!-- S14 产品透镜 ①（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--viz slide--product-lens">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB · F 属性</p>
+        <p class="story-hook">产品透镜 <span class="slide-part-badge" aria-hidden="true">①</span></p>
+        <h1 class="headline-sm product-lens__title">是什么 · 谁在用 · <span class="tx-a">卖给谁</span></h1>
+        <div class="product-lens-grid product-lens-grid--triple" role="img" aria-label="是什么 谁在用 卖给谁">
+          <article class="product-lens-card product-lens-card--what">
+            <header class="product-lens-card__head">
+              <span class="product-lens-card__icon" aria-hidden="true">◇</span>
+              <h2 class="product-lens-card__title">是什么</h2>
+            </header>
+            <p class="product-lens-card__lead"><strong>资金结果交付引擎</strong> — <strong>Agent 中台</strong> + <strong>现金流预测</strong>；接 ERP，可复核、可审计。</p>
+            <ul class="product-lens-card__list">
+              <li>问数 · 推演 · 汇报 <strong>同屏</strong></li>
+              <li>可内网部署</li>
+            </ul>
+          </article>
+          <article class="product-lens-card product-lens-card--who">
+            <header class="product-lens-card__head">
+              <span class="product-lens-card__icon" aria-hidden="true">◎</span>
+              <h2 class="product-lens-card__title">谁在用</h2>
+            </header>
+            <p class="product-lens-card__lead product-lens-card__lead--stack">
+              <strong>CFO / 总监 / 资金负责人</strong> — 结论、口径、可上会<br />
+              <strong>司库 / FP&amp;A</strong> — 排程、对账、偏差跟进<br />
+              <strong>IT / 数据</strong> — ERP 与治理
+            </p>
+          </article>
+          <article class="product-lens-card product-lens-card--icp">
+            <header class="product-lens-card__head">
+              <span class="product-lens-card__icon" aria-hidden="true">◈</span>
+              <h2 class="product-lens-card__title">卖给谁</h2>
+            </header>
+            <div class="product-lens-tier">
+              <div class="product-lens-tier__item product-lens-tier__item--core">
+                <span class="product-lens-tier__badge">核心</span>
+                <p><strong>大型集团</strong> · 多主体、多币种；补国际 TMS 在<strong>预测 / 计划</strong>上的缺口。</p>
+              </div>
+              <div class="product-lens-tier__item">
+                <span class="product-lens-tier__badge product-lens-tier__badge--ext">扩展</span>
+                <p><strong>成长型</strong> · 替代 Excel，要快上线、要好体验。</p>
+              </div>
+              <div class="product-lens-tier__item">
+                <span class="product-lens-tier__badge product-lens-tier__badge--future">远期</span>
+                <p><strong>金融 / 伙伴</strong> · 白标、实施、行业包。</p>
+              </div>
+            </div>
+          </article>
+        </div>
+        <aside class="slide__notes">口播：先统一「我们卖的是什么品类」，再谈功能。</aside>
+      </div>
+    </section>
+
+    <!-- S15 产品透镜 ②（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--viz slide--product-lens slide--product-lens--b">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB · F 属性（续）</p>
+        <p class="story-hook">产品透镜 <span class="slide-part-badge" aria-hidden="true">②</span></p>
+        <h1 class="headline-sm product-lens__title">怎么用 · <span class="tx-a">怎么卖</span></h1>
+        <div class="product-lens-split">
+          <div class="product-lens-split__col product-lens-split__col--flow">
+            <h3 class="product-lens-split__label">怎么用</h3>
+            <ol class="product-lens-flow" aria-label="使用旅程">
+              <li class="product-lens-flow__step">
+                <span class="product-lens-flow__n">1</span>
+                <div><strong>接数据</strong> · ERP 只读 / API</div>
+              </li>
+              <li class="product-lens-flow__step">
+                <span class="product-lens-flow__n">2</span>
+                <div><strong>对齐口径</strong> · 科目与时间段</div>
+              </li>
+              <li class="product-lens-flow__step">
+                <span class="product-lens-flow__n">3</span>
+                <div><strong>问数与任务</strong> · 自然语言 · 留痕</div>
+              </li>
+              <li class="product-lens-flow__step">
+                <span class="product-lens-flow__n">4</span>
+                <div><strong>预测 · 偏差 · 预警</strong> · 闭环到单据</div>
+              </li>
+              <li class="product-lens-flow__step product-lens-flow__step--accent">
+                <span class="product-lens-flow__n">5</span>
+                <div><strong>计划与上会</strong> · 导出 · 复核 · 可追溯</div>
+              </li>
+            </ol>
+          </div>
+          <div class="product-lens-split__col product-lens-split__col--gtm">
+            <h3 class="product-lens-split__label">怎么卖</h3>
+            <ul class="product-lens-gtm" aria-label="售卖策略">
+              <li>
+                <span class="product-lens-gtm__k">底座</span>
+                <span class="product-lens-gtm__v"><strong>年费</strong> + <strong>席位</strong> × N</span>
+              </li>
+              <li>
+                <span class="product-lens-gtm__k">领域</span>
+                <span class="product-lens-gtm__v"><strong>预测 Agent</strong> 可单独增购</span>
+              </li>
+              <li>
+                <span class="product-lens-gtm__k">容量</span>
+                <span class="product-lens-gtm__v"><strong>并发档</strong> 年费 / SLA 包</span>
+              </li>
+              <li>
+                <span class="product-lens-gtm__k">用量</span>
+                <span class="product-lens-gtm__v"><strong>Token</strong> 年包 + 超额；利润在价差</span>
+              </li>
+              <li>
+                <span class="product-lens-gtm__k">通路</span>
+                <span class="product-lens-gtm__v">直销 + <strong>伙伴</strong> · 可选私有化</span>
+              </li>
+            </ul>
+            <div class="product-lens-gtm__ribbon" aria-hidden="true">
+              <span>订阅可预期</span><span class="product-lens-gtm__plus">+</span><span>Token 弹性</span><span class="product-lens-gtm__plus">+</span><span>价差利润</span>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">与后文「版本+容量+用量」定稿表呼应；形态与交互见前页 GUI / 时间线。</aside>
+      </div>
+    </section>
+
+    <!-- S16 GUI → NUI（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--viz slide--fab-act slide--fab-act--f">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB · F 形态</p>
+        <p class="story-hook">交互在变</p>
+        <h1 class="headline-sm" style="margin:0 0 0.25rem;">图形界面<span class="tx-a">（GUI）</span> → 自然语言<span class="tx-a">（NUI）</span></h1>
+        <p class="viz-caption" style="margin-top:0.35rem;">从「找菜单、点模块」到「说意图、拿结果」——Agent 把语言落到业务动作与留痕。</p>
+        <div class="viz-evolution" role="img" aria-label="GUI 与 NUI 对比">
+          <div class="viz-panel viz-panel--gui-rich" aria-hidden="true">
+            <div class="viz-panel__chrome">
+              <span class="viz-dot"></span><span class="viz-dot"></span><span class="viz-dot"></span>
+              <span class="viz-panel__chrome-title">司库 · 侧栏 + 表格</span>
+            </div>
+            <div class="viz-gui-rich">
+              <div class="viz-gui-rich__rail">
+                <span class="viz-gui-rich__ico"></span>
+                <span class="viz-gui-rich__ico"></span>
+                <span class="viz-gui-rich__ico"></span>
+                <span class="viz-gui-rich__ico"></span>
+              </div>
+              <div class="viz-gui-rich__stage">
+                <div class="viz-gui-breadcrumb">资金 · 报表 · <strong>头寸</strong> · 第 7 层</div>
+                <div class="viz-menu">
+                  <span>总账</span><span>资金</span><span>报表</span><span>配置</span>
+                </div>
+                <div class="viz-grid">
+                  <div class="viz-cell"></div><div class="viz-cell viz-cell--hi"></div><div class="viz-cell"></div>
+                  <div class="viz-cell"></div><div class="viz-cell"></div><div class="viz-cell"></div>
+                  <div class="viz-cell"></div><div class="viz-cell"></div><div class="viz-cell viz-cell--hi"></div>
+                </div>
+                <p class="memo-caption" style="margin:10px 0 0; text-align:left;">侧栏 + 深菜单 + 表格——<strong>像走迷宫</strong>。</p>
+              </div>
+            </div>
+          </div>
+          <div class="viz-arrow-bridge" aria-hidden="true">
+            <svg viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="vizg" x1="0" y1="0" x2="60" y2="120" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#f36e21" stop-opacity="0.9" />
+                  <stop offset="1" stop-color="#f36e21" stop-opacity="0.2" />
+                </linearGradient>
+              </defs>
+              <path d="M8 20 L52 60 L8 100" stroke="url(#vizg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <circle cx="52" cy="60" r="5" fill="#f36e21" />
+            </svg>
+          </div>
+          <div class="viz-panel viz-panel--nui viz-panel--nui-chat" aria-hidden="true">
+            <div class="viz-nui-chat-head">
+              <span class="viz-nui-chat-head__pulse"></span>
+              Copilot · 自然语言（非同一套「窗体」）
+            </div>
+            <div class="viz-nui-body viz-nui-body--chat">
+              <div class="viz-wave" aria-hidden="true">
+                <span style="height:10px"></span><span style="height:18px"></span><span style="height:24px"></span><span style="height:14px"></span><span style="height:20px"></span>
+              </div>
+              <div class="viz-bubble">
+                「下周现金流缺口预计多少？按事业部拆。」
+                <small>意图 → 规划任务 → 出表 · 可复核</small>
+              </div>
+              <div class="viz-nui-pipeline" aria-hidden="true">
+                <span>① 意图</span><span class="viz-nui-pipeline__arr">→</span><span>② 任务</span><span class="viz-nui-pipeline__arr">→</span><span>③ 快照</span>
+              </div>
+              <p class="memo-caption" style="margin:0; text-align:left;">对话流 + 管线——<strong>少点十次、少对三遍表</strong>。</p>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">口播：GUI 是「人适配机器」；NUI+Agent 是「机器适配人的意图」。</aside>
+      </div>
+    </section>
+
+    <!-- S17 交互演进时间线（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="story-hook">一百年里的四步</p>
+        <h1 class="headline-sm" style="margin:0 0 0.5rem;">人机交互<span class="tx-a">演进</span></h1>
+        <p class="viz-caption">高度 = 表达自由度（示意）。财资场景正从 GUI 走向 <strong>NUI + Agent 编排</strong>。</p>
+        <div class="viz-timeline-wrap">
+          <div class="viz-timeline" role="img" aria-label="CUI GUI NUI Agent 演进">
+            <div class="viz-timeline__col">
+              <div class="viz-timeline__stack">
+                <div class="viz-era-sigil viz-era-sigil--cui" aria-hidden="true">
+                  <div class="viz-sigil-cli-hd">CLI</div>
+                  <div class="viz-sigil-cli">
+                    <span class="viz-sigil-cli__line"><span class="viz-sigil-cli__prompt">cashflow&gt;</span> predict</span>
+                    <span class="viz-sigil-cli__line"><span class="viz-sigil-cli__line--dim">--scenario q1</span><span class="viz-sigil-cli__caret" aria-hidden="true"></span></span>
+                  </div>
+                </div>
+                <div class="viz-timeline__bar viz-timeline__bar--cui"></div>
+              </div>
+              <p class="viz-timeline__label">CUI</p>
+              <p class="viz-timeline__era">命令行<br />记指令</p>
+            </div>
+            <span class="viz-timeline__arrow" aria-hidden="true">→</span>
+            <div class="viz-timeline__col">
+              <div class="viz-timeline__stack">
+                <div class="viz-era-sigil viz-era-sigil--gui" aria-hidden="true">
+                  <div class="viz-sigil-win viz-sigil-win--split">
+                    <div class="viz-sigil-win__rail">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <div class="viz-sigil-win__content">
+                      <div class="viz-sigil-win__titlebar">
+                        <span class="viz-sigil-win__dot"></span>
+                        <span class="viz-sigil-win__dot"></span>
+                        <span class="viz-sigil-win__dot"></span>
+                      </div>
+                      <div class="viz-sigil-win__menus">
+                        <span></span><span></span><span></span>
+                      </div>
+                      <div class="viz-sigil-win__grid">
+                        <span></span><span></span><span></span><span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="viz-timeline__bar viz-timeline__bar--gui"></div>
+              </div>
+              <p class="viz-timeline__label">GUI</p>
+              <p class="viz-timeline__era">图形界面<br />点菜单</p>
+            </div>
+            <span class="viz-timeline__arrow" aria-hidden="true">→</span>
+            <div class="viz-timeline__col">
+              <div class="viz-timeline__stack">
+                <div class="viz-era-sigil viz-era-sigil--nui" aria-hidden="true">
+                  <div class="viz-sigil-bubble">「下周流动性缺口？」</div>
+                  <div class="viz-sigil-wave" aria-hidden="true"></div>
+                </div>
+                <div class="viz-timeline__bar viz-timeline__bar--nui"></div>
+              </div>
+              <p class="viz-timeline__label">NUI</p>
+              <p class="viz-timeline__era">自然语言<br />说意图</p>
+            </div>
+            <span class="viz-timeline__arrow" aria-hidden="true">→</span>
+            <div class="viz-timeline__col">
+              <div class="viz-timeline__stack">
+                <div class="viz-era-sigil viz-era-sigil--agent" aria-hidden="true">
+                  <div class="viz-sigil-hub">
+                    <span class="viz-sigil-hub__core"></span>
+                    <span class="viz-sigil-hub__sat viz-sigil-hub__sat--1"></span>
+                    <span class="viz-sigil-hub__sat viz-sigil-hub__sat--2"></span>
+                    <span class="viz-sigil-hub__sat viz-sigil-hub__sat--3"></span>
+                  </div>
+                </div>
+                <div class="viz-timeline__bar viz-timeline__bar--agent"></div>
+              </div>
+              <p class="viz-timeline__label">Agent</p>
+              <p class="viz-timeline__era">任务编排<br />可留痕</p>
+            </div>
+          </div>
+        </div>
+        <p class="viz-caption" style="margin-top:1rem;">亿流产品形态：<strong>保留 GUI 看板与表格</strong>，在上面叠加 <strong>NUI 与 Copilot</strong>——不是二选一，是<strong>双模同框</strong>。</p>
+        <aside class="slide__notes">下一页 FAB：把「是什么」用三句话说清。</aside>
+      </div>
+    </section>
+
+    <!-- S18 FAB 母版（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--jobs-fab slide--fab-act slide--fab-act--core slide--fab-showcase">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB 母版</p>
+        <p class="story-hook">我们讲每一件事——都用<strong>三句话</strong>：<span class="tx-a">属性 · 优势 · 价值</span>。</p>
+        <p class="fab-mantra fab-mantra--viz">Feature · <span>Advantage</span> · Benefit</p>
+        <div class="fab-showcase" aria-label="FAB 母版 · 中台与预测">
+          <div class="fab-showcase__axis" aria-hidden="true">
+            <div class="fab-showcase__axis-node fab-showcase__axis-node--f">
+              <span class="fab-showcase__axis-glyph">F</span>
+              <span class="fab-showcase__axis-cap">属性</span>
+            </div>
+            <span class="fab-showcase__axis-connector"></span>
+            <div class="fab-showcase__axis-node fab-showcase__axis-node--a">
+              <span class="fab-showcase__axis-glyph">A</span>
+              <span class="fab-showcase__axis-cap">优势</span>
+            </div>
+            <span class="fab-showcase__axis-connector"></span>
+            <div class="fab-showcase__axis-node fab-showcase__axis-node--b">
+              <span class="fab-showcase__axis-glyph">B</span>
+              <span class="fab-showcase__axis-cap">价值</span>
+            </div>
+          </div>
+          <article class="fab-showcase__panel fab-showcase__panel--mid">
+            <header class="fab-showcase__ribbon">
+              <span class="fab-showcase__dot" aria-hidden="true"></span>
+              <div class="fab-showcase__ribbon-text">
+                <h2 class="fab-showcase__name">中台</h2>
+                <p class="fab-showcase__tagline">自然语言 · 同一画布</p>
+              </div>
+            </header>
+            <div class="fab-showcase__triad">
+              <div class="fab-showcase__cell fab-showcase__cell--f">
+                <span class="fab-showcase__badge">F</span>
+                <p>让人用<strong>自然语言</strong>把事说清楚；文件与业务页进同一画布。</p>
+              </div>
+              <div class="fab-showcase__cell fab-showcase__cell--a">
+                <span class="fab-showcase__badge">A</span>
+                <p>打破「菜单堆模块」——<strong>换角色、不换系统</strong>，交付协作与留痕。</p>
+              </div>
+              <div class="fab-showcase__cell fab-showcase__cell--b">
+                <span class="fab-showcase__badge">B</span>
+                <p>少拷贝、少对不上口径；<strong>跨岗追问一屏收口</strong>。</p>
+              </div>
+            </div>
+          </article>
+          <article class="fab-showcase__panel fab-showcase__panel--cf">
+            <header class="fab-showcase__ribbon">
+              <span class="fab-showcase__dot fab-showcase__dot--alt" aria-hidden="true"></span>
+              <div class="fab-showcase__ribbon-text">
+                <h2 class="fab-showcase__name">预测</h2>
+                <p class="fab-showcase__tagline">同一套数据 · 导入到预警</p>
+              </div>
+            </header>
+            <div class="fab-showcase__triad">
+              <div class="fab-showcase__cell fab-showcase__cell--f">
+                <span class="fab-showcase__badge">F</span>
+                <p><strong>能听懂人话、能接 ERP</strong> 的现金流预测助手；同一套数据跑通导入到预警。</p>
+              </div>
+              <div class="fab-showcase__cell fab-showcase__cell--a">
+                <span class="fab-showcase__badge">A</span>
+                <p>不是多买一个模块——<strong>直接交付可汇报的结果</strong>；Copilot 解读，<strong>人不点不算数</strong>。</p>
+              </div>
+              <div class="fab-showcase__cell fab-showcase__cell--b">
+                <span class="fab-showcase__badge">B</span>
+                <p>缓解预测焦虑：资金计划从<strong>半天</strong>到<strong>一屏可汇报</strong>。</p>
+              </div>
+            </div>
+          </article>
+        </div>
+        <aside class="slide__notes">后面 Live 只证明 F；A/B 靠口播。禁止在演示页再堆表格。</aside>
+      </div>
+    </section>
+
+    <!-- S19 双模同框（原 ACT2 → 归位 ACT3） -->
+    <section class="slide slide--void slide--viz slide--fab-act slide--fab-act--f">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB · F 双模</p>
+        <p class="story-hook">产品长什么样</p>
+        <h1 class="headline-sm" style="margin:0 0 0.5rem;">双模<span class="tx-a">同框</span></h1>
+        <p class="viz-caption">左边仍是「看得见」的 GUI 业务面；右边是「说得清」的 NUI 协作——<strong>同一套数据、同一留痕链</strong>。</p>
+        <div class="viz-dual" role="img" aria-label="双模同框示意">
+          <div class="viz-dual__half">
+            <p class="viz-dual__tag">GUI · 业务画布</p>
+            <div class="viz-dashboard-sim">
+              <div class="viz-dashboard-sim__rail" aria-hidden="true">
+                <span class="is-on"></span><span></span><span></span>
+              </div>
+              <div class="viz-dashboard-sim__main">
+                <div class="viz-dashboard-sim__tabs">看板 · 流水 · 预测</div>
+                <div class="viz-dashboard-sim__kpis" aria-hidden="true">
+                  <span><em>头寸</em><b>12.4M</b></span>
+                  <span><em>缺口</em><b class="warn">▲</b></span>
+                  <span><em>到期</em><b>7</b></span>
+                </div>
+                <div class="viz-grid viz-grid--dual">
+                  <div class="viz-cell viz-cell--hi"></div><div class="viz-cell"></div><div class="viz-cell"></div>
+                  <div class="viz-cell"></div><div class="viz-cell viz-cell--hi"></div><div class="viz-cell"></div>
+                </div>
+                <p class="memo-caption" style="margin:10px 0 0;text-align:left">侧栏 + KPI + 表格钻取——<strong>财务熟悉的「看得见」</strong>。</p>
+              </div>
+            </div>
+          </div>
+          <div class="viz-dual__half viz-dual__half--accent">
+            <p class="viz-dual__tag viz-dual__tag--a">NUI · 协作与委派</p>
+            <div class="viz-nui-thread">
+              <div class="viz-nui-thread__msg viz-nui-thread__msg--user">「把华东区下周应付集中展示，并标红风险。」</div>
+              <div class="viz-nui-thread__msg viz-nui-thread__msg--bot">已生成解读快照 — 导出前请确认<br /><small>与底账字段对齐 · Copilot</small></div>
+              <div class="viz-wave" style="margin-top:8px" aria-hidden="true">
+                <span style="height:8px"></span><span style="height:14px"></span><span style="height:20px"></span><span style="height:12px"></span><span style="height:16px"></span>
+              </div>
+              <p class="memo-caption" style="margin:10px 0 0;text-align:left">双气泡对话——<strong>不是另一个灰窗口</strong>；自然语言<strong>不替代</strong>底账。</p>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">接下来进入 Live 演示环节。</aside>
+      </div>
+    </section>
+
+    <!-- S20 价值先行 -->
+    <section class="slide slide--void slide--keynote slide--value-first">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · 价值先行</p>
+        <p class="value-first__hook">在问「是不是 Agent」之前</p>
+        <h1 class="headline-sm value-first__hero">先看到<strong class="tx-a">可上会</strong>的预测结果</h1>
+        <div class="value-first__keys" role="group" aria-label="三个关键信息">
+          <div class="value-first__key">
+            <span class="value-first__tag">交付</span>
+            <p class="value-first__line">缺口 · 假设 · 能讲清</p>
+          </div>
+          <div class="value-first__key">
+            <span class="value-first__tag">对比</span>
+            <p class="value-first__line">先结论，再点菜单</p>
+          </div>
+          <div class="value-first__key value-first__key--accent">
+            <span class="value-first__tag">时间</span>
+            <p class="value-first__line">半天 → <strong class="tx-a">分钟级</strong></p>
+          </div>
+        </div>
+        <aside class="slide__notes">口播补全 FAB：F 缺口/假设/变动可解释；A 不比菜单比结论；B 董事会叙事与预警提前量。技术名词下一幕再开。</aside>
+      </div>
+    </section>
+
+    <!-- ——— 演示一：Agent 中台 ——— -->
+
+    <!-- S21 Agent 中台 标题（原"第一幕" → 弱化） -->
+    <section class="slide slide--void slide--atmosphere">
+      <div class="slide__inner">
+        <p class="section-ribbon">演示 · 中台</p>
+        <h1 class="headline-sm" style="margin:0;">亿流财务<br /><span class="tx-a">Agent 中台</span></h1>
+        <p class="story-sub" style="margin-top:1rem;">人怎么和系统<strong>一起思考</strong>——<strong>您</strong>怎么把意图变成留痕动作。</p>
+        <aside class="slide__notes">片名片，慢。</aside>
+      </div>
+    </section>
+
+    <!-- S22 不是全貌 -->
+    <section class="slide slide--void slide--story">
+      <div class="slide__inner">
+        <p class="story-hook">先讲清——</p>
+        <p class="story-line">预测 Agent——<br /><span class="dot">不是中台的全貌。</span></p>
+        <p class="story-sub story-sub--tight">
+          一个大脑 · <strong>五条臂</strong>：<span class="story-pills"><span>预测</span><span>决策</span><span>排程</span><span>风险</span><span>归因</span></span>
+        </p>
+        <aside class="slide__notes">今天深演其中一臂。</aside>
+      </div>
+    </section>
+
+    <!-- S23 五臂 -->
+    <section class="slide slide--void slide--hub">
+      <div class="slide__inner">
+        <p class="kicker kicker--jobs">一个中台 · 五臂</p>
+        <div class="hub-frame">
+          <img
+            class="hub-frame__img"
+            src="assets/hub-five-agents.png"
+            alt="AI 财务中台与五大智能体"
+            loading="lazy"
+            onload="var el=document.getElementById('hub-viz-fallback');if(el)el.style.display='none';"
+            onerror="this.style.display='none';"
+          />
+          <div id="hub-viz-fallback" class="hub-viz">
+            <div class="hub-core"><span class="hub-core__badge">AI 财务中台</span></div>
+            <div class="hub-chips">
+              <span class="hub-chip hub-chip--focus">现金流预测 Agent</span>
+              <span class="hub-chip">决策建议 Agent</span>
+              <span class="hub-chip">智能排程 Agent</span>
+              <span class="hub-chip">风险预警 Agent</span>
+              <span class="hub-chip">智能归因 Agent</span>
+            </div>
+          </div>
+        </div>
+        <ul class="hub-legend hub-legend--jobs" aria-label="五臂">
+          <li><strong>预测</strong></li>
+          <li><strong>决策</strong></li>
+          <li><strong>排程</strong></li>
+          <li><strong>风险</strong></li>
+          <li><strong>归因</strong></li>
+        </ul>
+        <aside class="slide__notes">可叠 <code>assets/hub-five-agents.png</code>。</aside>
+      </div>
+    </section>
+
+    <!-- S24 司库难点 -->
+    <section class="slide slide--void slide--story">
+      <div class="slide__inner">
+        <p class="story-hook">为什么——是它？</p>
+        <p class="story-line">司库的难，<br />不在「有没有数据」。<br />在<strong class="dot">问不对、问不全、问太慢</strong>。</p>
+        <aside class="slide__notes">金句。</aside>
+      </div>
+    </section>
+
+    <!-- S25 FAB 三件事 -->
+    <section class="slide slide--void">
+      <div class="slide__inner">
+        <p class="story-hook">三件事</p>
+        <div class="story-three">
+          <div class="story-three__row">
+            <span class="story-three__n">F</span>
+            <p class="story-three__txt"><strong>像对人说话一样问</strong><br /><span class="story-three__sub">画布、文件、业务页同框。</span></p>
+          </div>
+          <div class="story-three__row">
+            <span class="story-three__n">A</span>
+            <p class="story-three__txt"><strong>能力可编排</strong><br /><span class="story-three__sub">不是多一列菜单。</span></p>
+          </div>
+          <div class="story-three__row">
+            <span class="story-three__n">B</span>
+            <p class="story-three__txt"><strong>少折腾、少背锅</strong><br /><span class="story-three__sub">口径一条链。</span></p>
+          </div>
+        </div>
+        <aside class="slide__notes">极简字；细节进演示。</aside>
+      </div>
+    </section>
+
+    <!-- S26 工作台海报 -->
+    <section class="slide slide--void slide--poster">
+      <div class="slide__inner">
+        <p class="kicker">看一看</p>
+        <div class="story-poster">
+          <figure class="story-poster__fig story-poster__fig--live">
+            <iframe title="亿流财务 Agent 中台" src="../../03-资金预测-Accio风格工作台/index.html?embed=1"></iframe>
+            <img
+              class="shot"
+              src="assets/brief-accio-workbench.png"
+              alt=""
+              width="1200"
+              height="750"
+              loading="lazy"
+              onload="this.classList.add('show')"
+              onerror="this.remove()"
+            />
+          </figure>
+          <div class="story-poster__body">
+            <p class="story-poster__tag">工作台</p>
+            <p class="story-line">能力 · 对话 · <span class="dot">画布</span></p>
+          </div>
+        </div>
+        <aside class="slide__notes">embed=1。</aside>
+      </div>
+    </section>
+
+    <!-- S27 Live 演示 -->
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h2 class="headline-xs">打开它。</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>三点</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span><strong>侧栏</strong> — 谁在答</li>
+              <li><span class="num">2</span><strong>中间</strong> — 落在哪里</li>
+              <li><span class="num">3</span><strong>右侧</strong> — 接着问</li>
+            </ol>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">Accio 工作台 · embed=1</div>
+            <div class="stage-viewport">
+              <iframe title="亿流财务 Agent 中台" src="../../03-资金预测-Accio风格工作台/index.html?embed=1"></iframe>
+              <img class="shot" src="assets/brief-accio-workbench.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">API Key 先本机过一遍。</aside>
+      </div>
+    </section>
+
+    <!-- S28 转场 -->
+    <section class="slide slide--void slide--atmosphere slide--turn">
+      <div class="slide__inner">
+        <p class="story-hook">体验——有了。</p>
+        <h1 class="headline-sm">执行——<br />要<span class="tx-a">硬</span>。</h1>
+        <p class="turn-phrase turn-phrase--zh"><span class="tx-a">接着看。</span></p>
+        <aside class="slide__notes">短转场。</aside>
+      </div>
+    </section>
+
+    <!-- ——— 演示二：现金流预测 + 上手（合并原二、三幕） ——— -->
+
+    <!-- S29 现金流预测标题（原"第二幕" → 弱化） -->
+    <section class="slide slide--void slide--atmosphere">
+      <div class="slide__inner">
+        <p class="section-ribbon">演示 · 预测</p>
+        <h1 class="headline-sm headline-sm--product" style="margin:0;">现金流预测 <span class="tx-a">Agent</span></h1>
+        <p class="story-sub" style="margin-top:1rem;">导入 → 校验 → 留痕 → 预测 → 预警</p>
+        <aside class="slide__notes">`frontend/app.html`。</aside>
+      </div>
+    </section>
+
+    <!-- S30 钱从哪来 -->
+    <section class="slide slide--void slide--story">
+      <div class="slide__inner">
+        <p class="story-hook">一句话——</p>
+        <p class="story-line">钱：<br />从哪来、到哪去、<br /><span class="dot">下一步。</span></p>
+        <aside class="slide__notes">左数据右 AI，可核对。</aside>
+      </div>
+    </section>
+
+    <!-- S31 Live 水位 -->
+    <section class="slide slide--split">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h1 class="headline-sm">水位在<span class="tx-a">哪</span>。</h1>
+        <div class="stage">
+          <div class="stage-chrome">app.html · 总览</div>
+          <div class="stage-viewport">
+            <iframe title="总览看板" src="../frontend/app.html?embed=1#dashboard"></iframe>
+            <img class="shot" src="assets/brief-01-dashboard.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+          </div>
+        </div>
+        <aside class="slide__notes">指挥舱第一眼。</aside>
+      </div>
+    </section>
+
+    <!-- S32 Live 留痕 -->
+    <section class="slide slide--split">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h1 class="headline-sm">每一笔——<span class="tx-a">留痕</span>。</h1>
+        <div class="stage">
+          <div class="stage-chrome">app.html · 资金流</div>
+          <div class="stage-viewport">
+            <iframe title="资金流" src="../frontend/app.html?embed=1#cashflow"></iframe>
+            <img class="shot" src="assets/brief-02-cashflow.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+          </div>
+        </div>
+        <aside class="slide__notes">同一口径。</aside>
+      </div>
+    </section>
+
+    <!-- S33 Live 分析 -->
+    <section class="slide slide--split">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h1 class="headline-sm">计划 vs <span class="tx-a">现实</span>。</h1>
+        <div class="stage">
+          <div class="stage-chrome">app.html · 分析</div>
+          <div class="stage-viewport">
+            <iframe title="分析预测" src="../frontend/app.html?embed=1#analysis"></iframe>
+            <img class="shot" src="assets/brief-03-analysis.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+          </div>
+        </div>
+        <aside class="slide__notes">看得见偏差。</aside>
+      </div>
+    </section>
+
+    <!-- S34 Live 风险 -->
+    <section class="slide slide--split">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h1 class="headline-sm">读懂<span class="tx-a">风险</span>。</h1>
+        <div class="stage">
+          <div class="stage-chrome">app.html · 预测 · 风险</div>
+          <div class="stage-viewport">
+            <iframe title="资金流预测" src="../frontend/app.html?embed=1#liquidity"></iframe>
+            <img class="shot" src="assets/brief-liquidity-risk.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+          </div>
+        </div>
+        <aside class="slide__notes">Copilot 可叠；人确认。</aside>
+      </div>
+    </section>
+
+    <!-- S35 上手过渡（原"第三幕" → 合并为自然过渡） -->
+    <section class="slide slide--void slide--story">
+      <div class="slide__inner">
+        <p class="story-hook">再强——</p>
+        <p class="story-line">不会用，<br />等于<span class="dot">没有</span>。</p>
+        <p class="story-sub"><strong>「导」</strong>带你走通 · DataAgent 全局问数 · <strong>Copilot</strong> 与数据同源。</p>
+        <aside class="slide__notes">自然过渡到上手体验，不单独起幕。</aside>
+      </div>
+    </section>
+
+    <!-- S36 Live DataAgent -->
+    <section class="slide slide--split">
+      <div class="slide__inner">
+        <p class="kicker">Live</p>
+        <h1 class="headline-sm"><span class="tx-a">全局</span>联动。</h1>
+        <div class="stage">
+          <div class="stage-chrome">app.html · DataAgent · ai=1</div>
+          <div class="stage-viewport">
+            <iframe title="DataAgent" src="../frontend/app.html?embed=1&amp;ai=1#dashboard"></iframe>
+            <img class="shot" src="assets/brief-05-agent.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+          </div>
+        </div>
+        <aside class="slide__notes">从对话回到动作。</aside>
+      </div>
+    </section>
+
+    <!-- S37 赛道与护城河（更新跳转提示） -->
+    <section class="slide slide--void slide--memo slide--fab-act slide--fab-act--a">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">三、立局 · FAB A 赛道与对标</p>
+        <p class="story-hook">为什么是我们 · 竞品瞭望</p>
+        <h1 class="headline-xs" style="margin:0 0 0.35rem;">司库 · 现金流 / 流动性<span class="tx-a"> — 定位对照（护城河语境）</span></h1>
+        <p class="memo-caption memo-caption--short" style="margin:0 0 0.65rem; text-align:left; max-width:920px; margin-left:auto; margin-right:auto;">公开信息归纳 · <strong>非排名、非报价</strong></p>
+        <table class="competitor-min">
+          <thead>
+            <tr>
+              <th scope="col" class="competitor-min__glyph-col">象限</th>
+              <th scope="col">类型</th>
+              <th scope="col">代表</th>
+              <th scope="col">常见画像与能力要点</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="competitor-min__glyph-cell"><span class="competitor-glyph competitor-glyph--cloud" title="国际云" aria-hidden="true"></span></td>
+              <td>国际司库云</td>
+              <td><strong>Kyriba</strong> 等</td>
+              <td>多银行与 ERP/API 集成、流动性与<strong>现金预测</strong>；近年公开强调 <strong>AI + 分析 + API</strong> 统一数据流、场景与方差追踪（行业常用对标对象）。</td>
+            </tr>
+            <tr>
+              <td class="competitor-min__glyph-cell"><span class="competitor-glyph competitor-glyph--erp" title="ERP 一体" aria-hidden="true"></span></td>
+              <td>国内 ERP 司库</td>
+              <td><strong>金蝶</strong> EAS Cloud 司库、<strong>用友</strong> BIP 全球司库</td>
+              <td>与自有 ERP/集团管控<strong>深度一体</strong>；现金、风险、投融资与司库制度落地成熟，偏<strong>功能模块 + 项目交付</strong>路径。</td>
+            </tr>
+            <tr>
+              <td class="competitor-min__glyph-cell"><span class="competitor-glyph competitor-glyph--link" title="垂直银企" aria-hidden="true"></span></td>
+              <td>垂直资金 / 流动性</td>
+              <td><strong>司库立方</strong>、<strong>见知数据</strong> 等</td>
+              <td><strong>银企直联</strong>、现金流可视化与行业方案；部分强调<strong>微服务 / 快上线</strong>，与单点资金场景结合紧。</td>
+            </tr>
+            <tr class="competitor-min__us">
+              <td class="competitor-min__glyph-cell"><span class="competitor-glyph competitor-glyph--agent" title="Agent 原生" aria-hidden="true"></span></td>
+              <td>亿流（我们）</td>
+              <td><strong>Agent 中台</strong> + <strong>现金流预测 Agent</strong></td>
+              <td><strong>NUI + GUI 双模同框</strong>、FAB 叙事、<strong>订阅 + Token</strong> 的持续服务；差异在于以 <strong>Agent 交付结果与留痕</strong>，而非单纯扩展传统模块菜单。</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="competitor-foot">参考来源方向：Kyriba 公开材料（现金预测 / AI 与 API 策略）、金蝶/用友司库产品页、垂直厂商公开介绍。若对外使用请再核实最新版本与合规表述。</p>
+        <p class="competitor-foot competitor-foot--next">接下来 · <strong>四、定价</strong>：商业范式 → 入口 → 订阅与亿流报价 → <strong>公开市场价目摘录</strong>（锚定）；行业对标详情见<strong>附录</strong>。</p>
+        <aside class="slide__notes">口播：我们不贬低竞品——讲清赛道上有「国际云」「ERP 一体」「垂直资金」三条路径，亿流选 Agent 原生交付。</aside>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACT 4  定价（15 页）：市场调研 → 范式 → 报价 → 策略
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- S38 商业范式 -->
+    <section class="slide slide--void slide--viz slide--fab-act slide--fab-act--b">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · FAB B 商业范式</p>
+        <p class="story-hook">财资商业范式</p>
+        <h1 class="headline-sm">从「按模块卖」到「<span class="tx-a">为结果 / 数据值买单</span>」</h1>
+        <p class="viz-caption">会议对齐：以<strong>结果导向</strong>重构财资商业——对<strong>您</strong>而言，Agent 不是单点功能，而是<strong>直接交付报表与决策依据</strong>的交互入口。</p>
+        <div class="viz-biz-compare" role="img" aria-label="商业范式对比">
+          <div class="viz-biz-compare__col">
+            <div class="viz-biz-compare__glyph viz-biz-compare__glyph--modules" aria-hidden="true"></div>
+            <span class="biz-tag">传统资金系统</span>
+            <p><strong>按模块 / 许可证计费</strong>——买点是功能清单，越大越贵、越难算清 ROI。</p>
+            <p>客户为「有没有这个菜单」付费。</p>
+          </div>
+          <div class="viz-biz-compare__arrow" aria-hidden="true">→</div>
+          <div class="viz-biz-compare__col viz-biz-compare__col--new">
+            <div class="viz-biz-compare__glyph viz-biz-compare__glyph--result" aria-hidden="true"></div>
+            <span class="biz-tag">亿流</span>
+            <p><strong>为可验证的结果付费</strong>——报表、预警、决策依据；同一套数据值闭环。</p>
+            <p>客户为「省多少时间、堵多少缺口」付费。</p>
+          </div>
+        </div>
+        <p class="memo-caption">与「传统 TMS」关系：<strong>互补</strong>（不替代银企与支付工厂）— 专注预测 / 计划 / 问数闭环；客户常问「卖模块 vs 卖结果」——见上。</p>
+        <aside class="slide__notes">对齐纪要「从功能到结果」；口播补 FAB。</aside>
+      </div>
+    </section>
+
+    <!-- S39 入口重构 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="story-hook">入口重构</p>
+        <h1 class="headline-sm">打破单一资金系统<span class="tx-a">入口</span></h1>
+        <p class="viz-caption">以 <strong>Agent 矩阵</strong> 集成 BI、全面预算、资金与预测——<strong>一站式业务交互</strong>，拉长停留与粘性。</p>
+        <div class="viz-entry-hub-wrap">
+          <div class="viz-hub-orbit" aria-hidden="true"></div>
+          <svg class="viz-entry-hub-lines" viewBox="0 0 520 220" preserveAspectRatio="none" aria-hidden="true">
+            <path class="hub-line" d="M 260 110 L 95 38" />
+            <path class="hub-line hub-line--slow" d="M 260 110 L 425 38" />
+            <path class="hub-line hub-line--slow" d="M 260 110 L 110 188" />
+            <path class="hub-line" d="M 260 110 L 410 188" />
+          </svg>
+          <div class="viz-entry-hub" aria-hidden="true">
+            <div class="viz-entry-hub__sat viz-entry-hub__sat--1"><strong>BI</strong> 看板</div>
+            <div class="viz-entry-hub__sat viz-entry-hub__sat--2"><strong>全面预算</strong></div>
+            <div class="viz-entry-hub__sat viz-entry-hub__sat--3">资金 / 司库</div>
+            <div class="viz-entry-hub__sat viz-entry-hub__sat--4">现金流预测</div>
+            <div class="viz-entry-hub__core">Agent<br />矩阵</div>
+          </div>
+        </div>
+        <aside class="slide__notes">对齐纪要「重构用户入口」；路线图可放详细版。</aside>
+      </div>
+    </section>
+
+    <!-- S40 订阅 + Token + 价差 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="story-hook">变现怎么设计</p>
+        <h1 class="headline-sm">订阅 <span class="tx-a">+</span> Token <span class="tx-a">+</span> 价差</h1>
+        <p class="viz-caption"><strong>不按 Agent 个数裸卖。</strong>对<strong>您</strong>的收费逻辑分两层：<strong>固定层</strong> = 账号订阅（预算内可预期）；<strong>浮动层</strong> = Token，对应 AI 实际工作量。我们盈利来自<strong>算力成本优化后的价差</strong>——<strong>您</strong>获得效率，我们获得持续服务收益；现场不展开具体价目数字。</p>
+        <svg class="viz-revenue-stack" viewBox="0 0 640 168" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="rv1" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="rgba(255,255,255,0.1)" />
+              <stop offset="1" stop-color="rgba(0,0,0,0.3)" />
+            </linearGradient>
+            <linearGradient id="rv2" x1="0" y1="0" x2="1" y2="0">
+              <stop stop-color="#f36e21" stop-opacity="0.45" />
+              <stop offset="1" stop-color="#f36e21" stop-opacity="0.12" />
+            </linearGradient>
+          </defs>
+          <rect x="40" y="20" width="200" height="56" rx="10" fill="url(#rv1)" stroke="rgba(255,255,255,0.12)" />
+          <text x="140" y="48" text-anchor="middle" fill="#f4f4f3" font-size="14" font-family="system-ui,sans-serif">订阅 · 账号（可预期）</text>
+          <text x="140" y="68" text-anchor="middle" fill="#737373" font-size="11" font-family="system-ui,sans-serif">降低门槛 · 覆盖固定席位</text>
+          <rect x="280" y="20" width="200" height="56" rx="10" fill="rgba(243,110,33,0.12)" stroke="rgba(243,110,33,0.4)" />
+          <text x="380" y="48" text-anchor="middle" fill="#e8945c" font-size="14" font-family="system-ui,sans-serif">Token 消耗</text>
+          <text x="380" y="68" text-anchor="middle" fill="#737373" font-size="11" font-family="system-ui,sans-serif">随业务量弹性</text>
+          <path d="M 490 48 L 540 48" stroke="url(#rv2)" stroke-width="4" stroke-linecap="round" />
+          <polygon points="535,43 550,48 535,53" fill="#f36e21" opacity="0.9" />
+          <rect class="viz-rev-glow" x="40" y="100" width="560" height="48" rx="10" fill="rgba(243,110,33,0.15)" stroke="rgba(243,110,33,0.45)" />
+          <text x="320" y="130" text-anchor="middle" fill="#f4f4f3" font-size="14" font-family="system-ui,sans-serif">价差 · 算力优化后的服务溢价（持续服务收益）</text>
+        </svg>
+        <p class="memo-caption" style="margin-top:0.65rem;">初期可<strong>轻量化账号逻辑</strong>获客，运营重心在<strong>持续消耗与续约</strong>。</p>
+        <p class="memo-caption">对外<strong>说法</strong>：先讲固定 + 浮动两层结构，再谈数字；盈利来自算力优化后的<strong>价差</strong>与持续服务。</p>
+        <p class="memo-caption price-narrative__forbid">禁止对外只报「一个账号 X 万」。</p>
+        <aside class="slide__notes">对齐陈宣任：价差为利润增长点；不讲裸「多少钱一个账号」。</aside>
+      </div>
+    </section>
+
+    <!-- ── 市场调研融入：定价背景 ─────────────────────────────── -->
+
+    <!-- 全球三大市场 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 全球市场</p>
+        <p class="story-hook">三大经济体 × 财务 AI</p>
+        <h1 class="headline-sm" style="margin:0 0 .8rem;">北美 <strong class="tx-a">性能至上</strong> · 欧洲 <strong class="tx-a">合规驱动</strong> · 亚太 <strong class="tx-a">增长最快</strong></h1>
+        <div class="mr-region-grid">
+          <div class="mr-region">
+            <div class="mr-region__title">北美</div>
+            <div class="mr-region__stat">
+              贡献全球增长 <strong>42%</strong><br/>
+              企业选型：性能 <strong>60%</strong> · 安全 <strong>52%</strong> · 成本 43%<br/>
+              基础 Agent <strong>$1.8-3.6k</strong>/年<br/>
+              企业 TMS <strong>$80k-300k</strong>/年
+            </div>
+          </div>
+          <div class="mr-region">
+            <div class="mr-region__title">欧洲</div>
+            <div class="mr-region__stat">
+              南北分化：挪威 AI 普及 <strong>46.4%</strong>、意大利仅 <strong>8.2%</strong><br/>
+              Sage Intacct 中型配置 ~<strong>£15k</strong>/年<br/>
+              D365 Finance 20人团队 ~<strong>£39-55k</strong>/年<br/>
+              劳动力成本 €12-57/h
+            </div>
+          </div>
+          <div class="mr-region mr-region--accent">
+            <div class="mr-region__title">亚太（主战场）</div>
+            <div class="mr-region__stat">
+              AI 使用率 <strong>78%</strong>（全球 72%）<br/>
+              中国员工采用率 <strong>87%</strong><br/>
+              自下而上采用：一线 81% · 中层 <strong>92%</strong><br/>
+              印尼 5 年增 <strong>9%→49%</strong>
+            </div>
+          </div>
+        </div>
+        <p class="memo-caption">结论：亚太为主战场，中国增速最快且采用率最高。北美高端，欧洲合规。</p>
+        <aside class="slide__notes">为定价建立全球参照系。</aside>
+      </div>
+    </section>
+
+    <!-- 国内三级城市 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 国内市场</p>
+        <p class="story-hook">国内三级城市梯度</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">一线 <strong class="tx-a">高端精品</strong> · 新一线 <strong class="tx-a">性价比</strong> · 二线 <strong class="tx-a">成本领先</strong></h1>
+        <div class="mr-tier-strip">
+          <div class="mr-tier mr-tier--hi">
+            <div class="mr-tier__tag">第一梯队</div>
+            <div class="mr-tier__city">北上广深</div>
+            <div class="mr-tier__range">50 – 500 万/年</div>
+            <div class="mr-tier__note">AI 企业 2,400+（占全国 40%）· 核心产业 3,500 亿 · 企业 AI 投入全球第一</div>
+          </div>
+          <div class="mr-tier">
+            <div class="mr-tier__tag">第二梯队</div>
+            <div class="mr-tier__city">杭/成/武/西</div>
+            <div class="mr-tier__range">10 – 100 万/年</div>
+            <div class="mr-tier__note">促销敏感度比一线高 25% · 中小企业预算 5,000 元以下占 43%</div>
+          </div>
+          <div class="mr-tier">
+            <div class="mr-tier__tag">第三梯队</div>
+            <div class="mr-tier__city">二线城市</div>
+            <div class="mr-tier__range">1 – 30 万/年</div>
+            <div class="mr-tier__note">价格极敏感 · 基础记账 Agent 360-3,000 元/年 · 需求分化明显</div>
+          </div>
+        </div>
+        <p class="memo-caption">定价策略：一线上浮 20-30%、二线下浮 30-50%，以新一线为标准定价基准。</p>
+        <aside class="slide__notes">对应我们 SaaS 版 vs 私有化版的分层策略。</aside>
+      </div>
+    </section>
+
+    <!-- 企业规模×预算 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 企业分层</p>
+        <p class="story-hook">五级企业 × 预算区间</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">从 <strong class="tx-a">99 元</strong> 到 <strong class="tx-a">2,000 万</strong>：全市场覆盖</h1>
+        <table class="pricing-table" aria-label="五级企业预算">
+          <thead>
+            <tr><th>规模</th><th>人数</th><th>年度预算</th><th>决策周期</th><th>核心关切</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>微型</td><td>1-5</td><td>99 – 999 元</td><td>1 周</td><td>极简、记账+报税</td></tr>
+            <tr><td>小型</td><td>5-50</td><td>1,000 – 5,000 元</td><td>1-2 周</td><td>发票+报销、试用→转化</td></tr>
+            <tr class="row--highlight"><td>中型</td><td>50-200</td><td>3 – 30 万</td><td>1-3 月</td><td>AI 分析+预测+风控</td></tr>
+            <tr><td>大型</td><td>200-1k</td><td>50 – 200 万</td><td>6-12 月</td><td>全模块+定制+集成</td></tr>
+            <tr><td>集团</td><td>1k+</td><td>100 – 2,000 万</td><td>6-12 月</td><td>多组织+多币种+项目制</td></tr>
+          </tbody>
+        </table>
+        <p class="memo-caption">我们主攻 <strong>中型+大型</strong> 市场（3-200 万/年）。微/小型通过 SaaS 自助获客。</p>
+        <aside class="slide__notes">中型为主力消费群体，大型为高价值客户。87% 企业会申请试用。</aside>
+      </div>
+    </section>
+
+    <!-- 行业差异 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 行业差异</p>
+        <p class="story-hook">四大行业 AI 投入</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">金融 <strong class="tx-a">30%</strong> · 制造 <strong class="tx-a">22%</strong> · 零售 <strong class="tx-a">4%</strong> · 医疗 <strong class="tx-a">7→12%</strong></h1>
+        <div class="mr-industry-grid">
+          <div class="mr-ind">
+            <div class="mr-ind__name">金融</div>
+            <div class="mr-ind__pct">10-30%</div>
+            <div class="mr-ind__sub">AI 占科技预算</div>
+            <div class="mr-ind__range">50-500 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">制造业</div>
+            <div class="mr-ind__pct">22%</div>
+            <div class="mr-ind__sub">AI 占 IT 预算</div>
+            <div class="mr-ind__range">30-200 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">零售</div>
+            <div class="mr-ind__pct">2-4%</div>
+            <div class="mr-ind__sub">数字化占营收</div>
+            <div class="mr-ind__range">20-150 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">医疗</div>
+            <div class="mr-ind__pct">7→12%</div>
+            <div class="mr-ind__sub">3 年增长路径</div>
+            <div class="mr-ind__range">20-150 万/年</div>
+          </div>
+        </div>
+        <p class="memo-caption">金融行业预算最充裕、合规要求最高；制造业注重 ROI；零售关注库存和促销；医疗强合规高安全。</p>
+        <aside class="slide__notes">优先切金融和制造业——预算大、决策快。</aside>
+      </div>
+    </section>
+
+    <!-- 功能层定价 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 功能分层</p>
+        <p class="story-hook">三级功能 × 价格倍数</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">基础 <strong class="tx-a">千元</strong> → 中级 <strong class="tx-a">万元</strong> → 高级 <strong class="tx-a">百万</strong></h1>
+        <table class="pricing-table" aria-label="功能层定价">
+          <thead>
+            <tr><th>功能层</th><th>代表模块</th><th>技术特征</th><th>价格区间</th><th>溢价比</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>基础</td><td>发票 OCR / 凭证生成 / 银行对账</td><td>规则引擎 + RPA</td><td>500 – 10,000 元/年</td><td>1×</td></tr>
+            <tr class="row--highlight"><td>中级</td><td>智能分析 / 现金流预测 / 风险预警</td><td>ML + 时间序列</td><td>5 – 40 万/年</td><td>2-6×</td></tr>
+            <tr><td>高级</td><td>AI 投资决策 / 全球司库 / NLU 分析</td><td>LLM + RAG + 图谱</td><td>50 – 1,000 万/年</td><td>10-100×</td></tr>
+          </tbody>
+        </table>
+        <p class="memo-caption">现金流预测定价阶梯：移动平均 3-8 万 → ARIMA 8-20 万 → LSTM 20-50 万 → 集成+专家 50 万+。</p>
+        <aside class="slide__notes">我们产品定位在中级→高级之间，核心是 Agent+LLM 的溢价空间。</aside>
+      </div>
+    </section>
+
+    <!-- AI 模型×价格 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · AI 模型能力</p>
+        <p class="story-hook">模型越强，溢价越高</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">规则引擎 <strong class="tx-a">1×</strong> → 多模态大模型 <strong class="tx-a">100×</strong></h1>
+        <div class="mr-ladder" style="height:180px;">
+          <div class="mr-ladder__step" style="height:36px;"><div class="mr-ladder__mult">1×</div><div class="mr-ladder__name">规则引擎</div></div>
+          <div class="mr-ladder__step" style="height:54px;"><div class="mr-ladder__mult">2-3×</div><div class="mr-ladder__name">传统 ML</div></div>
+          <div class="mr-ladder__step" style="height:90px;"><div class="mr-ladder__mult">5-10×</div><div class="mr-ladder__name">深度学习</div></div>
+          <div class="mr-ladder__step mr-ladder__step--accent" style="height:135px;"><div class="mr-ladder__mult">10-50×</div><div class="mr-ladder__name">LLM</div></div>
+          <div class="mr-ladder__step mr-ladder__step--accent" style="height:180px;"><div class="mr-ladder__mult">20-100×</div><div class="mr-ladder__name">多模态</div></div>
+        </div>
+        <p class="viz-caption" style="margin-top:.8rem;">LLM 私有化部署：基础 50-200 万/年 · 高级 200-1,000 万/年 · 行业专用 500-2,000 万/年</p>
+        <p class="memo-caption">准确率阶梯：规则 70-80% → ML 85-95% → DL 95-99% → LLM+RAG 90-98%（可解释）。</p>
+        <aside class="slide__notes">我们的 Agent+LLM 架构处于 10-50× 溢价区间，是利润核心。</aside>
+      </div>
+    </section>
+
+    <!-- SaaS vs 私有化 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 部署架构</p>
+        <p class="story-hook">SaaS vs 私有化</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">低门槛 <strong class="tx-a">SaaS 订阅</strong> ↔ 高安全 <strong class="tx-a">私有化</strong></h1>
+        <div class="mr-split-2">
+          <div class="mr-split-2__col">
+            <h3>公有云 SaaS</h3>
+            <table class="pricing-table" aria-label="SaaS 定价" style="font-size:.78rem;">
+              <tbody>
+                <tr><td>初始投入</td><td>0 – 5 万</td></tr>
+                <tr><td>年度费用</td><td>10 – 50 万</td></tr>
+                <tr><td>3 年 TCO</td><td>30 – 155 万</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.72rem;color:#737373;margin-top:.5rem;">优势：1-2 周上线 · 自动升级 · 按量弹性</p>
+          </div>
+          <div class="mr-split-2__col">
+            <h3>私有化部署</h3>
+            <table class="pricing-table" aria-label="私有化定价" style="font-size:.78rem;">
+              <tbody>
+                <tr><td>授权费用</td><td>200 – 1,000 万</td></tr>
+                <tr><td>年维护费</td><td>15-20%</td></tr>
+                <tr><td>实施费用</td><td>授权的 30-50%</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.72rem;color:#737373;margin-top:.5rem;">优势：数据安全 · 性能最优 · 深度定制 · 3-5 年后成本更低</p>
+          </div>
+        </div>
+        <p class="memo-caption">中小企业推 SaaS 降门槛；央国企/金融推私有化；混合云是折中选择（100-500 万授权 + 10-15% 维护）。</p>
+        <aside class="slide__notes">对应我们 run.bat 一键启动 vs 企业级部署两种模式。</aside>
+      </div>
+    </section>
+
+    <!-- ── 市场调研结束，回到原有报价 ─────────────────────────── -->
+
+    <!-- 亿流产品报价 · 4 档 -->
+    <section class="slide slide--void slide--viz slide--pricing-spec">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 亿流报价</p>
+        <p class="story-hook">亿流产品报价</p>
+        <h1 class="headline-sm" style="margin:0 0 .15rem;"><strong class="tx-a">订阅</strong> + <strong class="tx-a">Token</strong> + <strong class="tx-a">加购</strong></h1>
+        <p class="viz-caption" style="margin:0 0 .3rem;">示例标价，正式以商务报价单为准</p>
+
+        <div class="price-grid">
+          <!-- 创业版 -->
+          <div class="price-card">
+            <div class="price-card__tier">Starter</div>
+            <div class="price-card__name">创业版</div>
+            <div class="price-card__price">¥29,800</div>
+            <div class="price-card__unit">/年 · ≤3 席</div>
+            <div class="price-card__sep"></div>
+            <ul class="price-card__feat">
+              <li>轻量工作台 + 协作</li>
+              <li>含 800 万 Token/年</li>
+              <li>SaaS 云部署</li>
+              <li class="feat--dim">预测 Agent 需加购</li>
+            </ul>
+            <div class="price-card__target">初创团队 · 场景验证</div>
+          </div>
+
+          <!-- 专业版 -->
+          <div class="price-card price-card--pop">
+            <div class="price-card__tier">Professional</div>
+            <div class="price-card__name">专业版</div>
+            <div class="price-card__price">¥59,800</div>
+            <div class="price-card__unit">/年 · ≤5 席 · ¥1.2 万/席</div>
+            <div class="price-card__sep"></div>
+            <ul class="price-card__feat">
+              <li>全量工作台 + 多模态</li>
+              <li>含 2,000 万 Token/年</li>
+              <li>企业后台 + 技能工具</li>
+              <li>可加购席位 ¥1.2 万/席</li>
+            </ul>
+            <div class="price-card__target">成长型企业 · 财务团队</div>
+          </div>
+
+          <!-- 企业版 -->
+          <div class="price-card">
+            <div class="price-card__tier">Enterprise</div>
+            <div class="price-card__name">企业版</div>
+            <div class="price-card__price">¥198,000</div>
+            <div class="price-card__unit">/年 · ≤20 席 · 含预测 Agent</div>
+            <div class="price-card__sep"></div>
+            <ul class="price-card__feat">
+              <li>全功能 + API 集成</li>
+              <li>含 5,000 万 Token/年</li>
+              <li>混合云可选 · SLA 99.9%</li>
+              <li>专属客成经理</li>
+            </ul>
+            <div class="price-card__target">中大型企业 · 多部门协同</div>
+          </div>
+
+          <!-- 集团版 -->
+          <div class="price-card">
+            <div class="price-card__tier">Group</div>
+            <div class="price-card__name">集团版</div>
+            <div class="price-card__price">面议</div>
+            <div class="price-card__unit">¥50 万+/年 · 不限席位</div>
+            <div class="price-card__sep"></div>
+            <ul class="price-card__feat">
+              <li>全私有化 + 定制开发</li>
+              <li>多组织 + 多币种</li>
+              <li>专属模型 · SLA 99.99%</li>
+              <li>年度战略回顾</li>
+            </ul>
+            <div class="price-card__target">集团 · 央国企 · 金融机构</div>
+          </div>
+        </div>
+
+        <!-- 加购 + 组合 合并为一行 -->
+        <div class="combo-bar">
+          <span class="combo-bar__label">常见组合</span>
+          <span class="combo-bar__item">创业 + 预测 <strong>¥5.96 万</strong></span>
+          <span class="combo-bar__item">专业 + 预测 <strong>¥8.96 万</strong></span>
+          <span class="combo-bar__item">企业版（含预测）<strong>¥19.8 万</strong></span>
+        </div>
+        <div class="addon-strip">
+          <div class="addon-chip"><strong>预测 Agent</strong> <span class="chip-price">+¥29,800</span></div>
+          <div class="addon-chip"><strong>并发档</strong> <span class="chip-price">+¥18,000/档</span></div>
+          <div class="addon-chip"><strong>私有云</strong> <span class="chip-price">¥12 万起</span></div>
+          <div class="addon-chip"><strong>审计延长</strong> <span class="chip-price">¥2-6 万</span></div>
+        </div>
+
+        <p class="memo-caption">市场对标：创业/专业 ≈ 合思·实在区间；企业 ≈ 火山 DataAgent；集团 ≈ 司库立方。毛利来自 <strong>Token 价差</strong>。</p>
+        <aside class="slide__notes">四档覆盖微型→集团全市场。签单前财务与法务复核。集团版需商务单独报价。</aside>
+      </div>
+    </section>
+
+    <!-- 典型方案与 ROI -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 投资回报</p>
+        <p class="story-hook">投资回报</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">买的不是软件，是 <strong class="tx-a">时间</strong></h1>
+
+        <div class="roi-grid">
+          <div class="roi-card">
+            <div class="roi-card__persona">3 人创业团队</div>
+            <div class="roi-card__plan">创业 + 预测 ¥5.96 万</div>
+            <div class="roi-card__sep"></div>
+            <div class="roi-card__row"><span>替代初级财务</span><strong>省 ¥8-12 万</strong></div>
+            <div class="roi-card__row"><span>报表提速</span><strong>省 ¥3-5 万</strong></div>
+            <div class="roi-card__save">年省 ¥11-17 万</div>
+            <div class="roi-card__payback">4-6 个月回本</div>
+          </div>
+
+          <div class="roi-card">
+            <div class="roi-card__persona">5 人成长型公司</div>
+            <div class="roi-card__plan">专业 + 预测 ¥8.96 万</div>
+            <div class="roi-card__sep"></div>
+            <div class="roi-card__row"><span>替代 1-2 名财务</span><strong>省 ¥15-25 万</strong></div>
+            <div class="roi-card__row"><span>资金预警</span><strong>省 ¥5-10 万</strong></div>
+            <div class="roi-card__save">年省 ¥20-35 万</div>
+            <div class="roi-card__payback">3-5 个月回本</div>
+          </div>
+
+          <div class="roi-card" style="border-color:rgba(243,110,33,.3);background:rgba(243,110,33,.03);">
+            <div class="roi-card__persona">20 人中型财务部</div>
+            <div class="roi-card__plan">企业版 ¥19.8 万</div>
+            <div class="roi-card__sep"></div>
+            <div class="roi-card__row"><span>流程自动化</span><strong>省 ¥40-60 万</strong></div>
+            <div class="roi-card__row"><span>预测精度↑</span><strong>省 ¥20-40 万</strong></div>
+            <div class="roi-card__save">年省 ¥60-100 万</div>
+            <div class="roi-card__payback">2-4 个月回本</div>
+          </div>
+
+          <div class="roi-card">
+            <div class="roi-card__persona">集团共享中心</div>
+            <div class="roi-card__plan">集团版 ¥50 万+</div>
+            <div class="roi-card__sep"></div>
+            <div class="roi-card__row"><span>集中管控</span><strong>省 ¥100-200 万</strong></div>
+            <div class="roi-card__row"><span>资金归集</span><strong>省 ¥50-150 万</strong></div>
+            <div class="roi-card__save">年省 ¥150-350 万</div>
+            <div class="roi-card__payback">3-6 个月回本</div>
+          </div>
+        </div>
+
+        <p class="memo-caption">ROI 基于：人力替代 + 效率提升 + 风险规避。保守估计，签单时可按客户实际数据定制。</p>
+        <aside class="slide__notes">签单时可定制客户专属 ROI 模型，按对方实际人数、流程、资金量计算。</aside>
+      </div>
+    </section>
+
+    <!-- 竞品对标 · 亿流定位（合并原对标汇总+公开市场价目） -->
+    <section class="slide slide--void slide--memo slide--vendor-landscape">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 竞品定位</p>
+        <p class="story-hook">亿流在哪里</p>
+        <h1 class="headline-sm" style="margin:0 0 .35rem;">竞品 <strong class="tx-a">区间锚点</strong> × 亿流 <strong class="tx-a">四档卡位</strong></h1>
+
+        <!-- 亿流定位条 -->
+        <div style="display:flex;gap:.5rem;margin:.6rem 0;align-items:stretch;">
+          <div style="flex:1;padding:.5rem .7rem;border-radius:8px;background:rgba(243,110,33,.06);border:1px solid rgba(243,110,33,.3);font-size:.68rem;">
+            <div style="color:#f36e21;font-weight:700;margin-bottom:.2rem;">亿流 · 创业/专业版</div>
+            <div style="color:#a3a3a3;">¥3-9 万/年 → 对齐 合思·实在·有数云</div>
+          </div>
+          <div style="flex:1;padding:.5rem .7rem;border-radius:8px;background:rgba(243,110,33,.06);border:1px solid rgba(243,110,33,.3);font-size:.68rem;">
+            <div style="color:#f36e21;font-weight:700;margin-bottom:.2rem;">亿流 · 企业版</div>
+            <div style="color:#a3a3a3;">¥20 万/年 → 对齐 火山 DataAgent·汇联易</div>
+          </div>
+          <div style="flex:1;padding:.5rem .7rem;border-radius:8px;background:rgba(243,110,33,.06);border:1px solid rgba(243,110,33,.3);font-size:.68rem;">
+            <div style="color:#f36e21;font-weight:700;margin-bottom:.2rem;">亿流 · 集团版</div>
+            <div style="color:#a3a3a3;">¥50 万+/年 → 对齐 司库立方·火山私有化</div>
+          </div>
+        </div>
+
+        <!-- 标杆参考 -->
+        <div class="memo-table-wrap memo-table-wrap--vendor">
+          <table class="memo-table memo-table--vendor-wide" aria-label="竞品区间参考" style="font-size:.72rem;">
+            <thead>
+              <tr><th>标杆</th><th>区间</th><th>模式</th><th>亿流对标档</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>火山 DataAgent</strong></td><td>8-100 万/年</td><td>订阅+模块+资源包</td><td>企业版 / 集团版</td></tr>
+              <tr><td>DataWorks Agent</td><td>个人 ¥69/月 · 团队 ¥149/席/月</td><td>席位订阅+Token 按量</td><td>创业版 / 专业版</td></tr>
+              <tr><td>DMS 企业版</td><td>~¥33,000/月 · 2年约¥79 万</td><td>版本+并发</td><td>企业版</td></tr>
+              <tr><td>火山 SaaS 分析</td><td>标准 ¥5 万 · 专业 ¥10 万/年</td><td>包年订阅</td><td>专业版</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 国内创业公司 -->
+        <div class="vendor-grid" role="list" style="margin-top:.5rem;">
+          <a class="vendor-card" href="https://www.sikulifang.com/" target="_blank" rel="noopener noreferrer" role="listitem">
+            <span class="vendor-card__name">司库立方</span>
+            <span class="vendor-card__range">约 25–60 万 / 年 起</span>
+            <span class="vendor-card__tag">智慧司库 · AI</span>
+          </a>
+          <a class="vendor-card" href="https://www.ekuaibao.com/" target="_blank" rel="noopener noreferrer" role="listitem">
+            <span class="vendor-card__name">合思 · 易快报</span>
+            <span class="vendor-card__range">约 1–35 万 / 年</span>
+            <span class="vendor-card__tag">费控 + AI</span>
+          </a>
+          <a class="vendor-card" href="https://www.ai-indeed.com/" target="_blank" rel="noopener noreferrer" role="listitem">
+            <span class="vendor-card__name">实在智能</span>
+            <span class="vendor-card__range">约 1.5–5 万 / 数字员工 · 年</span>
+            <span class="vendor-card__tag">超自动化</span>
+          </a>
+          <a class="vendor-card" href="https://www.huilianyi.com/" target="_blank" rel="noopener noreferrer" role="listitem">
+            <span class="vendor-card__name">汇联易</span>
+            <span class="vendor-card__range">约 12 万起 / 年</span>
+            <span class="vendor-card__tag">Spark AI 费控</span>
+          </a>
+          <a class="vendor-card" href="https://www.youshuyun.net/" target="_blank" rel="noopener noreferrer" role="listitem">
+            <span class="vendor-card__name">有数云</span>
+            <span class="vendor-card__range">约 360–3000 元 / 年</span>
+            <span class="vendor-card__tag">AI 财税</span>
+          </a>
+        </div>
+
+        <p class="memo-caption">价格来自公开资料；精确报价以各厂商商务为准。公开市场价目详见<strong>附录</strong>。竞品展开 10 页见<strong>附录</strong>。</p>
+        <aside class="slide__notes">三档卡位清晰：低端打合思/实在，中端打火山/DataWorks，高端打司库立方。每档都有公开对标锚点。</aside>
+      </div>
+    </section>
+
+    <!-- ── 市场调研融入：策略总结 ─────────────────────────────── -->
+
+    <!-- 定价策略矩阵 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 策略矩阵</p>
+        <p class="story-hook">四维定价框架</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">地区 × 规模 × 功能 × 技术 = <strong class="tx-a">精准定价</strong></h1>
+        <table class="pricing-table" aria-label="定价策略矩阵" style="font-size:.78rem;">
+          <thead>
+            <tr><th>维度</th><th>入门</th><th>标准</th><th>高级</th><th>旗舰</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>价格区间</strong></td><td>99 – 9,999 元/年</td><td>1 – 30 万/年</td><td>50 – 500 万/年</td><td>100 – 2,000 万/年</td></tr>
+            <tr><td><strong>目标客户</strong></td><td>微/小型企业</td><td>中型企业</td><td>大型企业</td><td>集团企业</td></tr>
+            <tr><td><strong>AI 模型</strong></td><td>规则引擎</td><td>ML + 时序</td><td>深度学习 + LLM</td><td>多模态 + 多 Agent</td></tr>
+            <tr><td><strong>部署方式</strong></td><td>SaaS 自助</td><td>SaaS + 实施</td><td>私有云/混合云</td><td>全私有化定制</td></tr>
+            <tr><td><strong>商业模式</strong></td><td>纯订阅</td><td>订阅+模块</td><td>授权+服务</td><td>项目制+长期绑定</td></tr>
+          </tbody>
+        </table>
+        <p class="memo-caption">总体策略：<strong>价值定价为主、成本加成为辅</strong>。基础版引流 → 标准版盈利 → 高级版溢价。</p>
+        <aside class="slide__notes">四维矩阵确保报价有据可依，每个客户落到一个格子。</aside>
+      </div>
+    </section>
+
+    <!-- 机会与风险 -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">四、定价 · 机会与风险</p>
+        <p class="story-hook">Market Opportunity &amp; Risk</p>
+        <h1 class="headline-sm" style="margin:0 0 .6rem;">四重 <strong class="tx-a">红利</strong> · 四类 <strong class="tx-a">风险</strong></h1>
+        <div class="mr-split-2">
+          <div class="mr-split-2__col" style="border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04);">
+            <h3 style="color:#10b981;">机会</h3>
+            <ul style="font-size:.78rem;color:#a3a3a3;line-height:1.8;padding-left:1.2rem;">
+              <li><strong>政策红利</strong>：数字化转型 + 监管科技 + 新基建</li>
+              <li><strong>技术成熟</strong>：LLM 能力跃升 + 开源降门槛 + 云成本下降</li>
+              <li><strong>需求爆发</strong>：人力成本上升 + 年轻财务人拥抱 AI + 效率刚需</li>
+              <li><strong>国际化</strong>：中国 AI 技术领先 + 一带一路 + 跨境电商</li>
+            </ul>
+          </div>
+          <div class="mr-split-2__col" style="border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.04);">
+            <h3 style="color:#ef4444;">风险</h3>
+            <ul style="font-size:.78rem;color:#a3a3a3;line-height:1.8;padding-left:1.2rem;">
+              <li><strong>技术迭代</strong>：AI 快速更新 → 产品过时 → 持续研发投入</li>
+              <li><strong>价格战</strong>：竞争对手增多 → 差异化定位 + 技术壁垒</li>
+              <li><strong>接受度</strong>：AI 安全疑虑 → 安全认证 + 成功案例</li>
+              <li><strong>合规</strong>：隐私保护趋严 → 完善合规体系</li>
+            </ul>
+          </div>
+        </div>
+        <p class="memo-caption">核心判断：<strong>窗口期 2-3 年</strong>。先发优势 + 行业深度 = 护城河。</p>
+        <aside class="slide__notes">定价章结束，进入升华。风险不回避，但用策略化解。</aside>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACT 5  升华（7 页）：信任 → 闭环 → 终章（不被附录打断）
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- S44 API 连接 -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--api-flow">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · 连接与安全</p>
+        <p class="story-hook">您一定会问——API 能不能接？数据安不安全？</p>
+        <h1 class="headline-sm">API 网关接入 · <span class="tx-a">只读 + 映射</span> · 可选私有化</h1>
+        <p class="viz-caption"><strong>主动回答</strong>：对接经 <strong>API 网关</strong>，主流 ERP <strong>金蝶 / 用友 / SAP / Oracle</strong> 等以接口或文件方式接入；敏感字段可配置<strong>最小留存 / 脱敏</strong>。部署见下一页（SaaS / 私有云）。</p>
+        <div class="launch-gateway" role="img" aria-label="ERP 经 API 网关到预测引擎">
+          <div class="launch-gateway__col">
+            <p class="launch-gateway__title">您的 ERP / 核算</p>
+            <p class="launch-gateway__erp">金蝶 · 用友 · SAP · Oracle …</p>
+          </div>
+          <div class="launch-gateway__arrow" aria-hidden="true">→</div>
+          <div class="launch-gateway__col launch-gateway__col--accent">
+            <p class="launch-gateway__title">API 网关</p>
+            <p class="launch-gateway__erp">只读拉取 · 字段映射 · 审计留痕</p>
+          </div>
+          <div class="launch-gateway__arrow" aria-hidden="true">→</div>
+          <div class="launch-gateway__col">
+            <p class="launch-gateway__title">预测引擎 / Agent</p>
+            <p class="launch-gateway__erp">校验 → 快照 → 预警与解读</p>
+          </div>
+        </div>
+        <ol class="api-flow-steps" aria-label="接入流程">
+          <li><strong>发现</strong> 数据源与字段（与您的 IT 对齐范围）</li>
+          <li><strong>映射</strong> 科目 / 组织 / 时间段规则</li>
+          <li><strong>只读</strong> 优先 · 默认不落隐私明细 · 可脱敏</li>
+          <li><strong>验收</strong> 对账快照 → 再进预测</li>
+        </ol>
+        <p class="memo-caption"><strong>您</strong>得到的是一张能过信息科技与内审的架构叙事：<strong>能接、敢接、可审计</strong>；具体范围以实施评估为准。</p>
+        <aside class="slide__notes">董事长场：强调只读与不出域选项；价卡与 SLA 另附。</aside>
+      </div>
+    </section>
+
+    <!-- S45 部署 -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--deploy-split">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · 部署</p>
+        <h1 class="headline-sm">两条路径 · <span class="tx-a">随规模与合规</span></h1>
+        <div class="deploy-split">
+          <article class="deploy-split__card deploy-split__card--saas">
+            <h2 class="deploy-split__title">SaaS · 多租户</h2>
+            <p>适合中小与快速验证 · <strong>按年订阅</strong> · 快上线；租户数据隔离与后台运营能力可分期产品化。</p>
+          </article>
+          <article class="deploy-split__card deploy-split__card--priv">
+            <h2 class="deploy-split__title">私有云 / 本地化</h2>
+            <p>若<strong>您</strong>要求数据不出园区 / 满足等保与专线策略 — <strong>同一套产品</strong>，两种信任等级。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- S46 租户运营 -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--tenant-admin">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · 运营</p>
+        <h1 class="headline-sm">租户隔离 · <span class="tx-a">企业后台</span></h1>
+        <ul class="tenant-admin-list">
+          <li><strong>多租户数据隔离</strong> · 组织与边界可配置</li>
+          <li><strong>账号与角色</strong> · 权限与审计</li>
+          <li><strong>Token 消耗看板</strong> · 预警与封顶策略</li>
+        </ul>
+        <p class="memo-caption">面向订阅制交付的<strong>运营与治理</strong>能力（产品化路线可分期）。</p>
+      </div>
+    </section>
+
+    <!-- S47 Copilot 人确认 -->
+    <section class="slide slide--void slide--jobs-beat slide--viz slide--viz-copilot">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · Copilot</p>
+        <p class="story-hook">AI 会瞎说吗？</p>
+        <h1 class="headline-sm">人——<span class="tx-a">最后点确认</span>。</h1>
+        <p class="story-sub">Copilot 只解读与草稿；数字落在<strong>可核对快照</strong>；全程<strong>留痕</strong>。</p>
+        <div class="viz-flow-live">
+          <div class="viz-flow-live__chart">
+            <svg viewBox="0 0 620 124" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <marker id="cpMk" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L9,4 L0,8 z" fill="#f36e21" />
+                </marker>
+              </defs>
+              <g class="viz-flow-node-g viz-flow-node-g--1">
+                <rect x="8" y="38" width="110" height="48" rx="10" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" />
+                <text x="63" y="62" text-anchor="middle" fill="#c8c8c8" font-size="12" font-family="system-ui,sans-serif">数据快照</text>
+                <text x="63" y="78" text-anchor="middle" fill="#737373" font-size="9.5" font-family="system-ui,sans-serif">可核对口径</text>
+              </g>
+              <g class="viz-flow-node-g viz-flow-node-g--2">
+                <rect x="152" y="24" width="136" height="76" rx="12" fill="rgba(243,110,33,0.14)" stroke="rgba(243,110,33,0.55)" stroke-width="1.5" />
+                <text x="220" y="52" text-anchor="middle" fill="#e8945c" font-size="13" font-family="system-ui,sans-serif" font-weight="600">Copilot</text>
+                <text x="220" y="70" text-anchor="middle" fill="#a3a3a3" font-size="10.5" font-family="system-ui,sans-serif">解读 · 草稿建议</text>
+                <text x="220" y="88" text-anchor="middle" fill="#737373" font-size="9" font-family="system-ui,sans-serif">不直接改底账</text>
+              </g>
+              <g class="viz-flow-node-g viz-flow-node-g--3">
+                <rect x="318" y="34" width="100" height="56" rx="10" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" />
+                <text x="368" y="60" text-anchor="middle" fill="#c8c8c8" font-size="12" font-family="system-ui,sans-serif">人</text>
+                <text x="368" y="78" text-anchor="middle" fill="#737373" font-size="9.5" font-family="system-ui,sans-serif">显式确认</text>
+              </g>
+              <g class="viz-flow-node-g viz-flow-node-g--4">
+                <rect x="448" y="32" width="164" height="60" rx="10" fill="rgba(243,110,33,0.12)" stroke="rgba(243,110,33,0.42)" />
+                <text x="530" y="58" text-anchor="middle" fill="#f4f4f3" font-size="12" font-family="system-ui,sans-serif" font-weight="600">导出 / 上报</text>
+                <text x="530" y="78" text-anchor="middle" fill="#737373" font-size="9.5" font-family="system-ui,sans-serif">留痕可追溯</text>
+              </g>
+              <path class="viz-flow-path-anim" d="M 118 62 L 152 62" stroke="#f36e21" stroke-width="2.2" fill="none" marker-end="url(#cpMk)" />
+              <path class="viz-flow-path-anim" d="M 288 62 L 318 62" stroke="#f36e21" stroke-width="2.2" fill="none" marker-end="url(#cpMk)" style="animation-delay: -0.35s" />
+              <path class="viz-flow-path-anim" d="M 418 62 L 448 62" stroke="#f36e21" stroke-width="2.2" fill="none" marker-end="url(#cpMk)" style="animation-delay: -0.7s" />
+            </svg>
+          </div>
+          <div class="viz-flow-live__proto">
+            <p class="viz-proto-tag">产品原型联动</p>
+            <div class="viz-proto-mini">
+              <div class="viz-proto-mini__chrome">frontend/app.html · #liquidity · 预测与风险（快照 + AI）</div>
+              <div class="viz-proto-mini__viewport">
+                <iframe title="现金流预测原型预览" src="../frontend/app.html?embed=1#liquidity" loading="lazy"></iframe>
+              </div>
+            </div>
+            <p class="viz-caption">右侧为<strong>同一主台 Live</strong>：左栏引擎数字、右栏解读；与左侧「快照→Copilot→人→导出」闭环一致，投屏可点。</p>
+          </div>
+        </div>
+        <aside class="slide__notes">FAB 之 B：可审计、可复核；原型与流程图对照讲。</aside>
+      </div>
+    </section>
+
+    <!-- S48 结论一页纸 -->
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--one-pager">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · 结论一页纸</p>
+        <h1 class="headline-sm">从「卖工具」到「<span class="tx-a">卖结果</span>」</h1>
+        <ul class="one-pager-list">
+          <li><strong>产品</strong> · 对<strong>您</strong>可感知的是报表与预警；Agent 中台是手段，<strong>预测结果是交付物</strong></li>
+          <li><strong>叙事</strong> · FAB 是纪律，每页必有 <strong>F / A / B</strong>；<strong>价值闭环</strong>是结尾</li>
+          <li><strong>商业</strong> · 订阅是门槛，<strong>Token 价差</strong>是可持续利润逻辑（不讲死一个单价）</li>
+          <li><strong>信任</strong> · 主动回答<strong>API 与只读、映射与部署</strong>，亮出护城河</li>
+        </ul>
+        <p class="one-pager-goal">向董事长汇报：不是堆功能，而是确认 — <strong>「结果交付」这条路值得持续投入</strong>。</p>
+      </div>
+    </section>
+
+    <!-- S49 终章（定性表述，不承诺具体数字） -->
+    <section class="slide slide--void slide--atmosphere slide--finale">
+      <div class="slide__inner">
+        <p class="section-ribbon section-ribbon--fab">五、升华 · 终章</p>
+        <p class="story-hook">所以——</p>
+        <h1 class="headline-sm"><span class="tx-a">中台</span>让人敢问。<br /><span class="tx-a">预测</span>让组织敢信。</h1>
+        <div class="finale-metrics" role="group" aria-label="价值闭环">
+          <p>我们替<strong>您</strong>的财务团队收掉手工搬运数据的苦活；替决策层堵住现金流预警的盲区——从「好像还行」到<strong>一屏看清、敢做决策</strong>。</p>
+        </div>
+        <p class="whisper finale-whisper"><strong>亿流 · 资金结果交付引擎</strong> —— <strong>您</strong>可持续依赖的 <strong>资金决策外脑</strong>。<br />不是一套静态软件，而是能随业务演进而进化的交付能力 · <strong>订阅 + Token 价差</strong> · 护城河：<strong>私域逻辑可迭代</strong> + <strong>留痕与合规交付</strong>。</p>
+        <aside class="slide__notes">价值闭环 + 护城河；具体数字以客户共创为准，不在终章承诺量化指标。</aside>
+      </div>
+    </section>
+
+    <!-- S50 谢谢 -->
+    <section class="slide slide--void slide--finale">
+      <div class="slide__inner">
+        <p class="kicker">谢谢</p>
+        <h1 class="headline-sm">财务 Agent——<br />在真实业务里<span class="tx-a">落地</span>。</h1>
+        <p class="whisper whisper--followup">会后发访问链接 · 详细模块见 <a href="detailed.html" class="deck-link">详细版路演</a> · 内部分工与节点见 <a href="internal-rhythm.html" class="deck-link">组织节奏</a> · 本稿已按<strong>发布会第二人称 × FAB × 五幕叙事</strong>收口</p>
+        <p class="whisper whisper--links"><a href="index.html" class="deck-link-muted">PPT 入口</a></p>
+        <aside class="slide__notes">干净收尾。</aside>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         附录（谢谢之后 · 可不投屏 · Q&A 备用）
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- S51 附录 · 财务视角 -->
+    <section class="slide slide--void slide--viz slide--research slide--research-min">
+      <div class="slide__inner slide__inner--wide slide__inner--research-min">
+        <p class="section-ribbon section-ribbon--fab">附录 · 财务视角</p>
+        <p class="story-hook">附录 · 财务视角</p>
+        <h1 class="headline-sm research-min__hero">ERP <span class="tx-a">事实</span> → 预测 <span class="tx-a">洞察</span> → 中台 <span class="tx-a">编排</span></h1>
+        <p class="research-min__lede">公开论述中的分层 · 非背书</p>
+        <div class="viz-research-ladder viz-research-ladder--minimal" role="img" aria-label="三层关系">
+          <div class="viz-research-ladder__step">
+            <span class="viz-research-ladder__n">事实</span>
+            <p>主数据 · ERP</p>
+          </div>
+          <span class="viz-research-ladder__arr" aria-hidden="true">→</span>
+          <div class="viz-research-ladder__step viz-research-ladder__step--accent">
+            <span class="viz-research-ladder__n">洞察</span>
+            <p>预测 · 情景 · 预警</p>
+          </div>
+          <span class="viz-research-ladder__arr" aria-hidden="true">→</span>
+          <div class="viz-research-ladder__step">
+            <span class="viz-research-ladder__n">协同</span>
+            <p>工作台 · 编排 · 留痕</p>
+          </div>
+        </div>
+        <details class="research-min__refs">
+          <summary>参考链接</summary>
+          <ul class="research-min__refs-list">
+            <li><a href="https://www.gartner.com/reviews/market/treasury-management-systems" target="_blank" rel="noopener noreferrer">Gartner · TMS 市场</a></li>
+            <li><a href="https://www.kyriba.com/resource/what-is-cash-forecasting/" target="_blank" rel="noopener noreferrer">Kyriba · Cash forecasting</a></li>
+            <li><a href="https://trovata.io/blog/difference-between-erp-and-treasury-software" target="_blank" rel="noopener noreferrer">Trovata · ERP vs treasury</a></li>
+          </ul>
+        </details>
+        <aside class="slide__notes">附录，Q&amp;A 备用。</aside>
+      </div>
+    </section>
+
+    <!-- S52 附录 · 计费 -->
+    <section class="slide slide--void slide--viz slide--research slide--research-min">
+      <div class="slide__inner slide__inner--wide slide__inner--research-min">
+        <p class="section-ribbon section-ribbon--fab">附录 · 计费</p>
+        <p class="story-hook">附录 · 计费</p>
+        <h1 class="headline-sm research-min__hero">席位 <span class="tx-a">+</span> <span class="tx-a">Token</span></h1>
+        <p class="research-min__lede">纯席位难对齐模型成本 · 混合计费与亿流「订阅 + 用量」同向</p>
+        <div class="viz-research-pricing viz-research-pricing--minimal" role="img" aria-label="混合计费">
+          <div class="viz-research-pricing__col">
+            <span class="viz-research-pricing__label">席位</span>
+            <p>边界与准入</p>
+          </div>
+          <span class="viz-research-pricing__plus" aria-hidden="true">+</span>
+          <div class="viz-research-pricing__col viz-research-pricing__col--accent">
+            <span class="viz-research-pricing__label">Token</span>
+            <p>调用与封顶</p>
+          </div>
+        </div>
+        <details class="research-min__refs">
+          <summary>参考链接</summary>
+          <ul class="research-min__refs-list">
+            <li><a href="https://openai.com/api/pricing/" target="_blank" rel="noopener noreferrer">OpenAI · API 计价</a></li>
+            <li><a href="https://www.flexera.com/blog/saas-management/from-seats-to-consumption-why-saas-pricing-has-entered-the-hybrid-era/" target="_blank" rel="noopener noreferrer">Flexera · Hybrid pricing</a></li>
+          </ul>
+        </details>
+        <aside class="slide__notes">附录，Q&amp;A 备用。</aside>
+      </div>
+    </section>
+
+    <!-- S53 对标展开 ① 火山 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ①/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">火山引擎 <span class="tx-a">DataAgent</span></h1>
+          <a class="vendor-detail__site" href="https://www.volcengine.com/product/DataAgent" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：基础订阅费 + 功能模块 / SKU + 资源包（混合定价）</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="火山 DataAgent 产品线">
+            <thead>
+              <tr>
+                <th scope="col">产品版本</th>
+                <th scope="col">基础年费（参考）</th>
+                <th scope="col">核心能力</th>
+                <th scope="col">适用</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>智能分析 Agent · 基础</td><td><strong>约 8 万起</strong>/年</td><td>查询、语义、多轮、基础归因</td><td>中型企业（约 100–500 人）</td></tr>
+              <tr><td>智能分析 Agent · 企业</td><td><strong>约 20–50 万</strong>/年</td><td>深度研究、多源融合、报表、API</td><td>大型企业（约 500 人+）</td></tr>
+              <tr><td>智能营销 Agent</td><td><strong>约 30–80 万</strong>/年</td><td>营销策略、活动编排、归因</td><td>零售、互联网</td></tr>
+              <tr><td>用户研究 Agent</td><td><strong>约 25–60 万</strong>/年</td><td>行为分析、访谈、人群洞察</td><td>互联网、消费品</td></tr>
+              <tr><td>私有化部署</td><td><strong>约 100 万起</strong>/年</td><td>本地、定制、专属模型</td><td>央国企、金融等</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="vendor-detail__extra">
+          <li>基础版常含 <strong>3 个并发 Agent 实例</strong>；增 1 实例约 <strong>+1–3 万</strong>/年</li>
+          <li>超额 Token 约 <strong>0.001–0.003 元 / Token</strong>（以官文为准）</li>
+          <li>实施费常见 <strong>软件费的 15–30%</strong></li>
+        </ul>
+        <p class="vendor-detail__fine"><a href="https://www.volcengine.com/docs/85637/1544079?lang=zh" target="_blank" rel="noopener noreferrer">计费文档</a> · 成交价以下单页为准</p>
+        <aside class="slide__notes">国内数据智能体定价标杆；亿流可对齐「版本 + 账号 + 存储 + Token」。</aside>
+      </div>
+    </section>
+
+    <!-- S54 对标展开 ② 司库立方 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ②/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">司库立方 <span class="tx-a">智慧司库</span></h1>
+          <a class="vendor-detail__site" href="https://www.sikulifang.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <div class="vendor-detail__twocol">
+          <div class="vendor-detail__col">
+            <p class="vendor-detail__k">背景（公开资料）</p>
+            <p class="vendor-detail__p">腾讯千帆相关合作与资金管理场景实践；全生命周期现金流管理，融合大模型与智能体。</p>
+          </div>
+          <div class="vendor-detail__col">
+            <p class="vendor-detail__k">收费逻辑</p>
+            <p class="vendor-detail__p"><strong>基础平台费 + 智能体模块 + 定制服务</strong></p>
+          </div>
+        </div>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="司库立方区间">
+            <thead>
+              <tr><th scope="col">客群</th><th scope="col">参考年费</th><th scope="col">包含能力</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>成长型（营收约 1–10 亿）</td><td><strong>25–60 万</strong>/年</td><td>账户、智能收付、基础现金流预测 Agent</td></tr>
+              <tr><td>中型集团（约 10–50 亿）</td><td><strong>60–180 万</strong>/年</td><td>银企直连、融资、流动性、风险预警 Agent</td></tr>
+              <tr><td>大型集团（约 50 亿+）</td><td><strong>180–400 万</strong>/年</td><td>全球资金、外汇、供应链金融、投资 Agent</td></tr>
+              <tr><td>私有化</td><td><strong>300 万起</strong></td><td>一次性授权 + 维护（常见约 15%/年，以合同为准）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：缺口预警与应对策略生成；公开案例称预测效率与成本优化（以厂商为准）。</p>
+        <aside class="slide__notes">强监管行业签单前核实案例授权表述。</aside>
+      </div>
+    </section>
+
+    <!-- S55 对标展开 ③ 合思 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ③/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">合思 · <span class="tx-a">易快报</span></h1>
+          <a class="vendor-detail__site" href="https://www.ekuaibao.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：基础订阅 + <strong>AI 功能包</strong> + 按用量</p>
+        <p class="vendor-detail__p">「无需报销 + AI」全流程；多 Agent 协同财务（公开定位）。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="合思区间">
+            <thead>
+              <tr><th scope="col">客群</th><th scope="col">参考年费</th><th scope="col">包含</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>初创（&lt;50 人）</td><td><strong>1–3 万</strong>/年</td><td>报销、发票、AI 填单等</td></tr>
+              <tr><td>成长（50–200 人）</td><td><strong>3–12 万</strong>/年</td><td>报销、预算、采购、付款、AI 审核</td></tr>
+              <tr><td>成熟（&gt;200 人）</td><td><strong>12–35 万</strong>/年</td><td>全模块、ERP 集成、高级分析、多 Agent</td></tr>
+              <tr><td>AI 功能包（可加购）</td><td><strong>2–8 万</strong>/年</td><td>单独增购</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：发票与审批自动化；公开案例称效率与人力成本优化。</p>
+        <aside class="slide__notes">与亿流费控无直接竞争时强调「现金流预测」差异。</aside>
+      </div>
+    </section>
+
+    <!-- S56 对标展开 ④ 实在智能 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ④/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">实在智能 · <span class="tx-a">数字员工</span></h1>
+          <a class="vendor-detail__site" href="https://www.ai-indeed.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：<strong>按数字员工数</strong> + 可选<strong>按任务</strong></p>
+        <p class="vendor-detail__p">超自动化 + 大模型，可操作多类业务软件（公开定位）。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="实在智能区间">
+            <thead>
+              <tr><th scope="col">形态</th><th scope="col">参考价格</th><th scope="col">说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>公有云 SaaS</td><td><strong>1.5–5 万</strong>/数字员工·年</td><td>基础岗 1.5–2.5 万；高级岗 3–5 万（对账、报表等）</td></tr>
+              <tr><td>私有化</td><td><strong>8–20 万</strong>/数字员工·年</td><td>以项目报价为准</td></tr>
+              <tr><td>按任务</td><td><strong>0.01–0.5 元</strong>/次</td><td>业务量波动场景</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：流程可随界面变化再适配；公开案例称录入与人力节省。</p>
+        <aside class="slide__notes">对标「按员工/任务」与亿流「订阅+Token」可对比讲。</aside>
+      </div>
+    </section>
+
+    <!-- S57 对标展开 ⑤ 汇联易 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑤/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">汇联易 · <span class="tx-a">Spark AI</span></h1>
+          <a class="vendor-detail__site" href="https://www.huilianyi.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：<strong>基础平台费</strong> + <strong>AI 审核按单</strong> + 定制智能体</p>
+        <p class="vendor-detail__p">插拔式 AI 审核，可对接现有费控（公开定位）。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="汇联易区间">
+            <thead>
+              <tr><th scope="col">项</th><th scope="col">参考价格</th><th scope="col">说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>基础版</td><td><strong>12 万起</strong>/年</td><td>基础费控能力</td></tr>
+              <tr><td>AI 审核</td><td><strong>0.3–0.8 元</strong>/单</td><td>按审核单据量</td></tr>
+              <tr><td>定制智能体</td><td><strong>5–15 万</strong>/个</td><td>按场景复杂度</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：即插即用、快上线；公开案例称差旅与审核效率。</p>
+        <aside class="slide__notes">按单计费与亿流 Token 计量可做类比。</aside>
+      </div>
+    </section>
+
+    <!-- S58 对标展开 ⑥ 有数云 -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑥/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">有数云 · <span class="tx-a">AI 财税</span></h1>
+          <a class="vendor-detail__site" href="http://www.youshuyun.net/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：<strong>按客户数</strong> / 户（代账场景）+ 企业版年费</p>
+        <p class="vendor-detail__p">面向代账与小微财税「客户 + 算力」交付（公开定位）。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="有数云区间">
+            <thead>
+              <tr><th scope="col">版本</th><th scope="col">参考价格</th><th scope="col">说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>代账公司侧</td><td>约 <strong>20 元</strong>/户·年</td><td>单户交付成本（公开区间）</td></tr>
+              <tr><td>终端企业</td><td><strong>360–3000 元</strong>/年</td><td>视规模与业务量</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：极低户均成本、规模化代账；与司库预测客群不同，可作价格下限锚点。</p>
+        <aside class="slide__notes">http 链接若跳转异常可改厂商最新域名。</aside>
+      </div>
+    </section>
+
+    <!-- S59 对标展开 ⑦ Trovata -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑦/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">Trovata · <span class="tx-a">Cash / TMS</span></h1>
+          <a class="vendor-detail__site" href="https://www.trovata.io/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：订阅 + <strong>银行连接数</strong> + 交易量相关</p>
+        <p class="vendor-detail__p">API 银行连接、实时现金可见性与 AI 预测（海外公开资料）。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="Trovata 区间">
+            <thead>
+              <tr><th scope="col">产品</th><th scope="col">参考年费</th><th scope="col">包含</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Trovata Cash</td><td><strong>约 $2.4 万起</strong>/年（约 ¥17 万）</td><td>实时可见性、基础 AI 预测、报表</td></tr>
+              <tr><td>Trovata TMS</td><td><strong>约 $8–30 万</strong>/年（约 ¥57–214 万）</td><td>完整财资、高级 AI、多实体</td></tr>
+              <tr><td>银行连接</td><td><strong>约 $500–2000</strong>/银行·年</td><td>按连接数叠加</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：预测周期从「天」到「小时」量级（公开叙事）；汇率与税以合同为准。</p>
+        <aside class="slide__notes">与亿流「API+预测」叙事可对齐。</aside>
+      </div>
+    </section>
+
+    <!-- S60 对标展开 ⑧ Nilus -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑧/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">Nilus · <span class="tx-a">主动式财资</span></h1>
+          <a class="vendor-detail__site" href="https://www.nilus.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：<strong>企业规模</strong> + <strong>功能模块</strong>（含 AI 预测可加购）</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="Nilus 区间">
+            <thead>
+              <tr><th scope="col">档位</th><th scope="col">参考年费</th><th scope="col">说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>中型</td><td><strong>约 5–15 万美元</strong>/年（约 ¥36–107 万）</td><td>整合财资与现金流工作流</td></tr>
+              <tr><td>大型</td><td><strong>约 15–40 万美元</strong>/年（约 ¥107–286 万）</td><td>更广实体与模块</td></tr>
+              <tr><td>AI 预测模块</td><td><strong>约 3–8 万美元</strong>/年</td><td>单独增购</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：主动风险识别与建议，而非仅被动报表。</p>
+        <aside class="slide__notes">美元口径为行业访谈/公开信息归纳。</aside>
+      </div>
+    </section>
+
+    <!-- S61 对标展开 ⑨ Tesorio -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑨/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">Tesorio · <span class="tx-a">应收 × 现金流</span></h1>
+          <a class="vendor-detail__site" href="https://www.tesorio.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：按<strong>管理应收账款规模</strong>取费（%/年）</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="Tesorio 区间">
+            <thead>
+              <tr><th scope="col">版本</th><th scope="col">费率（参考）</th><th scope="col">包含</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>基础</td><td>管理应收的 <strong>0.1–0.3%</strong>/年</td><td>预测与基础自动化</td></tr>
+              <tr><td>企业</td><td>管理应收的 <strong>0.3–0.8%</strong>/年</td><td>AI 催收、付款行为预测、现金流预测等</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：回款周期与坏账优化（公开案例方向）；与「按结果」挂钩强。</p>
+        <aside class="slide__notes">与亿流「缺口预警」可做场景对照。</aside>
+      </div>
+    </section>
+
+    <!-- S62 对标展开 ⑩ FinanceGPT Labs -->
+    <section class="slide slide--void slide--memo slide--vendor-detail">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 对标展开 ⑩/10</p>
+        <div class="vendor-detail__head">
+          <h1 class="vendor-detail__title">FinanceGPT Labs</h1>
+          <a class="vendor-detail__site" href="https://www.financegptlabs.com/" target="_blank" rel="noopener noreferrer">官网</a>
+        </div>
+        <p class="vendor-detail__logic"><strong>收费逻辑</strong>：<strong>按工作成果</strong>计费 — 拒绝纯席位（公开定位）</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor-detail">
+          <table class="memo-table memo-table--vendor-detail" aria-label="FinanceGPT Labs 区间">
+            <thead>
+              <tr><th scope="col">场景</th><th scope="col">参考单价</th><th scope="col">说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>发票对账</td><td><strong>$0.05–0.2</strong>/张</td><td>按张结算</td></tr>
+              <tr><td>审计检查</td><td><strong>$1–5</strong>/项</td><td>按项结算</td></tr>
+              <tr><td>收益类</td><td><strong>收益的 5–10%</strong></td><td>结果分成</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="vendor-detail__value"><strong>价值</strong>：成本与产出强绑定；适合可量化结果场景。</p>
+        <aside class="slide__notes">与亿流 Token/订阅混合可对比「何时用分成」。</aside>
+      </div>
+    </section>
+
+    <!-- S63 创业 vs 大厂策略 -->
+    <section class="slide slide--void slide--memo slide--vendor-landscape slide--vendor-landscape--b">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">附录 · 海外与策略</p>
+        <p class="story-hook">小结</p>
+        <h1 class="headline-xs vendor-landscape__title">创业团队 vs 大厂 · <span class="tx-a">策略收束</span></h1>
+        <p class="vendor-landscape__fine" style="margin-bottom:0.65rem;">海外四家（Trovata / Nilus / Tesorio / FinanceGPT Labs）收费逻辑见上<strong>专项展开 ⑦–⑩</strong>。</p>
+        <div class="memo-table-wrap memo-table-wrap--vendor" style="margin-top:0.55rem;">
+          <table class="memo-table memo-table--vendor-wide memo-table--startup-vs" aria-label="创业公司与大厂定价差异">
+            <thead>
+              <tr>
+                <th scope="col">维度</th>
+                <th scope="col">创业公司</th>
+                <th scope="col">大厂 / 平台</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>定价逻辑</td><td>单点痛点、按效果 / 数字员工</td><td>平台费 + 模块 + 资源包</td></tr>
+              <tr><td>价格带</td><td>同等能力常低 <strong>30–50%</strong>（区间）</td><td>品牌溢价、整包贵</td></tr>
+              <tr><td>灵活性</td><td>定制、按任务、结果分成</td><td>标品为主、议价周期长</td></tr>
+              <tr><td>上线周期</td><td>常 <strong>1–3 个月</strong></td><td>常 <strong>3–12 个月</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="vendor-landscape__bullets">
+          <li><strong>获客</strong>：试用 / POC · 标杆折扣换案例</li>
+          <li><strong>扩张</strong>：入门 → 标准 → 企业 · 交叉销售多 Agent</li>
+          <li><strong>盈利</strong>：私有化高客单 · 生态嵌入银行/ERP</li>
+        </ul>
+        <aside class="slide__notes">亿流定位：结果交付 + 订阅 Token；与 Trovata/Nilus 叙事可对照「预测与现金」。</aside>
+      </div>
+    </section>
+
+    <!-- S64 内部待办 -->
+    <section class="slide slide--void slide--memo">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">内部 · 待办（可不投屏）</p>
+        <div class="memo-table-wrap">
+          <table class="memo-table memo-table--actions">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>负责人</th>
+                <th>任务</th>
+                <th>截止</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>陈宣任</td><td>重构产品介绍材料，采用 FAB 表达法梳理逻辑，明确商业价值与护城河</td><td>下周一会议前</td></tr>
+              <tr><td>2</td><td>陈宣任、雨墨@、玄烨@张继民(玄烨)</td><td>梳理产品结构关系，确保 Agent 中台与现金流预测从财务视角的体系化对应</td><td>持续进行</td></tr>
+              <tr><td>3</td><td>陈宣任</td><td>调研并细化收费模型，基于「用户数 + Token 消耗」的订阅制方案</td><td>下周一会议前</td></tr>
+              <tr><td>4</td><td>陈宣任</td><td>优化演示内容，准备下周一（Q1 数据回滚后）向董事长的汇报</td><td>下周一下午</td></tr>
+              <tr><td>5</td><td>陈宣任</td><td>邀请意向客户交流，收集真实反馈验证产品落地性</td><td>近期</td></tr>
+              <tr><td>6</td><td>雨墨</td><td>API 通用性证明与多租户部署方案（与材料「连接 / SaaS 运营」页对齐）</td><td>持续</td></tr>
+              <tr><td>7</td><td>雨墨 &amp; 销售团队</td><td>执行工位平移调整，向指定区域靠拢</td><td>本周内</td></tr>
+              <tr><td>8</td><td>全体管理层</td><td>周一会议后制定各团队（业务、产品、技术）下一步具体验证任务</td><td>下周一会议后</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="slide__notes">对外可 End 在谢谢页。</aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="deck-ui">
+    <a class="deck-exit" href="index.html">返回</a>
+    <div class="deck-progress-wrap">
+    <div class="deck-progress" aria-hidden="true"><span></span></div>
+      <div class="deck-chapters" id="deck-chapters-ticks"></div>
+    </div>
+    <span class="deck-meta" id="deck-idx">1 / 74</span>
+    <span class="deck-hint">→ 翻页 · N 讲稿 · ?presenter=1</span>
+  </div>
+  <script src="deck.js?v=202604139"></script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>资金预测智能体 · 完整提案 — 亿流科技</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../PPT/deck.css" />
+  <link rel="stylesheet" href="unified-deck.css" />
+  <link rel="stylesheet" href="cashflow-proposal-theme.css" />
+</head>
+<body class="deck-unified cashflow-proposal">
+  <div id="deck" aria-live="polite">
+    <!-- 1 封面：主视觉「资金预测智能体」全屏沉浸 -->
+    <section class="slide slide--void slide--u-hero is-on">
+      <div class="slide__inner slide__inner--hero-full">
+        <header class="u-hero-top">
+          <span class="u-hero-brand">亿流科技</span>
+          <span class="u-hero-proposal-tag" aria-hidden="true">提案材料</span>
+        </header>
+        <div class="u-hero-core">
+          <p class="u-hero-eyebrow">账户流水 · 预测排程 · 头寸可见</p>
+          <h1 class="u-hero-mega" lang="zh-CN">资金预测智能体</h1>
+          <p class="u-hero-lead">把<strong>账户、流水、应收应付与预测</strong>拢到一屏，看清<strong>未来几周头寸</strong>，方便排理财、融资和<strong>大额审批前</strong>心里有数。</p>
+          <p class="u-hero-boundary">DataAgent 负责<strong>问数、解释偏差与操作建议</strong>；<strong>拍板仍在人</strong>——适合司库/CFO 要看清预测依据、又要能对外讲清口径的项目。</p>
+          <p class="u-hero-chips" aria-label="本套材料包含">
+            <span class="u-hero-chip">可点实机</span>
+            <span class="u-hero-chip">底座 + 行业包</span>
+            <span class="u-hero-chip">竞品与估价</span>
+            <span class="u-hero-chip">详版 HTML</span>
+          </p>
+        </div>
+        <div class="u-hero-filmstrip" aria-label="产品界面掠影，点击跳转对应实机页">
+          <a href="index.html?slide=24" title="实机 · 总览看板"><span>总览</span></a>
+          <a href="index.html?slide=25" title="实机 · 资金流"><span>资金流</span></a>
+          <a href="index.html?slide=26" title="实机 · 分析 + DataAgent"><span>分析</span></a>
+          <a href="index.html?slide=27" title="实机 · 资金计划"><span>计划</span></a>
+        </div>
+        <aside class="slide__notes">内部对齐：<code>?slide=14</code> 起估价提要 9 页；计算器见 HTML。实机约 24–27（<code>?slide=</code> 已接入 deck.js）。叙事对齐 2026-03-30 会议纪要（账户流水、预测、收费模式、行业包）。</aside>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide slide--void slide--cf-duo">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-duo">
+        <p class="kicker">司库与财务现场常听到的抱怨</p>
+        <h1 class="headline-sm">问题往往不在「缺一个模型」，<br />在<strong class="tx-a">流水、计划、预测各算各的</strong>。</h1>
+        <div class="u-duo u-duo--live-right">
+          <div class="u-duo__copy">
+            <p class="whisper u-duo__lead">打个比方：<strong>网银流水、业务计划、预测模型</strong>像三张表——会上问「下周钱够不够」，往往要<strong>临时拼 Excel</strong>，谁也不敢拍胸脯。</p>
+            <div class="u-chain" aria-label="数据断点">
+              <span class="u-chain-node"><strong>账户流水</strong> 银企/导入</span>
+              <span class="u-chain-arrow">+</span>
+              <span class="u-chain-node"><strong>业务计划</strong> 收支排程</span>
+              <span class="u-chain-arrow">→</span>
+              <span class="u-chain-node"><strong>预测与预警</strong> 可解释</span>
+            </div>
+            <ul class="pain-bullets">
+              <li>CFO 要回答<strong>「未来 30/60 天头寸」</strong>，但预测假设散落在业务线，一调参数全员重算。</li>
+              <li><strong>在线户与离线户</strong>并存：直连能自动拉流水，离线户仍靠导出——需要<strong>统一汇聚与对账口径</strong>（纪要：<strong>账户类型决定取数方式</strong>，目标仍是「全量资金视图」）。</li>
+              <li><strong>计划场景（纪要）</strong>：例如<strong>票据账期</strong>确定时，司库要在<strong>到期日</strong>前保证头寸；账期内可安排短期运作——预测与计划必须把<strong>承诺支付日、在途与理财占用</strong>口径对齐，否则「下周钱够不够」仍说不准。</li>
+              <li><strong>行业差异 → 产品形态（纪要）</strong>：电商、大宗等<strong>业务逻辑差很大</strong>，「一个通用预测工具包打天下」不现实；交付上宜<strong>通用底座（方法论 + 计算与版本规则）+ 垂直行业 Skills/知识包</strong>（标签、假设模板、校验规则）迭代，智能体按上下文选用。</li>
+              <li><strong>先统一数据再谈算法</strong>：科目、账户、业务标签对齐后，预测与偏差预警才<strong>可解释、可复盘</strong>；对内常说「数据底座」，对客户讲<strong>一屏能讲清钱从哪来、要到哪去</strong>。</li>
+              <li>TMS/司库套件强项在<strong>银企与支付执行</strong>；本方案侧重<strong>预测、计划排程与偏差闭环</strong>——与风控「支付前对齐」、与 TMS <strong>相邻互补</strong>，不承诺替代整套司库。</li>
+            </ul>
+            <p class="whisper u-duo__footnote">与「支付前内控 / 风控智能体」同属司库智能化方向；<strong>本套材料主讲现金流预测、计划与头寸可见</strong>。右侧为<strong>资金流实机</strong>（<code>?embed=1#cashflow</code>）；本地起前端服务即可 Live。</p>
+          </div>
+          <div class="u-duo__visual u-duo__visual--embed">
+            <figure class="u-duo__figure">
+              <div class="stage u-duo__stage">
+                <div class="stage-chrome">Live · 资金流</div>
+                <div class="stage-viewport u-duo__chain-viewport">
+                  <iframe title="资金流界面原型" src="../../frontend/app.html?embed=1#cashflow"></iframe>
+                </div>
+              </div>
+              <figcaption>原型 · 资金流一屏（交付物样貌）</figcaption>
+            </figure>
+          </div>
+        </div>
+        <aside class="slide__notes">口语化对齐访谈；<strong>经营性现金流 + 计划编报</strong>常被选作第一个切口。客户常先问「收费模式」——接后文「三笔钱」与三档区间。</aside>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide slide--void slide--cf-pipeline">
+      <div class="slide__inner slide__inner--center slide__inner--cf-pipeline">
+        <p class="kicker">上线顺序（先管道，再智能）</p>
+        <h1 class="headline"><span class="tx-a">先把流水与口径跑通，</span><br />再上预测、偏差与助手。</h1>
+        <div class="cf-phase-row" role="group" aria-label="两阶段交付范围">
+          <div class="cf-phase-card">
+            <span class="cf-phase-card__tag">阶段 A</span>
+            <p class="cf-phase-card__lead">管道与可观测</p>
+            <p class="cf-phase-card__bullets">总览 · 资金流 · 集成监控 · 计划与预警清单</p>
+          </div>
+          <div class="cf-phase-card cf-phase-card--accent">
+            <span class="cf-phase-card__tag">阶段 B</span>
+            <p class="cf-phase-card__lead">预测与助手</p>
+            <p class="cf-phase-card__bullets">假设版本化 · 偏差闭环 · DataAgent 受控查库与导出</p>
+          </div>
+        </div>
+        <div class="u-loop" aria-label="实施顺序">
+          <span>接流水</span>
+          <span class="u-loop-arrow">→</span>
+          <span>对计划口径</span>
+          <span class="u-loop-arrow">→</span>
+          <span>跑预测</span>
+          <span class="u-loop-arrow">→</span>
+          <span>偏差预警 / 闭环</span>
+        </div>
+        <p class="cf-supplement">银企/导入与计划口径<strong>先验收</strong>再谈模型与问数；与常见「年费+实施」司库项目同逻辑。<strong>数据不稳，预测不可信</strong>。助手<strong>默认只读</strong>，写回须<strong>白名单 + 日志</strong>。</p>
+        <aside class="slide__notes">避免接口未验收就过度承诺「智能」。</aside>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--wide slide__inner--center">
+        <p class="kicker">合同怎么拆里程碑</p>
+        <h1 class="headline-sm">一阶段交付可见结果 · 二阶段加深规则与助手</h1>
+        <svg class="u-phase-svg" viewBox="0 0 840 240" aria-label="两阶段模型">
+          <defs>
+            <linearGradient id="u-ph1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#222"/><stop offset="100%" style="stop-color:#161616"/></linearGradient>
+            <linearGradient id="u-ph2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#3a2818"/><stop offset="100%" style="stop-color:#1f1510"/></linearGradient>
+          </defs>
+          <rect x="24" y="32" width="360" height="176" rx="12" fill="url(#u-ph1)" stroke="rgba(255,255,255,0.1)"/>
+          <text x="204" y="68" text-anchor="middle" fill="#3ee4d0" font-size="15" font-weight="700" font-family="Georgia,serif">一阶段</text>
+          <text x="204" y="92" text-anchor="middle" fill="#888" font-size="12" font-family="system-ui,sans-serif">数据与可观测</text>
+          <text x="44" y="122" fill="#c8c8c8" font-size="12" font-family="system-ui,sans-serif">账户流水汇聚 · 映射规则 · 计划口径</text>
+          <text x="44" y="144" fill="#c8c8c8" font-size="12" font-family="system-ui,sans-serif">总览 KPI · 集成健康 · 预警队列</text>
+          <text x="44" y="178" fill="#666" font-size="10" font-family="system-ui,sans-serif">验收：抽几天头寸，能说清数据来源</text>
+          <path d="M 398 118 L 432 118" stroke="#3ee4d0" stroke-width="3" fill="none"/>
+          <polygon points="432,118 420,112 420,124" fill="#3ee4d0"/>
+          <rect x="456" y="32" width="360" height="176" rx="12" fill="url(#u-ph2)" stroke="rgba(62,228,208,0.4)"/>
+          <text x="636" y="68" text-anchor="middle" fill="#3ee4d0" font-size="15" font-weight="700" font-family="Georgia,serif">二阶段</text>
+          <text x="636" y="92" text-anchor="middle" fill="#888" font-size="12" font-family="system-ui,sans-serif">预测与助手</text>
+          <text x="476" y="122" fill="#ddd" font-size="12" font-family="system-ui,sans-serif">预测假设可版本 · 偏差可复盘 · DataAgent 问数</text>
+          <text x="476" y="144" fill="#ddd" font-size="12" font-family="system-ui,sans-serif">导出对账包 · 预警分派 → 与司库制度对齐</text>
+          <text x="476" y="178" fill="#666" font-size="10" font-family="system-ui,sans-serif">验收：采纳率与处理时长可统计</text>
+        </svg>
+        <aside class="slide__notes">第一步可以单独签合同、单独验收。</aside>
+      </div>
+    </section>
+
+    <!-- 5 会议纪要：演示要证实三件事（Keynote 三柱，详版仍在讲稿/附录） -->
+    <section class="slide slide--void slide--cf-keynote">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-keynote">
+        <p class="kicker">演示与 POC 建议当场说清的三点</p>
+        <h1 class="headline-sm">取数、预测口径、侧栏问数——<strong class="tx-a">一条线验收</strong></h1>
+        <div class="cf-keynote-trio" role="list">
+          <article class="cf-keynote-pillar" role="listitem">
+            <span class="cf-keynote-idx" aria-hidden="true">01</span>
+            <h2 class="cf-keynote-pillar__ttl">流水从哪来、多勤更新</h2>
+            <p class="cf-keynote-pillar__body"><strong>银企直连</strong>与<strong>离线导入</strong>并存时，把接口/文件格式、对账频率（T+0 / T+1）写进合同附件；可先<strong>脱敏样例</strong>跑通再接生产。</p>
+          </article>
+          <article class="cf-keynote-pillar" role="listitem">
+            <span class="cf-keynote-idx" aria-hidden="true">02</span>
+            <h2 class="cf-keynote-pillar__ttl">预测假设谁定、怎么改</h2>
+            <p class="cf-keynote-pillar__body">业务参数、季节性、票据账期等<strong>共建字典</strong>；模型与假设<strong>有版本、可回滚</strong>；默认<strong>提示与解释</strong>，硬拦截节奏与财务制度对齐。</p>
+          </article>
+          <article class="cf-keynote-pillar" role="listitem">
+            <span class="cf-keynote-idx" aria-hidden="true">03</span>
+            <h2 class="cf-keynote-pillar__ttl">DataAgent 边界</h2>
+            <p class="cf-keynote-pillar__body">侧栏<strong>问数、解释偏差、带出依据</strong>；受控工具读库。<strong>建议不等于司库决策</strong>——全程留痕、可导出。</p>
+          </article>
+        </div>
+        <p class="cf-keynote-foot">若集团同步上<strong>支付前内控 / 风控智能体</strong>，可与本方案<strong>并行</strong>：一个管「钱怎么出去」，一个管「钱怎么<strong>预见与排程</strong>」——与 TMS <strong>执行层</strong>互补。</p>
+        <aside class="slide__notes">先数据与字段，再模型；各审批节点展示粒度可不同。</aside>
+      </div>
+    </section>
+
+    <!-- 6 Fab · 横向卡片（大：模块+价值；小：阶段+说明） -->
+    <section class="slide slide--void slide--cf-fab">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-fab">
+        <p class="kicker">功能清单（与原型菜单一致）</p>
+        <h1 class="headline-sm">模块 · 对客户有什么用 · <strong class="tx-a">分阶段交付</strong></h1>
+        <div class="cf-fab-grid" role="list">
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">总览看板</h2><span class="cf-fab-card__ph ph1">一</span></div>
+            <p class="cf-fab-card__val">头寸、流入流出、预警与闭环 KPI</p>
+            <p class="cf-fab-card__note">依赖流水清洗与口径一致</p>
+          </article>
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">资金流管理</h2><span class="cf-fab-card__ph ph1">一</span></div>
+            <p class="cf-fab-card__val">明细维护、确认与预测标记</p>
+            <p class="cf-fab-card__note">在线/离线数据源对齐</p>
+          </article>
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">分析预测</h2><span class="cf-fab-card__ph ph1">一→二</span></div>
+            <p class="cf-fab-card__val">运行模型、看偏差与情景</p>
+            <p class="cf-fab-card__note">二阶段加深假设版本与复盘</p>
+          </article>
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">资金计划</h2><span class="cf-fab-card__ph ph1">一</span></div>
+            <p class="cf-fab-card__val">排程、偏差预警与分派</p>
+            <p class="cf-fab-card__note">与业务计划联动</p>
+          </article>
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">外汇敞口</h2><span class="cf-fab-card__ph ph1">一</span></div>
+            <p class="cf-fab-card__val">名义额、对冲比例可视化</p>
+            <p class="cf-fab-card__note">可按模块裁剪交付</p>
+          </article>
+          <article class="cf-fab-card cf-fab-card--agent" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">DataAgent</h2><span class="cf-fab-card__ph ph2">二</span></div>
+            <p class="cf-fab-card__val">侧栏问数、解释、操作建议</p>
+            <p class="cf-fab-card__note">受控查库；默认只读</p>
+          </article>
+          <article class="cf-fab-card" role="listitem">
+            <div class="cf-fab-card__top"><h2 class="cf-fab-card__ttl">数据集成</h2><span class="cf-fab-card__ph ph1">一</span></div>
+            <p class="cf-fab-card__val">任务、日志与健康状态</p>
+            <p class="cf-fab-card__note">管道先行</p>
+          </article>
+        </div>
+        <aside class="slide__notes">与原型菜单一致；每行对应上一页三件事里的取数/口径/呈现。</aside>
+      </div>
+    </section>
+
+    <!-- 6b 一天怎么用 · 液态玻璃时间轴（现金流独立视觉） -->
+    <section class="slide slide--void slide--cf-dayflow">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-dayflow">
+        <header class="cf-dayflow__head">
+          <p class="kicker">按工作日走一遍（方便对内汇报）</p>
+          <h1 class="headline-sm"><span class="tx-a">晨会看头寸</span> · <span class="tx-a">白天跑预测</span> · <span class="tx-a">下班前清计划偏差</span></h1>
+        </header>
+        <div class="cf-dayflow__rail" role="list">
+          <article class="cf-dayflow__card" role="listitem">
+            <div class="cf-dayflow__card-top">
+              <div class="cf-dayflow__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              </div>
+              <div class="cf-dayflow__meta">
+                <p class="cf-dayflow__phase">AM · 头寸会前</p>
+                <h2 class="cf-dayflow__card-title">总览看净头寸</h2>
+              </div>
+            </div>
+            <p class="cf-dayflow__card-body">打开<strong>总览</strong>对齐净头寸、大额待审核与预测待确认，节奏与司库<strong>头寸会</strong>一致；关键数字一眼可讲清来源。</p>
+            <p class="cf-dayflow__foot">交付界面与字段以合同清单为准；流程可按集团制度微调。</p>
+          </article>
+          <article class="cf-dayflow__card" role="listitem">
+            <div class="cf-dayflow__card-top">
+              <div class="cf-dayflow__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 16l4-6 4 5 4-9"/></svg>
+              </div>
+              <div class="cf-dayflow__meta">
+                <p class="cf-dayflow__phase">DAY · 分析与维护</p>
+                <h2 class="cf-dayflow__card-title">预测 · 资金流 · DataAgent</h2>
+              </div>
+            </div>
+            <p class="cf-dayflow__card-body">分析师在<strong>分析预测</strong>跑情景、看偏差；业务财务维护<strong>资金流与计划</strong>；需要时由 DataAgent <strong>问数并带出依据</strong>，减少临时拼表。</p>
+            <p class="cf-dayflow__foot">模型与假设建议版本化，便于会后复盘「当时按什么口径」。</p>
+          </article>
+          <article class="cf-dayflow__card" role="listitem">
+            <div class="cf-dayflow__card-top">
+              <div class="cf-dayflow__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div class="cf-dayflow__meta">
+                <p class="cf-dayflow__phase">PM · 闭环与导出</p>
+                <h2 class="cf-dayflow__card-title">计划偏差清零</h2>
+              </div>
+            </div>
+            <p class="cf-dayflow__card-body">在<strong>计划偏差预警</strong>队列分派、记录处理；需要时<strong>导出</strong>对账与复盘包，口径与财务事先对齐，方便对内交代。</p>
+            <p class="cf-dayflow__foot">后文<strong>实机四页</strong>可当场点开演示。</p>
+          </article>
+        </div>
+        <p class="cf-dayflow__path" role="navigation" aria-label="原型菜单路径">
+          <span class="cf-dayflow__path-label">系统路径</span>
+          <a href="index.html?slide=24">总览</a><span aria-hidden="true">→</span>
+          <a href="index.html?slide=25">资金流</a><span aria-hidden="true">→</span>
+          <a href="index.html?slide=26">分析</a><span aria-hidden="true">→</span>
+          <a href="index.html?slide=27">计划</a>
+        </p>
+        <aside class="slide__notes">按天走一遍降低认知负荷；技术同事可补接口与权限细节。</aside>
+      </div>
+    </section>
+
+    <!-- 7 竞品赛道表 -->
+    <section class="slide slide--void slide--cf-competitor">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-competitor">
+        <p class="kicker">竞品地图（买方预算常怎么拆）</p>
+        <h1 class="headline-sm">定位在<strong class="tx-a">头寸可见 + 预测可解释 + DataAgent 问数</strong></h1>
+        <table class="u-matrix cf-matrix-tall">
+          <thead><tr><th>赛道</th><th>常见厂商（举例）</th><th>钱主要花在哪（口语）</th></tr></thead>
+          <tbody>
+            <tr><td><strong>国际财资</strong></td><td>Kyriba、SAP TRM、Oracle…</td><td>接银行、头寸、支付工厂——<strong>按规模加钱</strong>，实施单算</td></tr>
+            <tr><td><strong>采购与支出</strong></td><td>Coupa、Ariba、AP 自动化等</td><td><strong>年费 + 模块</strong>；实施费行业里常说≈首年软件费的 <strong>50%～150%</strong></td></tr>
+            <tr><td><strong>国内司库/ERP</strong></td><td>用友、金蝶、九恒星、拜特…</td><td><strong>许可 + 人天</strong>，集团项目常谈到百万～数百万人民币量级</td></tr>
+            <tr><td><strong>办公侧 Copilot</strong></td><td>微软、企微生态等</td><td>按席位数与算力；<strong>缺可验收的规则、字段与日志</strong>时难单独过内审</td></tr>
+            <tr><td><strong>FP&amp;A / EPM</strong></td><td>Anaplan、Workday Adaptive、Oracle EPM…</td><td>偏<strong>预算、滚动预测与业务动因</strong>；与司库「头寸+支付」常<strong>分线采购</strong>，接口与口径要对齐</td></tr>
+            <tr><td><strong>流水·预测专题（国内举例）</strong></td><td>见知 Xencio 等</td><td>垂直「现金流预测」产品叙事；多为<strong>询价 + 实施</strong>，方法论公开材料多，宜 POC 比口径</td></tr>
+          </tbody>
+        </table>
+        <p class="cf-supplement cf-supplement--links">公开线索：<a href="https://kyriba.com/use-cases/cash-forecasting/" target="_blank" rel="noopener noreferrer">Kyriba 现金预测用例</a> · <a href="https://www.kyriba.com/resource/2026-cash-forecasting-essentials/" target="_blank" rel="noopener noreferrer">2026 Essentials</a>。营销「准确率」不作验收依据；以<strong>回测 + 合同 KPI</strong>为准。</p>
+        <p class="cf-supplement cf-supplement--nav">下一页<strong>为什么是我们</strong> → 公开询价链接 → 附录估价提要（详版见报告 HTML）。</p>
+        <aside class="slide__notes">表内是结构不是报价；具体数字见公开链接与买方指南。</aside>
+      </div>
+    </section>
+
+    <!-- 8 Why me — 会议纪要 explicit -->
+    <section class="slide slide--void slide--cf-why">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-why">
+        <p class="kicker">选型时客户常问的「凭什么选你们」</p>
+        <h1 class="headline-sm">把力气花在<strong class="tx-a">能签字验收</strong>的东西上</h1>
+        <div class="u-why-grid u-why-grid--cf" role="list">
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">按司库 / CFO 话术设计</h3>
+            <p class="u-why-card__body">预测与偏差要求<strong>可解释、可追溯、可导出</strong>；DataAgent 是<strong>辅助问数</strong>，决策仍在人，责任边界写进方案。</p>
+          </article>
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">少动核心账套</h3>
+            <p class="u-why-card__body">以<strong>汇聚与呈现</strong>为主，预测与计划<strong>可插拔</strong>；<strong>不改写 ERP/司库核心过账流程</strong>——适合「先看清头寸与偏差，再谈深度集成」的集团。</p>
+          </article>
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">范围写得清</h3>
+            <p class="u-why-card__body">上一页三件事 + 本页功能表，把<strong>数据源、预测口径、假设版本、界面</strong>拆到可写进合同附件的程度，减少口头承诺。</p>
+          </article>
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">切口明确</h3>
+            <p class="u-why-card__body">聚焦<strong>现金流预测、计划排程与偏差闭环</strong>；不承诺替代完整 TMS/司库套件，也不包圆全集团所有业务线模型定制。</p>
+          </article>
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">底座 + 行业包（纪要）</h3>
+            <p class="u-why-card__body">承认<strong>行业差异</strong>：通用<strong>方法论与计算底座</strong>稳住版本与日志；可迭代的 <strong>Skills/知识包</strong>（标签、假设模板、校验）覆盖电商/大宗等逻辑。</p>
+          </article>
+          <article class="u-why-card" role="listitem">
+            <h3 class="u-why-card__ttl">可 POC 验证</h3>
+            <p class="u-why-card__body">工程可本地跑通；预测假设、DataAgent 与导出可在尽调中逐项打开，不靠「只有 PPT」。</p>
+          </article>
+        </div>
+        <p class="u-foot">叙述顺序建议：<strong>痛点（口径散、预测不可信）→ 范围（预测与计划）→ 里程碑（流水—口径—模型—助手）→ 价钱与风险</strong>。</p>
+        <aside class="slide__notes">少讲模型名，多讲字段、日志与验收标准。</aside>
+      </div>
+    </section>
+
+    <!-- 9 公开链接 -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">竞品价钱上哪查 · 公开入口</p>
+        <h1 class="headline-sm">大厂很少写「一口价」，<br />这些页面用来<strong>理解怎么议价</strong>。</h1>
+        <p class="whisper" style="max-width:52ch;margin:0 auto 0.75rem;text-align:center;font-size:0.88rem;">以下均为<strong>官网或常见买方指南</strong>，点链接可在浏览器打开（演示时需联网）。</p>
+        <table class="u-links-table">
+          <thead>
+            <tr><th>类型</th><th>说明（白话）</th><th>公开链接</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Kyriba</strong></td>
+              <td>国际 TMS 代表，多按模块/规模询价</td>
+              <td><a href="https://www.kyriba.com/pricing" target="_blank" rel="noopener noreferrer">kyriba.com/pricing</a> · <a href="https://www.kyriba.com/request-a-demo-na" target="_blank" rel="noopener noreferrer">申请演示</a></td>
+            </tr>
+            <tr>
+              <td><strong>Coupa</strong></td>
+              <td>企业支出管理，主站需销售报价</td>
+              <td><a href="https://www.coupa.com/contact-us/" target="_blank" rel="noopener noreferrer">coupa.com/contact-us</a> · <a href="https://www.coupa.com/demo-now/" target="_blank" rel="noopener noreferrer">预约演示</a></td>
+            </tr>
+            <tr>
+              <td><strong>买方指南（Coupa）</strong></td>
+              <td>第三方汇总的合同结构/区间，<strong>非官方</strong></td>
+              <td><a href="https://www.vendr.com/buyer-guides/coupa" target="_blank" rel="noopener noreferrer">vendr.com/buyer-guides/coupa</a></td>
+            </tr>
+            <tr>
+              <td><strong>SAP 财资云</strong></td>
+              <td>产品与指标型订阅说明</td>
+              <td><a href="https://www.sap.com/products/financial-management/s4hana-cloud-for-treasury-and-risk-management.html" target="_blank" rel="noopener noreferrer">SAP Treasury 产品页</a> · <a href="https://www.sap.com/products/financial-management/pricing.html" target="_blank" rel="noopener noreferrer">财务云定价入口</a></td>
+            </tr>
+            <tr>
+              <td><strong>Oracle ERP 财务</strong></td>
+              <td>集团财务/司库常与之对标</td>
+              <td><a href="https://www.oracle.com/erp/financials/" target="_blank" rel="noopener noreferrer">oracle.com/erp/financials</a></td>
+            </tr>
+            <tr>
+              <td><strong>HighRadius（AP）</strong></td>
+              <td>应付自动化，常按量/结果谈</td>
+              <td><a href="https://www.highradius.com/product/ap-automation/pricing/" target="_blank" rel="noopener noreferrer">highradius.com/.../pricing</a></td>
+            </tr>
+            <tr>
+              <td><strong>Kyriba · Cash Forecasting</strong></td>
+              <td>国际 TMS 侧现金预测与流动性叙事（英文）</td>
+              <td><a href="https://kyriba.com/use-cases/cash-forecasting/" target="_blank" rel="noopener noreferrer">用例页</a> · <a href="https://www.kyriba.com/resource/2026-cash-forecasting-essentials/" target="_blank" rel="noopener noreferrer">2026 Essentials</a></td>
+            </tr>
+            <tr>
+              <td><strong>见知 Xencio</strong></td>
+              <td>国内「现金流预测系统」公开产品说明</td>
+              <td><a href="https://www.xencio.com/cn/products/forecast/" target="_blank" rel="noopener noreferrer">xencio.com/cn/products/forecast</a></td>
+            </tr>
+            <tr>
+              <td><strong>金蝶 · AI×现金流</strong></td>
+              <td>厂商公开文章，理解话术与边界（非官价）</td>
+              <td><a href="https://www.kingdee.com/article/1997857951586480129" target="_blank" rel="noopener noreferrer">AI 如何帮助财务预测未来现金流</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="u-foot">国内用友/金蝶等多为<strong>询价 + 招标</strong>，无统一公开价；可对照本页「赛道」理解预算量级。</p>
+        <aside class="slide__notes">Trustradius 等评测站也可搜产品名 + pricing 作二手参考。</aside>
+      </div>
+    </section>
+
+    <!-- 8 TCO 俗话 → 流程图 -->
+    <section class="slide slide--void slide--u-tco">
+      <div class="slide__inner slide__inner--wide slide__inner--tco">
+        <header class="u-tco-header">
+          <p class="kicker">和主流厂商比「钱从哪来」</p>
+          <h1 class="headline-sm">采购心里要有本<strong class="tx-a">总账</strong></h1>
+        </header>
+
+        <div class="u-tco-flow" role="region" aria-label="四类选型预算结构对照">
+          <div class="u-tco-spine">
+            <span class="u-tco-spine__line" aria-hidden="true"></span>
+            <span class="u-tco-spine__label">买方预算 · 常见拆法（口语对照）</span>
+            <span class="u-tco-spine__line" aria-hidden="true"></span>
+          </div>
+
+          <div class="u-tco-lanes">
+            <article class="u-tco-card">
+              <div class="u-tco-card__step" aria-hidden="true">①</div>
+              <h2 class="u-tco-card__title">国际 SaaS</h2>
+              <p class="u-tco-card__sub">Coupa 路线等 · 支出 / P2P</p>
+              <ul class="u-tco-card__chips">
+                <li>订阅年费</li>
+                <li>模块加购</li>
+                <li>实施 ≈ 首订 50%～150%</li>
+              </ul>
+              <p class="u-tco-card__hint">接口多、清洗重 → 实施往上走</p>
+            </article>
+
+            <div class="u-tco-arrow" aria-hidden="true"><span></span></div>
+
+            <article class="u-tco-card">
+              <div class="u-tco-card__step" aria-hidden="true">②</div>
+              <h2 class="u-tco-card__title">财资 / TMS</h2>
+              <p class="u-tco-card__sub">Kyriba 路线等</p>
+              <ul class="u-tco-card__chips">
+                <li>平台订阅</li>
+                <li>银企连接费</li>
+                <li>实体数 · 地域</li>
+              </ul>
+              <p class="u-tco-card__hint">大单常 RFP · 模块与连接拆开谈</p>
+            </article>
+
+            <div class="u-tco-arrow" aria-hidden="true"><span></span></div>
+
+            <article class="u-tco-card">
+              <div class="u-tco-card__step" aria-hidden="true">③</div>
+              <h2 class="u-tco-card__title">国内 ERP / 司库</h2>
+              <p class="u-tco-card__sub">用友 · 金蝶 · 九恒星等</p>
+              <ul class="u-tco-card__chips">
+                <li>许可 / 订阅</li>
+                <li>实施人天</li>
+                <li>维保比例</li>
+              </ul>
+              <p class="u-tco-card__hint">集团范围一大 → 百万人民币量级起谈常见</p>
+            </article>
+
+            <div class="u-tco-arrow u-tco-arrow--accent" aria-hidden="true"><span></span></div>
+
+            <article class="u-tco-card u-tco-card--ours">
+              <div class="u-tco-card__step" aria-hidden="true">④</div>
+              <h2 class="u-tco-card__title">本方案 · 资金预测智能体</h2>
+              <p class="u-tco-card__sub">首年三档区间 · 结构可对外讲清</p>
+              <ul class="u-tco-card__chips">
+                <li>软件 + 实施（合并报价带）</li>
+                <li>大模型调用 <strong>单列</strong></li>
+                <li>实施 ￥2,500/人天 × 人周</li>
+              </ul>
+              <p class="u-tco-card__hint">对齐历史项目与公开市场再对外；与风控包<strong>同构</strong>、场景不同 → 见「三笔钱」与附录</p>
+            </article>
+          </div>
+        </div>
+
+        <p class="whisper u-tco-footer">模型单价、六步公式、交互计算器 → <strong>附录提要</strong> · <code>市场估价与竞品分析报告.html</code></p>
+        <aside class="slide__notes">与 Vendr 等买方数据对照时，强调「结构真实、数字会变」。</aside>
+      </div>
+    </section>
+
+    <!-- 10b 交付节奏与甘特（预判进度，专业可核对） -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">怎么交付 · 进度怎么管（不是「到时候再说」）</p>
+        <h1 class="headline-sm">典型 <strong class="tx-a">10～16 周</strong>：阶段重叠、周会盯风险</h1>
+        <p class="whisper" style="max-width:62ch;margin:0 0 0.5rem;font-size:0.8rem;line-height:1.5;">下图是<strong>预判甘特</strong>：条带越长表示占用越久；<strong>灰条可并行</strong>。实际会随接口多寡、数据质量、安全评审轮次<strong>左右平移</strong>，但<strong>里程碑名称</strong>写进 SOW，方便甲乙双方同桌对齐。</p>
+        <div class="u-gantt-wrap">
+          <svg class="u-gantt-svg" viewBox="0 0 920 200" aria-label="交付甘特 0至16周">
+            <defs>
+              <linearGradient id="g-bar1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2a2418"/><stop offset="100%" stop-color="#3d3220"/></linearGradient>
+              <linearGradient id="g-bar2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1a2a32"/><stop offset="100%" stop-color="#243a44"/></linearGradient>
+              <linearGradient id="g-bar3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a2818"/><stop offset="100%" stop-color="#5a3a22"/></linearGradient>
+            </defs>
+            <text x="24" y="22" fill="#888" font-size="11" font-family="system-ui,sans-serif">周次 0 — 16（示意）</text>
+            <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+              <line x1="80" y1="36" x2="880" y2="36"/><line x1="80" y1="76" x2="880" y2="76"/><line x1="80" y1="116" x2="880" y2="116"/><line x1="80" y1="156" x2="880" y2="156"/>
+            </g>
+            <g fill="#555" font-size="9" font-family="system-ui,sans-serif">
+              <text x="24" y="52">启动与盘点</text>
+              <text x="24" y="92">数据接通</text>
+              <text x="24" y="132">功能/UAT</text>
+              <text x="24" y="172">上线移交</text>
+            </g>
+            <rect x="80" y="40" width="120" height="22" rx="4" fill="url(#g-bar1)" stroke="rgba(243,110,33,0.35)"/>
+            <rect x="200" y="80" width="280" height="22" rx="4" fill="url(#g-bar2)" stroke="rgba(120,180,220,0.25)"/>
+            <rect x="320" y="120" width="320" height="22" rx="4" fill="url(#g-bar3)" stroke="rgba(243,110,33,0.4)"/>
+            <rect x="480" y="120" width="200" height="22" rx="4" fill="rgba(243,110,33,0.15)" stroke="rgba(243,110,33,0.35)"/>
+            <rect x="560" y="160" width="200" height="22" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+            <text x="88" y="55" fill="#ccc" font-size="9" font-family="system-ui,sans-serif">W0–2 需求·接口清单·字段映射</text>
+            <text x="208" y="95" fill="#a8c8d8" font-size="9" font-family="system-ui,sans-serif">W3–8 同步管道·监控·样例数据</text>
+            <text x="328" y="135" fill="#ddb090" font-size="9" font-family="system-ui,sans-serif">W6–12 功能联调/UAT（与左条并行）</text>
+            <text x="488" y="135" fill="#e8a070" font-size="9" font-family="system-ui,sans-serif">W8–14 DataAgent·白名单·安全评审</text>
+            <text x="568" y="175" fill="#888" font-size="9" font-family="system-ui,sans-serif">W10–16 生产·运维移交·回顾</text>
+            <text x="80" y="192" fill="#666" font-size="8" font-family="system-ui,sans-serif">项目管理：双周例会 + 风险登记（RACI 与客户共创）；关键路径常在「接口与主数据」。</text>
+          </svg>
+        </div>
+        <p class="u-pm-legend"><strong>周会建议带材料</strong>：接口变更说明、同步成功率、UAT 记录、模型/工具白名单版本、渗透或安全整改项进展（按客户等级选）。</p>
+        <aside class="slide__notes">接口多、历史数据脏 → 整体右移；可先签阶段一里程碑独立验收。</aside>
+      </div>
+    </section>
+
+    <!-- 10c 人力与人周（与报价区间逻辑一致） -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">投入多少人 · 算的是「人周」不是拍脑袋</p>
+        <h1 class="headline-sm">供应侧 <strong class="tx-a">人周</strong>量级（与三档报价对应，非线性）</h1>
+        <p class="whisper" style="max-width:68ch;margin:0 0 0.65rem;font-size:0.78rem;line-height:1.5;"><strong>人周</strong> = 1 名角色全职干 1 周；表中为<strong>预估区间</strong>，已考虑复用本仓库组件但仍要为客户做接口、规则与 UAT。客户侧通常另需 <strong>业务/财务 0.2～0.5 FTE</strong>、<strong>IT 0.2～0.4 FTE</strong> 参与访谈与联调（不计入下表供应人周）。</p>
+        <table class="u-rsrc-table">
+          <thead>
+            <tr>
+              <th>角色</th>
+              <th>试点 / POC</th>
+              <th>标准交付</th>
+              <th>集团 / 多法人</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>项目经理 / 实施经理</strong></td>
+              <td>约 4–6 人周</td>
+              <td>约 8–14 人周</td>
+              <td>约 16–24 人周</td>
+            </tr>
+            <tr>
+              <td><strong>业务分析 / 方案</strong></td>
+              <td>约 3–5 人周</td>
+              <td>约 6–10 人周</td>
+              <td>约 12–18 人周</td>
+            </tr>
+            <tr>
+              <td><strong>后端 / 数据与接口</strong></td>
+              <td>约 8–12 人周</td>
+              <td>约 18–30 人周</td>
+              <td>约 35–55 人周</td>
+            </tr>
+            <tr>
+              <td><strong>前端 / 交互</strong></td>
+              <td>约 4–6 人周</td>
+              <td>约 10–16 人周</td>
+              <td>约 18–28 人周</td>
+            </tr>
+            <tr>
+              <td><strong>测试 / UAT 支持</strong></td>
+              <td>约 3–5 人周</td>
+              <td>约 8–14 人周</td>
+              <td>约 14–22 人周</td>
+            </tr>
+            <tr class="u-rsrc-total">
+              <td><strong>合计（约）</strong></td>
+              <td><strong>22–34 人周</strong></td>
+              <td><strong>50–84 人周</strong></td>
+              <td><strong>95–147 人周</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="u-pm-legend">这张表里的<strong>人周</strong>，和<strong>下一页首年报价</strong>是对得上的：<strong>实施费</strong>按 <strong>￥2,500/人天</strong> 算，<strong>1 人周 = 5 个工作日</strong>，所以合计行里<strong>大约每 1 人周 ≈ ￥1.25 万</strong>的实施成本量级。<strong>首年总价</strong>里除了实施，还有<strong>软件许可（或订阅摊过来）和一点风险预留</strong>。客户若要<strong>专人驻场</strong>或<strong>多地同时干</strong>，人周和总价都会往上走。<strong>大模型 API</strong> 的钱见估价报告提要（约第 14～22 页），和软件钱<strong>分开算</strong>。</p>
+        <aside class="slide__notes">大客户常分阶段签合同；人周可写进合同附件，方便审计对账。</aside>
+      </div>
+    </section>
+
+    <!-- 14–22 市场估价报告（原生幻灯，非 iframe） -->
+    <section class="slide slide--void slide--appendix-cover">
+      <div class="slide__inner slide__inner--center">
+        <p class="u-appendix-tag">附录 · 9 页提要</p>
+        <p class="kicker" style="opacity:0.9">Market pricing · Competitive landscape · 2026</p>
+        <h1 class="headline-sm">市场估价体系与<strong class="tx-a">竞品分析</strong></h1>
+        <p class="whisper" style="max-width:48ch;font-size:0.86rem;line-height:1.6">按<strong>订阅/许可、实施、模型调用</strong>拆开写；对照 TMS、P2P、司库、办公 Copilot 等常见选型；文末给亿流<strong>首年区间与免责</strong>。数字来自公开资料归纳，<strong>不构成</strong>对任何厂商的报价或法律承诺。</p>
+        <p class="u-appendix-deeplink"><a href="../市场估价与竞品分析报告.html" target="_blank" rel="noopener noreferrer">打开详版 HTML（打印 / 全表 / #calc 计算器）</a></p>
+        <aside class="slide__notes">与单独 HTML 同源；讲标以本组幻灯为主，详版备查。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 2/9 · 一、估价逻辑</p>
+        <h1 class="headline-xs">先分清<strong class="tx-a">赛道</strong>，再谈数字</h1>
+        <p class="whisper" style="margin:0 0 0.75rem;font-size:0.78rem;max-width:62ch">企业采购常同时买：<strong>数据连通、流程/控制、后续运维、可选模型调用</strong>——若混在一起只比总价，容易误判结构。</p>
+        <div class="u-appendix-logic">
+          <div class="u-appendix-card"><strong>订阅 / 许可</strong><span>国际 SaaS：年费+模块+交易量；国内：许可+人天，维保常按合同额比例。</span></div>
+          <div class="u-appendix-card"><strong>实施成本</strong><span>P2P 类实施费常见 <strong>首年订阅 50%～150%</strong>；司库/TMS 看银企与 ERP 接口数。亿流交付侧对内核算<strong>￥2,500/人天</strong>（人周×5，与人周专页、首年区间一致）。</span></div>
+          <div class="u-appendix-card"><strong>模型与算力</strong><span>Token、席位或私有部署算力宜<strong>与软件费分列</strong>；带工具调用的场景通常比纯对话<strong>明显多耗 token</strong>，合同里写默认模型与切换公式。</span></div>
+          <div class="u-appendix-card"><strong>比价怎么用</strong><span>价格带是<strong>场景化锚点</strong>，不是一口价；正式报价以<strong>盖章报价单 + SOW</strong>与法务为准。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 3/9 · 二、竞品地图</p>
+        <h1 class="headline-xs">替代 / 互补 / <strong class="tx-a">并存</strong>，一次说清楚</h1>
+        <table class="u-appendix-table">
+          <thead><tr><th>分组</th><th>代表</th><th>买方常见看法 · 与亿流</th></tr></thead>
+          <tbody>
+            <tr><td>国际 TMS</td><td>Kyriba、SAP TRM、Oracle…</td><td>接银行、支付工厂；<strong>互补</strong>——我们做<strong>预测与计划看见</strong>。</td></tr>
+            <tr><td>P2P / 支出</td><td>Coupa、Ariba…</td><td>流程广；现金流侧常需与应付计划<strong>对表</strong>；我们补<strong>预测与计划专题</strong>。</td></tr>
+            <tr><td>AP 自动化</td><td>HighRadius、Basware…</td><td>发票匹配为主；我们强调<strong>头寸口径、预测假设与计划偏差</strong>闭环。</td></tr>
+            <tr><td>流水·预测专题</td><td>见知 Xencio 等</td><td>垂直产品对标；亿流差异在<strong>与司库叙事同壳 + DataAgent + 版本化假设</strong>。</td></tr>
+            <tr><td>国内司库</td><td>用友、金蝶、九恒星…</td><td><strong>强互补</strong>——预测/AI 子项目可嵌入司库门户。</td></tr>
+            <tr><td>实施集成</td><td>汉得、赛意…</td><td><strong>常一起投标</strong>：集成商接接口与数据，我们出产品与侧栏能力。</td></tr>
+            <tr><td>办公 Copilot</td><td>微软、企微生态…</td><td><strong>入口不同</strong>——可用「字段、规则版本、导出底稿」说明与专项预测屏的差异。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 4/9 · 三、公开价格带（量级）</p>
+        <h1 class="headline-xs">理解「客户心里价位」的<strong class="tx-a">锚</strong></h1>
+        <table class="u-appendix-table">
+          <thead><tr><th>对象</th><th>结构</th><th>公开市场线索（归纳）</th></tr></thead>
+          <tbody>
+            <tr><td>Coupa 类</td><td>订阅+实施</td><td>年费常谈到<strong>数万～数十万美元</strong>宽区间；实施≈首订 <strong>50%～150%</strong>。</td></tr>
+            <tr><td>Kyriba 类 TMS</td><td>订阅+连接+服务</td><td>大企业全模块常远高于「中位」样本；以 RFP 为准。</td></tr>
+            <tr><td>SAP Treasury</td><td>许可+实施</td><td>列表价多按用户档；成交看企业协议折扣。</td></tr>
+            <tr><td>HighRadius 等</td><td>按发票量等</td><td>公开讨论曾有<strong>约 $1～2/张</strong>量级（企业价另议）。</td></tr>
+            <tr><td>国内 ERP/司库</td><td>许可+人天</td><td>集团项目常<strong>百万～数百万人民币</strong>谈判常态。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 5/9 · 四、差异化</p>
+        <h1 class="headline-xs">市面组合 vs <strong class="tx-a">亿流方案</strong></h1>
+        <div class="u-appendix-diff">
+          <div class="u-appendix-diffcol">
+            <h4>市面常见</h4>
+            <ul>
+              <li>国际套件：流程强，<strong>落地/二开贵</strong>。</li>
+              <li>国内司库：执行强，<strong>预测与计划</strong>仍常散在 Excel。</li>
+              <li>纯 AI：演示快，<strong>缺规则版本与审计底稿</strong>难过审。</li>
+            </ul>
+          </div>
+          <div class="u-appendix-diffcol u-appendix-diffcol--us">
+            <h4>亿流</h4>
+            <ul>
+              <li><strong>一条资金叙事</strong>：总览、流水、计划、预测、预警同一套口径。</li>
+              <li><strong>分析侧栏可查库</strong>：DataAgent 走白名单工具，答复带来源，便于抽查。</li>
+              <li><strong>控制强度可分阶段</strong>；需要时可与司库/TMS 门户做 iframe 或单点并存。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 6/9 · 五、国内模型单价（¥/百万 tokens）</p>
+        <h1 class="headline-xs">DeepSeek · 文心 · Kimi · 通义 · 豆包 · 智谱</h1>
+        <table class="u-appendix-table u-appendix-table--dense">
+          <thead><tr><th>模型</th><th>入</th><th>出</th><th>备注</th></tr></thead>
+          <tbody>
+            <tr><td>DeepSeek chat / reasoner</td><td>2 / 4</td><td>8 / 16</td><td>官方价目；chat 工具友好。</td></tr>
+            <tr><td>千帆 DeepSeek-V3</td><td>2</td><td>8</td><td>与直开常见档一致。</td></tr>
+            <tr><td>文心 Turbo / Speed / Lite</td><td>0.8 / 0.3 / 0.2</td><td>3.2 / 0.6 / 0.4</td><td>千帆在线推理列；以文档为准。</td></tr>
+            <tr><td>Kimi v1-8k / 32k</td><td>12 / 24</td><td>12 / 24</td><td>长窗强，<strong>单价高</strong>。</td></tr>
+            <tr><td>通义 qwen-plus / turbo</td><td>≈0.8 / ≈0.3</td><td>≈2 / ≈0.6</td><td>百炼实时页为准。</td></tr>
+            <tr><td>豆包 Lite / Pro</td><td>≈0.8 / ≈4</td><td>≈2 / ≈16</td><td>归纳档；火山为准。</td></tr>
+            <tr><td>智谱 / 混元·盘古</td><td>分档</td><td>分档</td><td>控制台或企业协议。</td></tr>
+          </tbody>
+        </table>
+        <p class="u-foot" style="margin-top:0.5rem">出处：DeepSeek / 千帆 / Kimi / 阿里云 / 火山等官网；投标前以<strong>控制台</strong>为准。</p>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 7/9 · 场景选型 + 工具调用 + 六步公式</p>
+        <h1 class="headline-xs">谁适合什么模型 · token 怎么<strong class="tx-a">算</strong></h1>
+        <table class="u-appendix-table" style="margin-bottom:0.5rem">
+          <thead><tr><th>场景</th><th>倾向模型</th></tr></thead>
+          <tbody>
+            <tr><td>高频短答</td><td>文心 Speed/Lite、通义 turbo</td></tr>
+            <tr><td>工具调用 / 查库</td><td>DeepSeek-chat、通义 plus、文心 Turbo</td></tr>
+            <tr><td>长 RAG</td><td>Kimi 32k+、通义长窗</td></tr>
+            <tr><td>强推理说明</td><td>DeepSeek-reasoner、Thinking 系（账单更高）</td></tr>
+          </tbody>
+        </table>
+        <p class="whisper" style="text-align:left;margin:0 0 0.35rem;font-size:0.72rem;max-width:none"><strong>带工具调用</strong>：往往多次往返模型且 system/tools 重复计费，实际 tokens 常为<strong>同等对话量的约 2～5 倍</strong>（视实现而定）。</p>
+        <pre class="u-appendix-pre" aria-label="六步公式">S=U×q×W  |  M_in=S×T_in  |  M_out=S×T_out
+C_月=(M_in/10⁶)×P_in+(M_out/10⁶)×P_out  |  C_年=C_月×12  |  可选×(1+β)</pre>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 8/9 · 同一业务量 · 多模型年费对照</p>
+        <h1 class="headline-xs">120人×12次×22日 · 8k入+1.5k出/次</h1>
+        <table class="u-appendix-table u-appendix-table--dense">
+          <thead><tr><th>模型锚</th><th>P_in/P_out ¥/M</th><th>C_月</th><th>C_年（约）</th></tr></thead>
+          <tbody>
+            <tr><td>DeepSeek-chat</td><td>2 / 8</td><td>887 元</td><td><strong>≈1.06 万</strong></td></tr>
+            <tr><td>文心 ERNIE-4.5-Turbo-32K</td><td>0.8 / 3.2</td><td>355 元</td><td><strong>≈0.43 万</strong></td></tr>
+            <tr><td>文心 Speed Pro</td><td>0.3 / 0.6</td><td>105 元</td><td><strong>≈0.13 万</strong></td></tr>
+            <tr><td>文心 Lite Pro</td><td>0.2 / 0.4</td><td>70 元</td><td><strong>≈0.08 万</strong></td></tr>
+            <tr><td>通义 qwen-plus</td><td>0.8 / 2</td><td>298 元</td><td><strong>≈0.36 万</strong></td></tr>
+            <tr><td>Kimi moonshot-v1-8k</td><td>12 / 12</td><td>3612 元</td><td><strong>≈4.33 万</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="u-appendix-deeplink" style="margin-top:0.65rem"><a href="../市场估价与竞品分析报告.html#calc" target="_blank" rel="noopener noreferrer">交互式报价计算器（#calc）· 改人数/模型即时复算</a></p>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--appendix">
+      <div class="slide__inner slide__inner--wide">
+        <p class="kicker">附录 9/9 · 六、TCO 与免责</p>
+        <h1 class="headline-xs">首年三档（人民币）· 与软件费<strong class="tx-a">分列</strong>模型费</h1>
+        <div class="u-appendix-tco">
+          <div><strong>试点 / POC</strong><span>70–140 万</span><small>单域、少接口、助手偏只读（￥2,500/人天 × 人周）</small></div>
+          <div><strong>标准交付</strong><span>118–230 万</span><small>预测版本全、审计导出、助手嵌分析侧栏</small></div>
+          <div><strong>集团 / 多法人</strong><span>220–400 万+</span><small>高可用、细权限、口径定制</small></div>
+        </div>
+        <p class="u-foot" style="margin-top:0.75rem">运维建议首年额 <strong>18%～22%</strong>；Token 包或封顶对外报价。第三方价格与叙述均为公开归纳，<strong>不构成</strong>法律报价承诺；正式以<strong>盖章报价单 + SOW</strong>为准。</p>
+      </div>
+    </section>
+
+    <!-- 案例：阶段一为主 -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--center">
+        <p class="kicker">脱敏案例 · 超大型集团（不写公司名）</p>
+        <h1 class="headline-sm">痛点在<strong class="tx-a">阶段一</strong>：<br />断点重、硬集成太贵</h1>
+        <div class="u-case">
+          <h4>脱敏摘要（可对照贵司现状改口）</h4>
+          <p><strong>现状</strong>：多法人、多数据源，<strong>计划与预测各算各的</strong>；上大型 TMS 预算与周期压力大，先做<strong>专题预测</strong>更现实。</p>
+          <p style="margin-top:0.65rem"><strong>司库在干什么</strong>：靠<strong>Excel 拼头寸</strong>；会前临时改数，<strong>难以复盘预测依据</strong>。</p>
+          <p style="margin-top:0.65rem"><strong>一期目标</strong>：先把<strong>流水 + 计划 + 预测一屏看清</strong>，偏差可预警、可导出，<strong>不承诺</strong>一期替代全集团资金系统。</p>
+          <p style="margin-top:0.65rem"><strong>常见切口</strong>：<strong>经营性现金流 + 周/月计划</strong>。<strong>落地路径</strong>：接流水 → 对计划口径 → 上预测与预警 → DataAgent 问数。</p>
+        </div>
+        <aside class="slide__notes">隐去商号；数字与地名勿对号入座。</aside>
+      </div>
+    </section>
+
+    <!-- 11–14 demo -->
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 总览</p>
+        <h2 class="headline-xs">一屏看清<strong>头寸与趋势</strong>（可运行演示）</h2>
+        <div class="demo-layout">
+          <div class="func-panel">
+            <h3>讲解要点</h3>
+            <ol class="func-list">
+              <li><span class="num">1</span>浏览器里是可运行界面，非动画稿。</li>
+              <li><span class="num">2</span>交付替换为客户接口与权限。</li>
+            </ol>
+            <p class="pain-hook">断网或沙箱阻 iframe 时，可改用浏览器全屏截图本仓库 <code style="font-size:0.65rem">frontend/app.html</code> 顶屏。</p>
+          </div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">Live · 总览看板</div>
+            <div class="stage-viewport">
+              <iframe title="总览" src="../../frontend/app.html?embed=1#dashboard"></iframe>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes">起 backend 或 serve-frontend.bat。</aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 资金流</p>
+        <h2 class="headline-xs">流入流出与确认状态，<strong>一表看清</strong></h2>
+        <div class="demo-layout">
+          <div class="func-panel"><h3>讲解要点</h3><p class="pain-hook" style="border:0;padding:0;margin:0">强调在线/离线数据源、确认与预测标记，减少临时拼表。</p></div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">Live · 资金流</div>
+            <div class="stage-viewport">
+              <iframe title="资金流" src="../../frontend/app.html?embed=1#cashflow"></iframe>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 分析预测 + DataAgent</p>
+        <h2 class="headline-xs">跑分析、看偏差，<strong>侧栏问数带依据</strong></h2>
+        <div class="demo-layout">
+          <div class="func-panel"><h3>讲解要点</h3><p class="pain-hook" style="border:0;padding:0;margin:0">上线前须完成权限、安全与模型评审；DataAgent 工具白名单写进运维手册。</p></div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">Live · 分析 + DataAgent</div>
+            <div class="stage-viewport">
+              <iframe title="分析预测" src="../../frontend/app.html?embed=1&amp;ai=1#analysis"></iframe>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <section class="slide slide--split slide--demo">
+      <div class="slide__inner">
+        <p class="kicker">实机 · 资金计划</p>
+        <h2 class="headline-xs">计划与实际的偏差，<strong>预警分派</strong>可跟踪</h2>
+        <div class="demo-layout">
+          <div class="func-panel"><h3>讲解要点</h3><p class="pain-hook" style="border:0;padding:0;margin:0">对标计划执行复盘：谁跟进、何时闭环，可导出。</p></div>
+          <div class="stage demo-stage">
+            <div class="stage-chrome">Live · 资金计划</div>
+            <div class="stage-viewport">
+              <iframe title="资金计划" src="../../frontend/app.html?embed=1#plan"></iframe>
+            </div>
+          </div>
+        </div>
+        <aside class="slide__notes"></aside>
+      </div>
+    </section>
+
+    <!-- 对客户：收费口径 — 横向三柱 + 小号补充 -->
+    <section class="slide slide--void slide--cf-money">
+      <div class="slide__inner slide__inner--wide slide__inner--cf-money">
+        <p class="kicker">客户常问：你们怎么收费？</p>
+        <h1 class="headline-sm">拆开讲<strong class="tx-a">三笔钱</strong>就好懂：<br />产品 · 落地 · 大模型</h1>
+        <div class="cf-money-trio" role="list">
+          <article class="cf-money-pillar" role="listitem">
+            <span class="cf-money-pillar__idx" aria-hidden="true">01</span>
+            <h2 class="cf-money-pillar__ttl">产品</h2>
+            <p class="cf-money-pillar__lead">能用的界面与功能</p>
+            <p class="cf-money-pillar__body">总览、资金流、分析预测、计划、预警导出、侧栏 DataAgent。合同写清<strong>范围与验收</strong>——不是只买「一个模型接口」。</p>
+          </article>
+          <article class="cf-money-pillar" role="listitem">
+            <span class="cf-money-pillar__idx" aria-hidden="true">02</span>
+            <h2 class="cf-money-pillar__ttl">落地</h2>
+            <p class="cf-money-pillar__lead">按人周实施</p>
+            <p class="cf-money-pillar__body">接系统、洗数据看复杂度。<strong>人周 × 5 天 × ￥2,500/人天</strong>；可先试点；与<strong>下一页三档区间</strong>同一套逻辑。</p>
+          </article>
+          <article class="cf-money-pillar" role="listitem">
+            <span class="cf-money-pillar__idx" aria-hidden="true">03</span>
+            <h2 class="cf-money-pillar__ttl">大模型</h2>
+            <p class="cf-money-pillar__lead">用量单列</p>
+            <p class="cf-money-pillar__body">问数、解释走 Token。<strong>与软件费分开报</strong>；建议<strong>包年或封顶</strong>，避免用量扯皮。</p>
+          </article>
+        </div>
+        <p class="cf-money-tagline">产品 + 落地 + 模型 · <strong>人签字、责任在人</strong> · 系统负责提醒、留痕、可查可导出</p>
+        <p class="cf-supplement">签法补充：<strong>买断 / 订阅</strong>与<strong>算力是否单列</strong>写进合同；倾向应用范围写死、Token 单列。</p>
+        <p class="cf-supplement cf-supplement--mute">对内定价参考历史交付与公开市场后给三档区间；细账见附录与 <code>市场估价与竞品分析报告.html#calc</code>。</p>
+        <aside class="slide__notes">客户只盯着「Token 多少钱」时：告诉他那是第三笔；前两笔定了，才知道能不能按期做出来、怎么验收。</aside>
+      </div>
+    </section>
+
+    <!-- 报价（模型测算见附录幻灯 18–21） -->
+    <section class="slide slide--void slide--u-price">
+      <div class="slide__inner slide__inner--center">
+        <p class="kicker">首年大概什么价位（人民币）</p>
+        <h1 class="headline-sm"><strong class="tx-a">软件 + 落地实施</strong>，先给您<strong class="tx-a">三档区间</strong></h1>
+        <div class="u-price-wrap">
+          <div class="u-price-tier">
+            <h3>试点 / POC</h3>
+            <div class="u-yuan">约 70 – 140 万</div>
+            <p>先做单法人或单业务线，以看板 + 计划为主，助手多看、少改数据</p>
+          </div>
+          <div class="u-price-tier">
+            <h3>标准交付</h3>
+            <div class="u-yuan">约 118 – 230 万</div>
+            <p>数据源多、预测场景做全、计划偏差闭环、DataAgent 深度使用</p>
+          </div>
+          <div class="u-price-tier">
+            <h3>集团 / 多法人</h3>
+            <div class="u-yuan">约 220 – 400 万+</div>
+            <p>多家公司、要高稳定、权限细、报表口径要单独定制</p>
+          </div>
+        </div>
+        <p class="u-price-foot">三个数怎么来的：<strong>买软件的价钱</strong>（含一点预留）<strong>加上</strong> <strong>实施人周 × 5 天 × ￥2,500/人天</strong>（总人数周见专页表格）。<strong>每年运维</strong>一般再按首年合同的 <strong>18%～22%</strong> 另谈。<strong>大模型调用费</strong>按附录和报告里的计算器单独估，建议跟客户谈<strong>包年或封顶</strong>。口头都是参考，<strong>最终以盖章报价单和合同里写清的范围为准</strong>。</p>
+        <aside class="slide__notes">口头只报区间，上限别拍死。</aside>
+      </div>
+    </section>
+
+    <!-- 18 实践路径 — 不叫「总结回顾」，给非 IT 的 CFO -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--center">
+        <p class="kicker">实践路径（CFO 常问：多久、多麻烦、花多少）</p>
+        <h1 class="headline-sm">常见 <span class="tx-a">10 – 16 周</span>，分四段走完</h1>
+        <div class="u-time">
+          <div class="u-time-step"><div class="wk">0 – 2 周</div><p>摸清接口、字段、异常类型，签字开干</p></div>
+          <div class="u-time-step"><div class="wk">3 – 8 周</div><p>数据接通，总览 + 资金流 + 计划清单试跑</p></div>
+          <div class="u-time-step"><div class="wk">6 – 12 周</div><p>预测版本、偏差阈值、DataAgent 白名单（可并行）</p></div>
+          <div class="u-time-step"><div class="wk">10 – 16 周</div><p>上生产、定运维、商量下一步要不要强控</p></div>
+        </div>
+        <p class="whisper" style="margin-top:1.25rem">想快一点可以先拿<strong>脱敏样例</strong>搭一版给大家看，再签正式接系统。更细的<strong>阶段条带与并行关系</strong>见前文<strong>甘特页</strong>。</p>
+        <aside class="slide__notes">历史数据乱、接口多，就往区间上限靠。</aside>
+      </div>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide slide--void">
+      <div class="slide__inner slide__inner--center">
+        <p class="kicker">结束</p>
+        <h1 class="headline-sm">谢谢。<br /><span class="tx-a">本套材料含：</span>叙事主线、可点实机、甘特与人周、竞品与公开询价线索、<strong>估价提要（9 页）</strong>及首年区间。</h1>
+        <p class="whisper">估价报告提要 <a href="index.html?slide=14" class="deck-link">?slide=14</a> · 详版+计算器 <a href="../市场估价与竞品分析报告.html#calc" class="deck-link-muted">报告 HTML #calc</a> · 提案包 <a href="../index.html" class="deck-link-muted">提案与估价/index.html</a></p>
+        <aside class="slide__notes">工程说明见仓库 README。</aside>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" id="deck-chapters-config">
+  [
+    {"slide": 1, "label": "封面"},
+    {"slide": 2, "label": "痛点"},
+    {"slide": 3, "label": "方案"},
+    {"slide": 8, "label": "竞品"},
+    {"slide": 12, "label": "交付"},
+    {"slide": 14, "label": "附录"},
+    {"slide": 24, "label": "实机"},
+    {"slide": 28, "label": "商务"}
+  ]
+  </script>
+  <div class="deck-ui">
+    <a class="deck-exit" href="../index.html">返回</a>
+    <div class="deck-progress-wrap">
+      <div class="deck-progress" aria-hidden="true"><span></span></div>
+      <div class="deck-chapters" id="deck-chapters-ticks" aria-label="章节导航"></div>
+    </div>
+    <span class="deck-meta" id="deck-idx">1 / 31</span>
+    <span class="deck-hint">→ 或点击 · 底栏圆点跳章节 · N 讲稿</span>
+  </div>
+  <script>
+  (function () {
+    if (/\bslide=11\b/.test(location.search)) {
+      location.replace(location.pathname + location.search.replace(/slide=11\b/, "slide=14"));
+    }
+  })();
+  </script>
+  <script src="../../PPT/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>亿流 · 财务 Agent 市场调研与定价策略</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="deck.css?v=202604139" />
+  <style>
+    .mr-kpi-row{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0}
+    .mr-kpi{text-align:center;padding:1rem 1.5rem;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);min-width:140px;flex:1;max-width:220px}
+    .mr-kpi__val{font-size:2rem;font-weight:700;color:#f36e21;line-height:1.1}
+    .mr-kpi__val--sub{font-size:1.1rem;color:#a3a3a3;margin-top:.15rem}
+    .mr-kpi__label{font-size:.78rem;color:#737373;margin-top:.35rem}
+    .mr-bar{display:flex;align-items:end;gap:6px;height:80px;margin:0 auto;justify-content:center}
+    .mr-bar__col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:40px}
+    .mr-bar__fill{width:32px;border-radius:4px 4px 0 0;transition:height .3s}
+    .mr-bar__lbl{font-size:.65rem;color:#737373}
+    .mr-region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+    .mr-region{padding:1rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-region__title{font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:#e8e8e8}
+    .mr-region__stat{font-size:.75rem;color:#a3a3a3;line-height:1.6}
+    .mr-region__stat strong{color:#f4f4f3}
+    .mr-region--accent{border-color:rgba(243,110,33,.35);background:rgba(243,110,33,.06)}
+    .mr-tier-strip{display:flex;gap:.75rem;margin:1rem 0}
+    .mr-tier{flex:1;padding:.85rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-tier--hi{border-color:rgba(243,110,33,.4);background:rgba(243,110,33,.06)}
+    .mr-tier__tag{font-size:.7rem;color:#737373;margin-bottom:.3rem}
+    .mr-tier__city{font-size:.85rem;font-weight:600;color:#e8e8e8;margin-bottom:.4rem}
+    .mr-tier__range{font-size:.95rem;font-weight:700;color:#f36e21}
+    .mr-tier__note{font-size:.7rem;color:#737373;margin-top:.3rem}
+    .mr-ladder{display:flex;align-items:end;gap:0;margin:1rem auto;justify-content:center}
+    .mr-ladder__step{display:flex;flex-direction:column;align-items:center;padding:.5rem .8rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+    .mr-ladder__step:first-child{border-radius:0 0 0 10px}
+    .mr-ladder__step:last-child{border-radius:0 10px 0 0}
+    .mr-ladder__step--accent{border-color:rgba(243,110,33,.4);background:rgba(243,110,33,.08)}
+    .mr-ladder__mult{font-size:1.1rem;font-weight:700;color:#f36e21}
+    .mr-ladder__name{font-size:.72rem;color:#a3a3a3;margin-top:.2rem}
+    .mr-ladder__acc{font-size:.62rem;color:#737373;margin-top:.15rem}
+    .mr-split-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+    .mr-split-2__col{padding:1rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+    .mr-split-2__col h3{font-size:.85rem;font-weight:600;color:#e8e8e8;margin:0 0 .5rem}
+    .mr-industry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1rem 0}
+    .mr-ind{padding:.75rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center}
+    .mr-ind__name{font-size:.78rem;font-weight:600;color:#e8e8e8;margin-bottom:.3rem}
+    .mr-ind__pct{font-size:1.3rem;font-weight:700;color:#f36e21}
+    .mr-ind__sub{font-size:.65rem;color:#737373;margin-top:.2rem}
+    .mr-ind__range{font-size:.72rem;color:#a3a3a3;margin-top:.3rem}
+    @media(max-width:900px){.mr-region-grid,.mr-industry-grid{grid-template-columns:repeat(2,1fr)}.mr-tier-strip{flex-direction:column}}
+  </style>
+</head>
+<body class="deck-jobs">
+  <script type="application/json" id="deck-chapters-config">
+    [
+      {"label": "市场总览", "slide": 1, "hint": "规模 · 渗透 · 增速"},
+      {"label": "地区分析", "slide": 3, "hint": "全球三大市场 · 国内三级"},
+      {"label": "企业分层", "slide": 5, "hint": "规模 × 预算 · 行业差异"},
+      {"label": "定价分层", "slide": 7, "hint": "功能 · 技术 · 模型能力"},
+      {"label": "策略建议", "slide": 10, "hint": "定价矩阵 · 机会与风险"}
+    ]
+  </script>
+
+  <div id="deck" aria-live="polite">
+
+    <!-- ═══ S1 封面 ═══ -->
+    <section class="slide slide--void slide--story slide--hero slide--hero--refined is-on">
+      <div class="slide__inner slide__inner--hero-tight">
+        <p class="story-hook story-hook--hero">YILIU · 市场调研</p>
+        <p class="story-line story-line--hero">
+          <span class="hero-line__base">财务 Agent ·</span><span class="hero-line__accent"> 定价策略</span>
+        </p>
+        <p class="story-sub story-sub--hero">地区接受度 · 企业预算 · 竞品定价 · 功能分层 · 技术溢价</p>
+        <aside class="slide__notes">数据截至 2026 Q1；来源：艾瑞咨询、Gartner、各厂商公开资料。</aside>
+      </div>
+    </section>
+
+    <!-- ═══ S2 市场规模 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">市场总览</p>
+        <p class="story-hook">中国金融 AI Agent 市场</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">2025 <strong class="tx-a">287 亿</strong> → 2026 <strong class="tx-a">450 亿</strong></h1>
+        <div class="mr-kpi-row">
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">287<span style="font-size:.9rem;color:#a3a3a3">亿</span></div>
+            <div class="mr-kpi__label">2025 市场规模</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">450<span style="font-size:.9rem;color:#a3a3a3">亿</span></div>
+            <div class="mr-kpi__label">2026 预计规模</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">57%</div>
+            <div class="mr-kpi__label">YoY 增速</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val">12%<span style="font-size:.85rem;color:#a3a3a3"> → </span>23%</div>
+            <div class="mr-kpi__label">渗透率跃升</div>
+          </div>
+        </div>
+        <p class="viz-caption" style="margin-top:1rem;">中国企业 AI 平均投入 <strong>4,280 万美元</strong>（全球第一，超美国 3,700 万）· AI 占 IT 预算 <strong>12%</strong>（约 6,600 万元）· 预计 2026 增长 <strong>21%</strong></p>
+        <p class="memo-caption">数据来源：艾瑞咨询 2025；员工 AI 采用率中国 <strong>87%</strong>（全球 72%）。</p>
+      </div>
+    </section>
+
+    <!-- ═══ S3 全球三大市场 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">地区分析 · 全球</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">三大市场 · <span class="tx-a">特征对比</span></h1>
+        <div class="mr-region-grid">
+          <div class="mr-region">
+            <div class="mr-region__title">北美</div>
+            <div class="mr-region__stat">
+              贡献全球增长 <strong>42%</strong><br />
+              数字银行普及 <strong>70-75%</strong><br />
+              选型首看<strong>性能</strong>（60%）其次<strong>安全</strong>（52%）<br />
+              价格敏感度 <strong>低</strong><br />
+              基础产品 <strong>$1,800-3,600/年</strong><br />
+              企业级 <strong>$80K-300K/年</strong>
+            </div>
+          </div>
+          <div class="mr-region">
+            <div class="mr-region__title">欧洲</div>
+            <div class="mr-region__stat">
+              南北分化：挪威 AI 普及 <strong>46%</strong> vs 意大利 <strong>8%</strong><br />
+              劳动力成本差 <strong>4.7×</strong>（卢森堡€57 vs 保加利亚€12）<br />
+              <strong>合规驱动</strong>（GDPR / MiCA）<br />
+              模块化年费制：Sage ≈ <strong>£15K/年</strong><br />
+              按用户制：D365 ≈ <strong>£39-55K/年</strong>
+            </div>
+          </div>
+          <div class="mr-region mr-region--accent">
+            <div class="mr-region__title">亚太（重点）</div>
+            <div class="mr-region__stat">
+              AI 周使用率 <strong>78%</strong>（全球最高）<br />
+              中国员工采用率 <strong>87%</strong><br />
+              <strong>自下而上</strong>采用模式<br />
+              性价比导向，比欧美<strong>低 30-50%</strong><br />
+              东南亚金融科技增速 <strong>5×</strong>（印尼 9%→49%）
+            </div>
+          </div>
+        </div>
+        <p class="memo-caption">北美「性能至上」· 欧洲「合规优先」· 亚太「性价比 + 速度」。</p>
+      </div>
+    </section>
+
+    <!-- ═══ S4 国内三级市场 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">地区分析 · 国内</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">三级城市 · <span class="tx-a">定价分层</span></h1>
+        <div class="mr-tier-strip">
+          <div class="mr-tier mr-tier--hi">
+            <div class="mr-tier__tag">第一梯队</div>
+            <div class="mr-tier__city">北上广深</div>
+            <div class="mr-tier__range">50 – 500 万/年</div>
+            <div class="mr-tier__note">AI 企业 2,400+（北京占全国 40%）· 核心产业 3,500 亿 · 价格不敏感 · 高端精品路线 · 上浮 20-30%</div>
+          </div>
+          <div class="mr-tier">
+            <div class="mr-tier__tag">第二梯队</div>
+            <div class="mr-tier__city">杭州 成都 武汉 西安 …</div>
+            <div class="mr-tier__range">10 – 100 万/年</div>
+            <div class="mr-tier__note">促销参与度高出一线 25% · 5,000 元以下占比 43% · 性价比平衡 · 标准定价</div>
+          </div>
+          <div class="mr-tier">
+            <div class="mr-tier__tag">第三梯队</div>
+            <div class="mr-tier__city">二线城市</div>
+            <div class="mr-tier__range">1 – 30 万/年</div>
+            <div class="mr-tier__note">价格极敏感 · 需求分化（传统 vs 新兴）· 成本领先路线 · 下浮 30-50%</div>
+          </div>
+        </div>
+        <div class="memo-table-wrap" style="margin-top:.5rem">
+          <table class="memo-table" aria-label="城市梯队典型产品价带">
+            <thead><tr><th>产品类型</th><th>一线（万/年）</th><th>新一线（万/年）</th><th>二线（万/年）</th></tr></thead>
+            <tbody>
+              <tr><td>财务共享中心 Agent</td><td><strong>15-50</strong></td><td>5-20</td><td>1-8</td></tr>
+              <tr><td>AI 财报分析</td><td><strong>8-30</strong></td><td>3-12</td><td>1-5</td></tr>
+              <tr><td>司库数字员工</td><td><strong>50-200</strong></td><td>15-60</td><td>5-20</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ S5 企业规模 × 预算 ═══ -->
+    <section class="slide slide--void slide--memo">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">企业分层 · 规模 × 预算</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">五级企业 · <span class="tx-a">预算矩阵</span></h1>
+        <div class="memo-table-wrap">
+          <table class="memo-table" aria-label="企业规模与预算">
+            <thead>
+              <tr>
+                <th>规模</th>
+                <th>人数</th>
+                <th>年度预算</th>
+                <th>核心需求</th>
+                <th>决策特征</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>微型</strong></td>
+                <td>1-5</td>
+                <td><strong>99-999 元</strong></td>
+                <td>记账 + 报税</td>
+                <td>企业主直接决策 · 1 周内</td>
+              </tr>
+              <tr>
+                <td><strong>小型</strong></td>
+                <td>5-50</td>
+                <td><strong>1,000-5,000 元</strong></td>
+                <td>全流程 + 基础分析</td>
+                <td>财务主管决策 · 1-2 周 · 87% 试用后转化</td>
+              </tr>
+              <tr>
+                <td><strong>中型</strong></td>
+                <td>50-200</td>
+                <td><strong>3-30 万元</strong></td>
+                <td>AI 分析 + 预测 + 风控</td>
+                <td>财务主导 + IT 评估 · 1-3 月</td>
+              </tr>
+              <tr>
+                <td><strong>大型</strong></td>
+                <td>200-1000</td>
+                <td><strong>50-200 万元</strong></td>
+                <td>全模块 + 定制开发</td>
+                <td>多部门协同 · 6-12 月 · 65% 要求定制</td>
+              </tr>
+              <tr>
+                <td><strong>集团</strong></td>
+                <td>1000+</td>
+                <td><strong>100-2000 万元</strong></td>
+                <td>多组织 · 多币种 · 复杂场景</td>
+                <td>项目制 · 6-12 月 · TCO/ROI 评估</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="memo-caption">68% 中小企业预算 &lt;1 万，其中 5,000 以下占 43% · 大型企业评估权重：技术 30% / 功能 25% / 服务 20% / 成本 15% / 风险 10%</p>
+      </div>
+    </section>
+
+    <!-- ═══ S6 行业差异 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">企业分层 · 行业差异</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">四大行业 · <span class="tx-a">AI 投入与价带</span></h1>
+        <div class="mr-industry-grid">
+          <div class="mr-ind">
+            <div class="mr-ind__name">金融</div>
+            <div class="mr-ind__pct">10-30%</div>
+            <div class="mr-ind__sub">AI 占科技预算</div>
+            <div class="mr-ind__range">50-500 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">制造</div>
+            <div class="mr-ind__pct">22%</div>
+            <div class="mr-ind__sub">AI 占 IT 预算</div>
+            <div class="mr-ind__range">30-200 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">零售</div>
+            <div class="mr-ind__pct">2-4%</div>
+            <div class="mr-ind__sub">数字化占营收</div>
+            <div class="mr-ind__range">20-150 万/年</div>
+          </div>
+          <div class="mr-ind">
+            <div class="mr-ind__name">医疗</div>
+            <div class="mr-ind__pct">7→12%</div>
+            <div class="mr-ind__sub">3 年内 AI 预算翻倍</div>
+            <div class="mr-ind__range">20-150 万/年</div>
+          </div>
+        </div>
+        <p class="viz-caption">金融「<strong>高投入 · 强合规</strong>」· 制造「<strong>效率驱动 · 成本敏感</strong>」· 零售「<strong>库存 + 促销</strong>」· 医疗「<strong>增速最快 · 强监管</strong>」</p>
+      </div>
+    </section>
+
+    <!-- ═══ S7 功能层定价 ═══ -->
+    <section class="slide slide--void slide--memo">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">定价分层 · 功能</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">三级功能 · <span class="tx-a">溢价梯度</span></h1>
+        <div class="memo-table-wrap">
+          <table class="memo-table" aria-label="功能层定价">
+            <thead>
+              <tr><th>层级</th><th>代表功能</th><th>技术特征</th><th>价格区间</th><th>溢价</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>基础层</strong></td>
+                <td>发票 OCR · 凭证生成 · 银行对账</td>
+                <td>规则引擎 + RPA</td>
+                <td>500 – 10,000 元/年</td>
+                <td>1×</td>
+              </tr>
+              <tr>
+                <td><strong>中级层</strong></td>
+                <td>智能分析 · 现金流预测 · 风险预警</td>
+                <td>ML / 时间序列 / 异常检测</td>
+                <td>3 – 40 万/年</td>
+                <td>2-6×</td>
+              </tr>
+              <tr>
+                <td><strong>高级层</strong></td>
+                <td>AI 决策支持 · 全球司库 · 智能风控</td>
+                <td>强化学习 · 图网络 · LLM + RAG</td>
+                <td>50 – 1000 万/年</td>
+                <td>10-100×</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="viz-caption" style="margin-top:.65rem;">现金流预测技术分层定价示例：</p>
+        <div class="mr-ladder">
+          <div class="mr-ladder__step" style="height:60px">
+            <div class="mr-ladder__mult">3-8 万</div>
+            <div class="mr-ladder__name">移动平均</div>
+          </div>
+          <div class="mr-ladder__step" style="height:80px">
+            <div class="mr-ladder__mult">8-20 万</div>
+            <div class="mr-ladder__name">ARIMA</div>
+          </div>
+          <div class="mr-ladder__step mr-ladder__step--accent" style="height:105px">
+            <div class="mr-ladder__mult">20-50 万</div>
+            <div class="mr-ladder__name">LSTM 深度学习</div>
+          </div>
+          <div class="mr-ladder__step mr-ladder__step--accent" style="height:130px">
+            <div class="mr-ladder__mult">50 万+</div>
+            <div class="mr-ladder__name">集成 + 专家系统</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ S8 AI 模型能力 × 定价 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">定价分层 · AI 模型</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">模型能力 · <span class="tx-a">价格倍数</span></h1>
+        <div class="memo-table-wrap">
+          <table class="memo-table" aria-label="AI 模型定价">
+            <thead>
+              <tr><th>模型类型</th><th>价格倍数</th><th>准确率</th><th>回报期</th><th>适用</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>规则引擎</td><td><strong>1×</strong></td><td>70-80%</td><td>3-6 月</td><td>简单分类 · 基础验证</td></tr>
+              <tr><td>传统 ML</td><td><strong>2-3×</strong></td><td>85-95%</td><td>6-12 月</td><td>风险评分 · 预测分析</td></tr>
+              <tr><td>深度学习</td><td><strong>5-10×</strong></td><td>95-99%</td><td>12-24 月</td><td>图像识别 · 语音处理</td></tr>
+              <tr><td>大语言模型</td><td><strong>10-50×</strong></td><td>90-98%（可解释）</td><td>18-36 月</td><td>自然语言 · 创意生成</td></tr>
+              <tr><td>多模态大模型</td><td><strong>20-100×</strong></td><td>最高</td><td>长期</td><td>复杂决策 · 全场景</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="viz-caption" style="margin-top:.65rem;">大语言模型部署成本参考：</p>
+        <div class="mr-kpi-row" style="margin-top:.5rem">
+          <div class="mr-kpi">
+            <div class="mr-kpi__val" style="font-size:1.2rem">0.01-0.1</div>
+            <div class="mr-kpi__val--sub">元/千Token</div>
+            <div class="mr-kpi__label">基础版 API</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val" style="font-size:1.2rem">0.1-1.0</div>
+            <div class="mr-kpi__val--sub">元/千Token</div>
+            <div class="mr-kpi__label">高级版 API</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val" style="font-size:1.2rem">50-200</div>
+            <div class="mr-kpi__val--sub">万/年</div>
+            <div class="mr-kpi__label">私有化基础版</div>
+          </div>
+          <div class="mr-kpi">
+            <div class="mr-kpi__val" style="font-size:1.2rem">200-1000</div>
+            <div class="mr-kpi__val--sub">万/年</div>
+            <div class="mr-kpi__label">企业定制版</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ S9 技术架构定价 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">定价分层 · 架构</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">SaaS <span class="tx-a">vs</span> 私有化</h1>
+        <div class="mr-split-2">
+          <div class="mr-split-2__col">
+            <h3>公有云 SaaS</h3>
+            <table class="memo-table" aria-label="SaaS 成本">
+              <tbody>
+                <tr><td>初始投入</td><td><strong>0-5 万</strong></td></tr>
+                <tr><td>年度费用</td><td><strong>10-50 万</strong></td></tr>
+                <tr><td>3 年 TCO</td><td><strong>30-155 万</strong></td></tr>
+                <tr><td>上线周期</td><td><strong>1-2 周</strong></td></tr>
+              </tbody>
+            </table>
+            <p class="memo-caption" style="margin-top:.5rem">低门槛 · 弹性扩缩 · 自动升级</p>
+          </div>
+          <div class="mr-split-2__col" style="border-color:rgba(243,110,33,.3)">
+            <h3>私有化部署</h3>
+            <table class="memo-table" aria-label="私有化成本">
+              <tbody>
+                <tr><td>授权费</td><td><strong>200-1000 万</strong></td></tr>
+                <tr><td>年维护</td><td><strong>15-20%</strong></td></tr>
+                <tr><td>实施费</td><td><strong>30-50%</strong></td></tr>
+                <tr><td>3 年 TCO</td><td><strong>110-500 万</strong></td></tr>
+              </tbody>
+            </table>
+            <p class="memo-caption" style="margin-top:.5rem">数据合规 · 深度定制 · 长期成本优</p>
+          </div>
+        </div>
+        <p class="viz-caption">中小企业首选 <strong>SaaS 订阅</strong>降门槛；金融 / 央国企首选<strong>私有化</strong>满足合规。</p>
+      </div>
+    </section>
+
+    <!-- ═══ S10 定价策略矩阵 ═══ -->
+    <section class="slide slide--void slide--memo">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">策略建议 · 定价矩阵</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">最终建议 · <span class="tx-a">四维矩阵</span></h1>
+        <div class="memo-table-wrap">
+          <table class="memo-table" aria-label="定价策略矩阵">
+            <thead>
+              <tr><th>维度</th><th>策略</th><th>具体建议</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>地区</strong></td>
+                <td>差异化定价</td>
+                <td>一线 <strong>+20-30%</strong> · 新一线 <strong>标准</strong> · 二线 <strong>-30-50%</strong> · 海外按购买力调整</td>
+              </tr>
+              <tr>
+                <td><strong>规模</strong></td>
+                <td>五级分层</td>
+                <td>入门 <strong>99-9,999 元</strong> · 中小 <strong>1-30 万</strong> · 大型 <strong>50-500 万</strong> · 集团 <strong>100-2000 万</strong></td>
+              </tr>
+              <tr>
+                <td><strong>技术</strong></td>
+                <td>能力溢价</td>
+                <td>规则 <strong>1×</strong> · ML <strong>1.5-3×</strong> · 深度学习 <strong>3-5×</strong> · 大模型 <strong>5-10×</strong></td>
+              </tr>
+              <tr>
+                <td><strong>模式</strong></td>
+                <td>场景适配</td>
+                <td>中小 → <strong>SaaS 订阅</strong> · 大型 → <strong>授权+服务</strong> · 集团 → <strong>项目制+长期绑定</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="viz-caption" style="margin-top:.65rem;">总体策略：<strong>「价值定价为主、成本加成为辅」</strong> · 产品矩阵：<strong>基础版引流 · 标准版盈利 · 高级版溢价</strong></p>
+      </div>
+    </section>
+
+    <!-- ═══ S11 机会与风险 ═══ -->
+    <section class="slide slide--void slide--viz">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">策略建议 · 机会与风险</p>
+        <h1 class="headline-sm" style="margin:0 0 .5rem;">市场机会 <span class="tx-a">×</span> 潜在风险</h1>
+        <div class="mr-split-2">
+          <div class="mr-split-2__col" style="border-color:rgba(34,197,94,.3)">
+            <h3 style="color:#4ade80">机会</h3>
+            <ul style="list-style:none;padding:0;margin:0;font-size:.8rem;color:#a3a3a3;line-height:1.8">
+              <li>▸ <strong>政策红利</strong> — 数字化转型 + 监管科技 + 新基建</li>
+              <li>▸ <strong>技术成熟</strong> — LLM 能力跃升 · 开源降门槛 · 云成本下降</li>
+              <li>▸ <strong>需求爆发</strong> — 人力成本↑ · 年轻财务人接受度高 · 效率刚需</li>
+              <li>▸ <strong>国际化</strong> — 中国 AI 局部领先 · 一带一路 · 跨境电商</li>
+            </ul>
+          </div>
+          <div class="mr-split-2__col" style="border-color:rgba(239,68,68,.3)">
+            <h3 style="color:#f87171">风险</h3>
+            <ul style="list-style:none;padding:0;margin:0;font-size:.8rem;color:#a3a3a3;line-height:1.8">
+              <li>▸ <strong>技术迭代</strong> — 产品可能快速过时 → 持续研发投入</li>
+              <li>▸ <strong>价格战</strong> — 竞争者增多 → 差异化 + 技术壁垒</li>
+              <li>▸ <strong>信任缺口</strong> — 企业对 AI 安全性存疑 → 安全认证 + 案例</li>
+              <li>▸ <strong>合规收紧</strong> — 数据隐私要求↑ → 完善合规体系</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ S12 结尾 ═══ -->
+    <section class="slide slide--void slide--finale">
+      <div class="slide__inner">
+        <p class="kicker">市场调研 · 完</p>
+        <h1 class="headline-sm">数据驱动<span class="tx-a">定价</span>，<br />价值支撑<span class="tx-a">溢价</span>。</h1>
+        <p class="whisper" style="margin-top:1.5rem;">详细竞品对标见 <a href="brief-revised.html" class="deck-link">路演修订版 · 附录</a> · <a href="index.html" class="deck-link-muted">PPT 入口</a></p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="deck-ui">
+    <a class="deck-exit" href="index.html">返回</a>
+    <div class="deck-progress-wrap">
+      <div class="deck-progress" aria-hidden="true"><span></span></div>
+      <div class="deck-chapters" id="deck-chapters-ticks"></div>
+    </div>
+    <span class="deck-meta" id="deck-idx">1 / 12</span>
+    <span class="deck-hint">→ 翻页 · N 讲稿</span>
+  </div>
+  <script src="deck.js?v=202604139"></script>
+</body>
+</html>

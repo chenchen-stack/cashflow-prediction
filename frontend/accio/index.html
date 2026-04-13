@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>亿流 Work · 智能财务中台 Agent 平台</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="echarts.min.js"></script>
+</head>
+<body>
+  <!-- 进入前必须填写 DeepSeek API Key（仅存本机 session/localStorage，不写入仓库） -->
+  <div class="api-key-gate" id="apiKeyGate" aria-modal="true" role="dialog">
+    <div class="api-key-gate-card">
+      <div class="api-key-gate-brand">亿流 Work</div>
+      <h1 class="api-key-gate-title">请输入 API Key</h1>
+      <p class="api-key-gate-desc">使用智能体对话前需配置 <strong>DeepSeek</strong> API Key（与 <code>api.deepseek.com</code> 一致）。密钥仅保存在本机浏览器。</p>
+      <label class="api-key-gate-label" for="apiKeyInput">API Key</label>
+      <input type="password" id="apiKeyInput" class="api-key-gate-input" autocomplete="off" placeholder="sk-..." />
+      <label class="api-key-gate-check"><input type="checkbox" id="apiKeyRemember" /> 在本机记住（写入 localStorage，下次免填）</label>
+      <p class="api-key-gate-hint">若仅浏览数据看板、不使用对话，仍须先填写以进入工作台。</p>
+      <button type="button" class="api-key-gate-submit" id="apiKeySubmit">进入工作台</button>
+      <p class="api-key-gate-error" id="apiKeyError" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="accio-app" id="accioApp">
+    <!-- ═══ Left Sidebar ═══ -->
+    <aside class="accio-sidebar" id="accioSidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark" title="亿流 Work Agent 基座">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 17.5c5.2-4.2 9.8-6 18-7.5" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"/>
+            <path d="M3 11c5.5-2.8 11-4.5 18-5.2" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" opacity="0.88"/>
+            <path d="M3 6.5c6-1.2 12-1.8 18-1.5" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" opacity="0.72"/>
+          </svg>
+        </div>
+        <div class="brand-text-wrap">
+          <span class="brand-text">亿流 Work</span>
+          <span class="brand-tagline">智能财务中台 · Agent</span>
+        </div>
+      </div>
+
+      <button class="sidebar-action-btn" id="btnNewChat" title="新消息">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>新消息</span>
+      </button>
+
+      <div class="sidebar-scroll" id="sidebarScroll">
+        <nav class="sidebar-nav">
+          <button class="nav-btn" data-page="agents">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/><path d="M16 14H8a4 4 0 0 0-4 4v2h16v-2a4 4 0 0 0-4-4z"/></svg>
+            <span>智能体</span>
+          </button>
+
+          <div class="nav-tree" data-tree="capabilities">
+            <div class="nav-tree-header" data-toggle="capabilities">
+              <svg class="tree-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>能力</span>
+            </div>
+            <div class="nav-tree-children" id="treeCapabilities">
+              <button class="nav-btn nav-sub" data-page="tasks">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>定时任务</span>
+              </button>
+              <button class="nav-btn nav-sub" data-page="apps">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>应用授权</span>
+              </button>
+              <button class="nav-btn nav-sub" data-page="skills">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                <span>技能</span>
+              </button>
+              <button class="nav-btn nav-sub" data-page="channels">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>消息渠道</span>
+              </button>
+              <button class="nav-btn nav-sub" data-page="pairing">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>配对授权</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="nav-btn" data-page="workbench" title="业务工作台 · 垂直场景中心，进入司库与资金等业务模块" aria-label="业务工作台">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>业务工作台</span>
+          </button>
+          <button type="button" class="nav-btn" data-page="platform" title="中台能力 · 集成态势、规则引擎与数据分层" aria-label="中台能力">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span>中台能力</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-history" id="sidebarHistory">
+          <div class="history-header" id="historyToggle">
+            <svg class="tree-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>历史对话</span>
+            <span class="history-count" id="historyCount">0</span>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-team-btn" id="btnTeam">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>团队</span>
+          <span class="badge-beta">测试版</span>
+        </div>
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="user-avatar" id="userAvatar">C</div>
+          <span class="user-name" id="userName">司库经理</span>
+          <button class="user-upgrade-btn">升级</button>
+          <svg class="user-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <!-- User Dropdown Menu -->
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-quota">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>额度已使用 <strong id="quotaPercent">0.69</strong> %</span>
+          </div>
+          <div class="user-menu-bar"><div class="user-menu-bar-fill" id="quotaBar" style="width:0.69%"></div></div>
+          <div class="user-menu-divider"></div>
+          <div class="user-menu-item has-sub" id="menuLang">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>语言</span>
+            <svg class="sub-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="user-submenu" id="langSubmenu">
+              <div class="submenu-item" data-lang="en">English</div>
+              <div class="submenu-item active" data-lang="zh">中文</div>
+              <div class="submenu-item" data-lang="es">Español</div>
+              <div class="submenu-item" data-lang="pt">Português</div>
+              <div class="submenu-item" data-lang="fr">Français</div>
+              <div class="submenu-item" data-lang="de">Deutsch</div>
+            </div>
+          </div>
+          <div class="user-menu-item has-sub" id="menuTheme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span>主题</span>
+            <svg class="sub-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="user-submenu" id="themeSubmenu">
+              <div class="submenu-item" data-theme="light">☀ 浅色</div>
+              <div class="submenu-item" data-theme="dark">☾ 深色</div>
+              <div class="submenu-item active" data-theme="system">◐ 跟随系统 <span class="submenu-dot"></span></div>
+            </div>
+          </div>
+          <div class="user-menu-item" id="menuApiKey">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            <span>更换 API Key</span>
+          </div>
+          <div class="user-menu-item" id="menuSettings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>设置</span>
+          </div>
+          <div class="user-menu-item" id="menuAbout">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>关于</span>
+          </div>
+          <div class="user-menu-divider"></div>
+          <div class="user-menu-item logout" id="menuLogout">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>退出登录</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══ Main Content ═══ -->
+    <main class="accio-main" id="accioMain">
+      <!-- Chat Page (Default) -->
+      <div class="page active" id="page-chat" data-page="chat"></div>
+
+      <!-- Agents Page -->
+      <div class="page" id="page-agents" data-page="agents"></div>
+
+      <!-- Scheduled Tasks Page -->
+      <div class="page" id="page-tasks" data-page="tasks"></div>
+
+      <!-- App Authorization Page -->
+      <div class="page" id="page-apps" data-page="apps"></div>
+
+      <!-- Skills Page -->
+      <div class="page" id="page-skills" data-page="skills"></div>
+
+      <!-- Channels Page -->
+      <div class="page" id="page-channels" data-page="channels"></div>
+
+      <!-- Pairing Auth Page -->
+      <div class="page" id="page-pairing" data-page="pairing"></div>
+
+      <!-- Agent Create Wizard -->
+      <div class="page" id="page-create-agent" data-page="create-agent"></div>
+
+      <!-- 垂直场景中心（入口页，非具体业务功能） -->
+      <div class="page" id="page-workbench" data-page="workbench"></div>
+
+      <!-- Dashboard (from main app) -->
+      <div class="page" id="page-dashboard" data-page="dashboard"></div>
+
+      <div class="page" id="page-cockpit" data-page="cockpit"></div>
+      <div class="page" id="page-payment" data-page="payment"></div>
+      <div class="page" id="page-arap" data-page="arap"></div>
+
+      <!-- Cashflow Management -->
+      <div class="page" id="page-cashflow" data-page="cashflow"></div>
+
+      <!-- Analysis -->
+      <div class="page" id="page-analysis" data-page="analysis"></div>
+
+      <!-- Fund Plan -->
+      <div class="page" id="page-plan" data-page="plan"></div>
+
+      <!-- FX Exposure -->
+      <div class="page" id="page-fx" data-page="fx"></div>
+
+      <!-- Base Data -->
+      <div class="page" id="page-basedata" data-page="basedata"></div>
+
+      <!-- Data Integration -->
+      <div class="page" id="page-integration" data-page="integration"></div>
+
+      <!-- 中台能力：集成态势 / 规则 / 数据分层 / 能力全景 -->
+      <div class="page" id="page-platform" data-page="platform"></div>
+
+      <div class="page" id="page-alerts" data-page="alerts"></div>
+
+      <!-- Settings Page -->
+      <div class="page" id="page-settings" data-page="settings"></div>
+    </main>
+
+    <!-- ═══ Right Panel (files, context — collapsible) ═══ -->
+    <aside class="accio-right-panel" id="accioRightPanel">
+      <div class="right-panel-header">
+        <div class="rp-tabs">
+          <button class="rp-tab active" data-rptab="files">文件</button>
+          <button class="rp-tab" data-rptab="results">执行结果</button>
+        </div>
+        <div class="right-panel-actions">
+          <button class="icon-btn-sm" id="rpBtnSearch" title="搜索"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+          <button class="icon-btn-sm" id="rpBtnClose" title="收起面板"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+      <div class="right-panel-body" id="rightPanelBody"></div>
+    </aside>
+    <!-- Right panel toggle tab (visible when panel is collapsed) -->
+    <button class="rp-toggle-tab" id="rpToggleTab" title="展开文件面板">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+    </button>
+  </div>
+
+  <!-- ═══ Modal ═══ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-dialog" id="modalDialog">
+      <div class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Toast Container ═══ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>协作导读 · 资金预测智能体与 HTML 演示稿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="deck.css" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #141414;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eceae8;
+      --muted: #9a9693;
+      --accent: #f36e21;
+      --layout-max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: auto;
+    }
+    body {
+      margin: 0;
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hero {
+      padding: 3rem 1.5rem 2.5rem;
+      border-bottom: 1px solid var(--line);
+      background: radial-gradient(120% 80% at 50% -20%, rgba(243, 110, 33, 0.12), transparent 55%);
+    }
+    .hero-inner { max-width: var(--layout-max); margin: 0 auto; }
+    .hero h1 {
+      font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.35rem);
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .hero .lede { color: var(--muted); margin: 0 0 1.25rem; font-size: 1.02rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .tag--accent { border-color: rgba(243, 110, 33, 0.45); color: var(--accent); }
+    nav.toc {
+      max-width: var(--layout-max);
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(12, 12, 12, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav.toc a { color: var(--muted); text-decoration: none; font-size: 0.82rem; margin-right: 0.85rem; }
+    nav.toc a:hover { color: var(--accent); }
+    main { max-width: var(--layout-max); margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    h2 {
+      font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2.75rem 0 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--line);
+      letter-spacing: -0.02em;
+    }
+    h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+    h3 { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    p { margin: 0 0 1rem; color: var(--muted); }
+    p strong, li strong { color: var(--text); font-weight: 600; }
+    ul, ol { margin: 0 0 1rem; padding-left: 1.25rem; color: var(--muted); }
+    li { margin-bottom: 0.35rem; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(243, 110, 33, 0.35); }
+    a:hover { border-bottom-color: var(--accent); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1.25rem 1.35rem;
+      margin: 1rem 0;
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.25rem 0;
+      color: var(--muted);
+    }
+    .insight {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0.75rem 0 1rem;
+      padding: 1rem 1.1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      font-size: 0.96rem;
+    }
+    .insight-row { margin: 0; color: var(--muted); }
+    .insight-row strong {
+      display: inline-block;
+      min-width: 5.5em;
+      color: var(--accent);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      vertical-align: top;
+    }
+    .module-panel { margin-bottom: 0.5rem; }
+    .module-panel > h3 { margin-bottom: 0.35rem; }
+    .dual-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+      gap: 1.5rem 2rem;
+      align-items: start;
+      margin: 0.5rem 0 3.5rem;
+    }
+    @media (max-width: 920px) {
+      .dual-panel { grid-template-columns: 1fr; }
+      .dual-script { position: relative !important; top: auto !important; order: 2; }
+      .dual-visual { order: 1; }
+    }
+    .dual-visual { min-width: 0; }
+    /* 下列尺寸专用于导读长页：压过 deck 固定高度，随栏宽与移动端视口缩放 */
+    .guide-ppt-frame {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    .guide-ppt-frame .stage {
+      margin-top: 0;
+      max-width: 100%;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    }
+    .guide-ppt-frame .stage-viewport {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      height: auto !important;
+      min-height: clamp(200px, 42vmin, 380px) !important;
+      aspect-ratio: 16 / 10;
+      max-height: min(70vh, 720px);
+      max-height: min(70dvh, 720px);
+    }
+    .guide-ppt-frame--brief .stage-viewport {
+      max-height: min(58vh, 640px);
+      max-height: min(58dvh, 640px);
+    }
+    .guide-ppt-frame--detail .stage-viewport {
+      max-height: min(70vh, 720px);
+      max-height: min(70dvh, 720px);
+    }
+    .guide-ppt-frame .stage-viewport .shot {
+      object-fit: contain;
+      object-position: top center;
+    }
+    @media (max-width: 920px) {
+      .guide-ppt-frame .stage-viewport {
+        min-height: clamp(180px, 52vw, 300px) !important;
+      }
+      .guide-ppt-frame--brief .stage-viewport,
+      .guide-ppt-frame--detail .stage-viewport {
+        max-height: min(50vh, 480px);
+        max-height: min(50dvh, 480px);
+      }
+    }
+    .fig-meta {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin: 0.55rem 0 0;
+      line-height: 1.45;
+    }
+    .dual-script {
+      position: sticky;
+      top: 3.75rem;
+      padding: 1.15rem 1.25rem 1.25rem;
+      background: linear-gradient(180deg, #161616 0%, #121212 100%);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    .script-title {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.6rem;
+      font-weight: 700;
+    }
+    .oral-block {
+      margin: 0 0 0.85rem;
+      padding: 0 0 0 0.9rem;
+      border-left: 2px solid rgba(243, 110, 33, 0.5);
+      font-family: "Noto Serif SC", "Playfair Display", Georgia, serif;
+      font-size: 1.03rem;
+      line-height: 1.58;
+      color: var(--text);
+    }
+    .script-duration {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin: 0 0 0.75rem;
+    }
+    .point-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.86rem;
+      line-height: 1.52;
+      color: var(--muted);
+    }
+    .point-list li {
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .point-list li:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .insight--tight {
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+    }
+    .insight--tight .insight-row strong { min-width: 4.8em; }
+    code {
+      font-size: 0.88em;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      color: #d4cfc9;
+    }
+    kbd {
+      font-family: inherit;
+      font-size: 0.85em;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin: 1rem 0; color: var(--muted); }
+    th, td { border: 1px solid var(--line); padding: 0.55rem 0.65rem; text-align: left; }
+    th { color: var(--text); font-weight: 600; background: rgba(255, 255, 255, 0.03); }
+    .diagram-wrap {
+      margin: 1.25rem 0 1.5rem;
+      padding: 1rem 1rem 0.25rem;
+      background: #101010;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    .diagram-wrap .diagram-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+      font-weight: 700;
+    }
+    .diagram-wrap .mermaid { margin: 0 0 0.75rem; }
+    .diagram-caption {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin: 0 0 1rem;
+      line-height: 1.55;
+    }
+    .tier-table td:first-child { white-space: nowrap; font-weight: 600; color: var(--text); }
+    footer {
+      max-width: var(--layout-max);
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>资金预测智能体 · 产品与 HTML 演示稿协作导读</h1>
+      <p class="lede">司库 / 财务场景的<strong>背景 + 排练脚本 + 体系说明</strong>。开篇用流程图讲清<strong>现金流闭环为何断裂</strong>、<strong>痛点如何映射到各菜单</strong>；并单设一节说明<strong>真实前端 / 两种幻灯 / 本导读</strong>分工。下方左侧 stage 与幻灯同构，右侧为口播。流程图依赖 Mermaid CDN（离线环境需放行或自备脚本）。</p>
+      <p class="lede" style="margin-bottom: 0;"><strong>快速入口：</strong>
+        <a href="index.html">PPT 入口</a> ·
+        <a href="brief.html">精简版</a> ·
+        <a href="detailed.html">详细版</a>
+      </p>
+      <div class="tags">
+        <span class="tag tag--accent">司库 / 预测 / 计划</span>
+        <span class="tag">HTML 幻灯</span>
+        <span class="tag">Hash 路由</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="目录">
+    <a href="#sec-what">背景与客群</a>
+    <a href="#sec-relation">产品与演示体系</a>
+    <a href="#sec-ppt">两种 PPT</a>
+    <a href="#sec-modules">功能地图</a>
+    <a href="#sec-brief">精简版走读</a>
+    <a href="#sec-detailed">详细版走读</a>
+    <a href="#sec-tech">技术说明</a>
+    <a href="#sec-handoff">交接注意</a>
+  </nav>
+
+  <main>
+    <h2 id="sec-what">一、背景、痛点与客群（司库现金流语境）</h2>
+
+    <h3>1.1 业务背景：为什么「预测、计划、实付」容易三张皮</h3>
+    <p>集团司库的典型一天里：<strong>银行与 ERP 流水</strong>在多个账户与法人之间分散；<strong>预测与场景</strong>常活在 FP&amp;A 的 Excel 或咨询交付的幻灯里；<strong>资金计划与执行对账</strong>又落在共享中心或邮件批复里。三者若<strong>不同源、不同步、不回写</strong>，就会出现：会上说的「下周缺口」对不上财务系统里的头寸；投委会上一条曲线，台下没人敢拍板执行；接口一断，看板还在闪绿灯——其实是空数。</p>
+
+    <div class="diagram-wrap">
+      <p class="diagram-title">可视化 · 理想闭环 vs 常见断点</p>
+      <pre class="mermaid">
+flowchart TB
+  subgraph good["理想：一套叙事闭环"]
+    R["可信流水 / 多源入账"]
+    A["分析与预测<br/>区间·场景·假设可见"]
+    P["资金计划 / 编审 / 对账"]
+    R --> A
+    A --> P
+    P -->|"执行偏差回写"| A
+  end
+  subgraph bad["常见：断在半路"]
+    R2[网银+Excel]
+    A2[顾问模型 PPT]
+    P2[计划走邮件]
+    R2 -.->|不同源| A2
+    A2 -.->|不落系统| P2
+  end
+      </pre>
+      <p class="diagram-caption"><strong>资金预测智能体</strong>要把「流水底座 → 可解释预测 → 可执行计划 → 可审计集成与主数据」收进<strong>同一套菜单与同一套数</strong>；下面功能地图表即该闭环在界面上的落点。</p>
+    </div>
+
+    <h3>1.2 痛点 → 产品模块（对照详细幻灯左栏）</h3>
+    <div class="diagram-wrap">
+      <p class="diagram-title">可视化 · 痛点到菜单映射</p>
+      <pre class="mermaid">
+flowchart LR
+  subgraph pain["典型痛点"]
+    Q1["看不清此刻水位"]
+    Q2["底账不可信"]
+    Q3["预测像黑箱"]
+    Q4["计划与预测脱节"]
+    Q5["汇率风险说不清"]
+    Q6["主数据各写各的"]
+    Q7["管道断了不知道"]
+    Q8["模型讲不清"]
+  end
+  subgraph mod["产品模块"]
+    M1["总览 #dashboard"]
+    M2["资金流 #cashflow"]
+    M3["分析 #analysis"]
+    M4["计划 #plan"]
+    M5["外汇 #fx"]
+    M6["基础数据 #basedata"]
+    M7["集成 #integration"]
+    M8["两阶段 #stages"]
+    M9["DataAgent"]
+  end
+  Q1 --> M1
+  Q2 --> M2
+  Q3 --> M3
+  Q4 --> M4
+  Q5 --> M5
+  Q6 --> M6
+  Q7 --> M7
+  Q8 --> M8
+  M1 --> M9
+      </pre>
+      <p class="diagram-caption"><code>detailed.html</code> 中每一张实机幻灯，左栏「对照说明」都可与此图<strong>交叉引用</strong>：先讲痛点，再翻页指到具体 Hash。</p>
+    </div>
+
+    <h3>1.3 产品一句话与价值边界</h3>
+    <p><strong>资金预测智能体</strong>帮企业在<strong>可信流水</strong>之上做<strong>分析与预测</strong>，并把结果<strong>落到资金计划与对账</strong>；多法人、多币种时补<strong>外汇敞口</strong>视角；<strong>主数据与集成</strong>保证「同一套数」；<strong>两阶段模型</strong>把方法论钉在界面上；<strong>DataAgent</strong> 在抽屉里问数、问因——无 Key 时仍可走工具摘要。<strong>Agent 不代替司库决裁</strong>；多源冲突与覆盖策略须可审计（见详细版末页四追问）。</p>
+
+    <div class="card">
+      <p><strong>典型客户：</strong>集团<strong>司库、资金部、FP&amp;A、财务总监办公室</strong>；有跨境收支时 CFO 会关注<strong>汇率敏感</strong>叙事。</p>
+      <p><strong>常见需求（可对照投标/访谈）：</strong></p>
+      <ul>
+        <li><strong>可解释：</strong>预测不是黑箱一个数，要有区间、假设、可回看的逻辑。</li>
+        <li><strong>可执行：</strong>预测要能进计划、能对执行偏差，否则「预测只活在 PPT」。</li>
+        <li><strong>可治理：</strong>多数据源时谁优先、人工覆盖是否留痕；万级数据下界面仍可用。</li>
+      </ul>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>角色</th><th>关心什么</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>司库经理</td><td>头寸、缺口、下周能不能付、银行额度与集中度。</td></tr>
+        <tr><td>资金分析师</td><td>模型假设、回测、场景对比、表格下钻。</td></tr>
+        <tr><td>CFO</td><td>投委会 / 董事会上「钱够不够、风险在哪」三句话 + 一张总览。</td></tr>
+        <tr><td>IT / 数据</td><td>接口、同步、主数据映射、审计字段。</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="sec-relation">二、产品与 HTML 演示稿、本导读的关系（四份材料怎么配合）</h2>
+    <p><strong>可运行的前端</strong>是口径与交互的源头；<strong>brief / detailed</strong> 是路演叙事与评审结构；<strong>本导读</strong>把同一块屏幕拆成「左实机 + 右口播」，并补上背景。下图为协作关系；下表为职责对照。</p>
+
+    <div class="diagram-wrap">
+      <p class="diagram-title">可视化 · 四份材料如何串起来</p>
+      <pre class="mermaid">
+flowchart TB
+  FE["真实产品 app.html<br/>Hash 路由"]
+  BR["brief.html<br/>短叙事 + 5 段 Live"]
+  DE["detailed.html<br/>左说明 + 右实机 + 四追问"]
+  GU["协作导读 · 本页<br/>同构 stage + 旁白"]
+  FE --> BR
+  FE --> DE
+  FE --> GU
+  BR -.->|"节奏与金句"| GU
+  DE -.->|"左栏条目指屏顺序"| GU
+      </pre>
+      <p class="diagram-caption">幻灯与导读共用 <code>PPT/assets/*.png</code>；PNG 加载成功后与幻灯一样<strong>盖住 iframe</strong>，便于离线彩排。</p>
+    </div>
+
+    <table class="tier-table">
+      <thead>
+        <tr><th>材料</th><th>是什么</th><th>给谁用</th><th>和产品的关系</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>app.html</code></td><td>可运行界面（Hash + <code>embed=1</code>）</td><td>研发、联调、客户试操作</td><td><strong>唯一真相</strong>：曲线、表、权限以运行态为准。</td></tr>
+        <tr><td><code>brief.html</code></td><td>精简幻灯</td><td>路演开场、短拜访</td><td>只保留<strong>五条最关键路径</strong>：看板→流水→分析→计划→助手。</td></tr>
+        <tr><td><code>detailed.html</code></td><td>详细幻灯</td><td>POC、交付清单、财务 IT 联席</td><td>补全<strong>外汇、主数据、集成、两阶段、Agent</strong>；末页四追问对齐评审。</td></tr>
+        <tr><td>本导读</td><td>长文档</td><td>市场、设计、售前排练</td><td>与幻灯<strong>同 URL 同截图</strong>；右栏提供<strong>可念稿</strong>与追问提示。</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>改稿纪律：</strong>动 Hash、改菜单名或换截图文件名时，务必同步 <code>brief.html</code>、<code>detailed.html</code>、本导读三处，并跑一遍幻灯防止「讲稿与界面对不上」。
+    </div>
+
+    <h2 id="sec-ppt">三、两种 PPT 分别解决什么问题</h2>
+    <p>全屏 HTML 幻灯：<kbd>→</kbd> / 空格翻页；<kbd>N</kbd> 讲稿；<code>?presenter=1</code>。</p>
+    <table>
+      <thead>
+        <tr><th>文件</th><th>场景</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="brief.html">brief.html</a></td>
+          <td>短拜访、路演开场</td>
+          <td>金句 + 5 段 Live：看板→流水→分析→计划→助手</td>
+        </tr>
+        <tr>
+          <td><a href="detailed.html">detailed.html</a></td>
+          <td>POC 评审、交付清单对齐</td>
+          <td>左栏说明 + 右栏实机，覆盖外汇、主数据、集成、两阶段模型与四追问</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>视觉：</strong>与风控产品线一致的<strong>黑底 + #F36E21</strong>。转 Keynote 时勿删「数据权威 / Agent 边界」等评审句。
+    </div>
+
+    <h2 id="sec-modules">四、功能地图（与 Hash 路由）</h2>
+    <table>
+      <thead>
+        <tr><th>模块</th><th>听众理解</th><th>Hash</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>总览看板</td><td>水位、趋势、结构</td><td><code>#dashboard</code></td></tr>
+        <tr><td>资金流</td><td>进/出/预测记录</td><td><code>#cashflow</code></td></tr>
+        <tr><td>分析预测</td><td>区间、场景、图</td><td><code>#analysis</code></td></tr>
+        <tr><td>资金计划</td><td>编审、对账</td><td><code>#plan</code></td></tr>
+        <tr><td>外汇敞口</td><td>币种风险</td><td><code>#fx</code></td></tr>
+        <tr><td>基础数据</td><td>科目/组织/币种</td><td><code>#basedata</code></td></tr>
+        <tr><td>数据集成</td><td>连接器与冲突</td><td><code>#integration</code></td></tr>
+        <tr><td>两阶段模型</td><td>方法论可见</td><td><code>#stages</code></td></tr>
+        <tr><td>DataAgent</td><td><code>ai=1</code> 路演展开</td><td><code>?ai=1#…</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="sec-brief">五、精简版（brief）逐屏</h2>
+    <p>叙事：<strong>脉搏 → 不能猜 → 一件事 → 产品名 → 看见/推演/计划 + 助手 → 真实前端 → 五段 Live</strong>。左侧画框与 <code>brief.html</code> 中 <code>.stage</code> 一致（顶栏灰点）；<strong>右栏为导读旁白</strong>。</p>
+
+    <section class="module-panel" id="brief-dashboard">
+      <h3>5.1 总览看板</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--brief">
+            <div class="stage">
+              <div class="stage-chrome">Live · 总览看板</div>
+              <div class="stage-viewport">
+                <iframe title="总览看板" src="../frontend/app.html?embed=1#dashboard"></iframe>
+                <img class="shot" src="assets/brief-01-dashboard.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta">与 <code>brief.html</code> 同屏 · <code>brief-01-dashboard.png</code> · <code>#dashboard</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>背景</strong>周会常问「账上多少、缺口多大」，数却散在 Excel 与网银。</p>
+            <p class="insight-row"><strong>需求</strong>一屏对齐<strong>头寸 + 趋势 + 结构</strong>，能接调拨/融资话茬。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「这是司库和资金负责人的<strong>第一站</strong>。请您先看顶部 KPI 与卡片——回答『此刻水位够不够』；再看趋势与结构——钱从哪来、往哪去。下面每一页，都是在这条链上的<strong>放大</strong>。」</blockquote>
+          <p class="script-duration">约 30～45 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>KPI 带 → 主趋势/结构图 → 若有快捷入口顺带一指。</li>
+            <li><strong>金句：</strong>「先看见脉搏，再谈模型。」</li>
+            <li><strong>追问：</strong>数据从哪来——接集成与同步时间（详细版数据集成屏）。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="brief-cashflow">
+      <h3>5.2 资金流</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--brief">
+            <div class="stage">
+              <div class="stage-chrome">Live · 资金流</div>
+              <div class="stage-viewport">
+                <iframe title="资金流" src="../frontend/app.html?embed=1#cashflow"></iframe>
+                <img class="shot" src="assets/brief-02-cashflow.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>brief-02-cashflow.png</code> · <code>#cashflow</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>背景</strong>预测再准，底账对不上就无人信。</p>
+            <p class="insight-row"><strong>需求</strong>可追溯流水/单据视图，区分实际与预测生成行。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「这一屏对准<strong>单一事实来源</strong>。客户会问预测行和银行流水怎么对——您就指筛选、表体：每一笔能追到来源；预测生成的记录要有标签，不能和实际混成一锅粥。」</blockquote>
+          <p class="script-duration">约 35～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>筛选条 → 表格列（类型/是否预测）→ 录入或导入入口。</li>
+            <li><strong>金句：</strong>「底账不信，上层智能全是空话。」</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="brief-analysis">
+      <h3>5.3 分析预测</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--brief">
+            <div class="stage">
+              <div class="stage-chrome">Live · 分析预测</div>
+              <div class="stage-viewport">
+                <iframe title="分析预测" src="../frontend/app.html?embed=1#analysis"></iframe>
+                <img class="shot" src="assets/brief-03-analysis.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>brief-03-analysis.png</code> · <code>#analysis</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>疑虑</strong>「是不是拍脑袋曲线？」要讲清<strong>区间、场景、与流水联动</strong>。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「这里回应『黑箱一个数』。请您指时间区间和场景开关——假设摆在台面上；再指主图与下钻——区间多大、数从哪条线汇过来。投委会 / 财委要问的，就是这些东西能不能<strong>一眼看见</strong>。」</blockquote>
+          <p class="script-duration">约 40～55 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>区间/粒度 → 场景或参数区 → 主图。</li>
+            <li><strong>合规：</strong>主动说失败/无数据时界面提示，不编造余额。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="brief-plan">
+      <h3>5.4 资金计划</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--brief">
+            <div class="stage">
+              <div class="stage-chrome">Live · 资金计划</div>
+              <div class="stage-viewport">
+                <iframe title="资金计划" src="../frontend/app.html?embed=1#plan"></iframe>
+                <img class="shot" src="assets/brief-04-plan.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>brief-04-plan.png</code> · <code>#plan</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>背景</strong>预测与计划「两张皮」时，业务会说系统没用。</p>
+            <p class="insight-row"><strong>需求</strong>版本、审批态、执行对比，闭环到节奏。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「预测必须能<strong>执行</strong>。这一屏讲编审与对账：计划不是写完就完——要有版本、要有和实际的偏差。您指列表状态、行项目、对账区，把『预测在 PPT、计划在邮件』的痛点反着讲。」</blockquote>
+          <p class="script-duration">约 35～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>版本/状态 → 行项目维度 → 对账或执行反馈。</li>
+            <li><strong>回扣：</strong>接分析屏「曲线落进表格与计划」。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="brief-agent">
+      <h3>5.5 DataAgent</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--brief">
+            <div class="stage">
+              <div class="stage-chrome">Live · DataAgent</div>
+              <div class="stage-viewport">
+                <iframe title="DataAgent" src="../frontend/app.html?embed=1&amp;ai=1#dashboard"></iframe>
+                <img class="shot" src="assets/brief-05-agent.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>brief-05-agent.png</code> · <code>?embed=1&amp;ai=1#dashboard</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>需求</strong>在<strong>业务页旁</strong>问数，勿跳到孤立聊天窗；回答带<strong>出处</strong>。</p>
+            <p class="insight-row"><strong>路演</strong><code>ai=1</code> 自动展开；生产由用户手开抽屉。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「助手在<strong>抽屉里</strong>，主界面仍是看板——不是另一个产品。路演用 <code>ai=1</code> 省得您多点一下；上线后由用户自己打开。合规底线说一句：<strong>建议不等于决裁</strong>，查不了就说查不了。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>主区看板 → 右侧抽屉一轮问答。</li>
+            <li><strong>技术备注：</strong>后端 <code>/api/agent/chat</code>，失败可走降级链（可口述）。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <h2 id="sec-detailed">六、详细版（detailed）实机屏</h2>
+    <p>幻灯为<strong>左栏对照说明 + 右栏实机</strong>；本导读左侧与 <code>detailed.html</code> 右栏 <code>stage-viewport</code> <strong>同源</strong>（同一 <code>iframe</code> 与 PNG）。口播按幻灯左栏<strong>自上而下</strong>指认画面。</p>
+
+    <section class="module-panel" id="detail-dashboard">
+      <h3>6.1 总览看板</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 总览看板</div>
+              <div class="stage-viewport">
+                <iframe title="总览" src="../frontend/app.html?embed=1#dashboard"></iframe>
+                <img class="shot" src="assets/detail-01-dashboard.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-01-dashboard.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>差异</strong>较精简版多拆解 KPI、图表与入口，适合第一次看界面的同事。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「按幻灯左栏三条：先<strong>顶部 KPI</strong>回答够不够花；再<strong>趋势与结构</strong>；最后指<strong>下钻入口</strong>——从这一屏能去哪。协作同事裁图时请保留侧栏/入口，否则对不上说明。」</blockquote>
+          <p class="script-duration">约 40～55 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>严格按 <code>func-list</code> 顺序，避免跳讲。</li>
+            <li><strong>金句：</strong>「Excel 拼表月底才对齐——这里把水位固定在第一屏。」</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-cashflow">
+      <h3>6.2 资金流</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 资金流管理</div>
+              <div class="stage-viewport">
+                <iframe title="资金流" src="../frontend/app.html?embed=1#cashflow"></iframe>
+                <img class="shot" src="assets/detail-02-cashflow.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-02-cashflow.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>交付追问</strong>导入/录入是否留痕？预测行与手工行如何区分？</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「三条对照：筛选工具条 → 表体每笔可追溯 → 录入/导入入口。评审会追问<strong>单一事实来源</strong>——这一屏就是底座，上面分析计划都站在它上面。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>筛选 → 类型/是否预测列 → 导入按钮。</li>
+            <li><strong>伏笔：</strong>接数据集成「管道不稳上层智能是空话」。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-analysis">
+      <h3>6.3 分析预测</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 分析预测</div>
+              <div class="stage-viewport">
+                <iframe title="分析" src="../frontend/app.html?embed=1#analysis"></iframe>
+                <img class="shot" src="assets/detail-03-analysis.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-03-analysis.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「时间区间与粒度对齐客户汇报节奏；场景参数区把<strong>假设摆在台面上</strong>；主图与明细回答区间多大、数从哪来。黑箱一个数过不了投委会——我们让 UI 自己说话。」</blockquote>
+          <p class="script-duration">约 45～60 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>区间/粒度 → 场景 → 主图 → 下钻表。</li>
+            <li><strong>追问：</strong>可指工程内 calculator / charts 与口播互证。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-plan">
+      <h3>6.4 资金计划</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 资金计划</div>
+              <div class="stage-viewport">
+                <iframe title="计划" src="../frontend/app.html?embed=1#plan"></iframe>
+                <img class="shot" src="assets/detail-04-plan.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-04-plan.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「计划列表与版本讲<strong>变更留痕</strong>；行项目维度对接预算/ERP 口径；对账区讲计划 vs 实际——预测不是写完就完，要能闭环到业务节奏。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>版本状态 → 行字段 → 对账/偏差。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-fx">
+      <h3>6.5 外汇敞口</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 外汇敞口</div>
+              <div class="stage-viewport">
+                <iframe title="外汇" src="../frontend/app.html?embed=1#fx"></iframe>
+                <img class="shot" src="assets/detail-05-fx.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-05-fx.png</code> · <code>#fx</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>背景</strong>有收付外币时，只报本币现金流会低估汇率风险。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「跨国场景下这是<strong>第二层现金</strong>。先指汇总指标让 CFO 抓总量；再按币种/实体拆集中度；最后提与流水或计划联动、汇率假设变更时如何追溯。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>汇总 KPI → 拆分维度 → 联动说明。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-basedata">
+      <h3>6.6 基础数据</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 基础数据</div>
+              <div class="stage-viewport">
+                <iframe title="基础数据" src="../frontend/app.html?embed=1#basedata"></iframe>
+                <img class="shot" src="assets/detail-06-basedata.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-06-basedata.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>痛点</strong>科目树各子公司各叫各的，汇总对不齐——先立词表再建模。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「集成再强，主数据各写各的也白搭。请您指科目树与映射、组织维度、币种与汇率源——与外汇页、计划口径<strong>一口径串起来</strong>。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>科目/类别树 → 组织 → 币种汇率源。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-integration">
+      <h3>6.7 数据集成</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 数据集成</div>
+              <div class="stage-viewport">
+                <iframe title="集成" src="../frontend/app.html?embed=1#integration"></iframe>
+                <img class="shot" src="assets/detail-07-integration.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-07-integration.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>客户要</strong>连接器状态、同步时间、失败可诊断；冲突与覆盖<strong>可审计</strong>。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「IT 与财务要共用语言：哪路通、哪路断、上次成功几点。再指冲突策略——多源谁优先、人工覆盖留不留痕。管道不稳时，上层智能只是漂亮界面。」</blockquote>
+          <p class="script-duration">约 40～50 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>连接器列表 → 同步时间/失败 → 冲突策略入口。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-stages">
+      <h3>6.8 两阶段模型</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · 两阶段模型</div>
+              <div class="stage-viewport">
+                <iframe title="两阶段" src="../frontend/app.html?embed=1#stages"></iframe>
+                <img class="shot" src="assets/detail-08-stages.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-08-stages.png</code> · <code>#stages</code></p>
+        </div>
+        <aside class="dual-script">
+          <div class="insight insight--tight">
+            <p class="insight-row"><strong>背景</strong>评审常问「和 Excel 差在哪」——用界面钉死阶段、参数与输出落点。</p>
+          </div>
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「阶段划分对应你们白皮书或交付章节；参数区讲清哪些客户可调、哪些仅实施可配；输出对接指回分析/计划——方法论要<strong>长在产品上</strong>，不是口头多一页 PPT。」</blockquote>
+          <p class="script-duration">约 45～55 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>阶段说明 → 参数开关 → 写回看板/表。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="module-panel" id="detail-agent">
+      <h3>6.9 DataAgent</h3>
+      <div class="dual-panel">
+        <div class="dual-visual">
+          <div class="guide-ppt-frame guide-ppt-frame--detail">
+            <div class="stage demo-stage">
+              <div class="stage-chrome">实时演示 · DataAgent</div>
+              <div class="stage-viewport">
+                <iframe title="助手" src="../frontend/app.html?embed=1&amp;ai=1#dashboard"></iframe>
+                <img class="shot" src="assets/detail-09-agent.png" alt="" loading="lazy" onload="this.classList.add('show')" onerror="this.remove()" />
+              </div>
+            </div>
+          </div>
+          <p class="fig-meta"><code>detail-09-agent.png</code></p>
+        </div>
+        <aside class="dual-script">
+          <h4 class="script-title">讲解旁白</h4>
+          <blockquote class="oral-block">「主界面仍在看板——助手是抽屉里的增强。追问要带<strong>指标定义或数据来源</strong>；<code>ai=1</code> 仅路演自动展开。合规：<strong>建议不等于决裁</strong>；异常时说查不了，不编数。」</blockquote>
+          <p class="script-duration">约 40～55 秒</p>
+          <ul class="point-list">
+            <li><strong>指屏：</strong>主区 → 抽屉问答一轮 → 出处/引用样式（若有）。</li>
+            <li><strong>技术：</strong><code>/api/agent/chat</code> 与降级链可口述。</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <p>幻灯末页<strong>交付四追问</strong>（数据权威、可解释、Agent 边界、性能）与售前 checklist 一致，勿删。</p>
+
+    <h2 id="sec-tech">七、技术侧三句话</h2>
+    <ol>
+      <li><code>app.html?embed=1</code> + Hash；<code>ai=1</code> 展开助手（与幻灯 URL 一致）。</li>
+      <li><code>assets/*.png</code> 与幻灯、本导读<strong>共用</strong>；与 <code>deck.css</code> 一致：<code>.shot.show</code> 覆盖 iframe。</li>
+      <li>联调：<code>run.bat</code> 或 README 中的端口说明；导读内多 iframe 同时加载，离线可仅靠 PNG。</li>
+    </ol>
+
+    <h2 id="sec-handoff">八、给美化 / 协作同事</h2>
+    <ul>
+      <li>导读左侧与幻灯同源：<strong>先 iframe、有 PNG 则覆盖</strong>；对外印刷直接用 <code>assets</code> 截图。</li>
+      <li>品牌色与风控统一时，注意<strong>同一套橙</strong>（<code>deck.css</code> / <code>#F36E21</code>），避免两产品各一套渐变。</li>
+    </ul>
+  </main>
+
+  <footer>
+    <code>工程/现金流预测-全栈系统/PPT/协作导读-产品与演示稿.html</code> · 样式 <code>deck.css</code> · 截图 <code>PPT/assets/</code> · 流程图 <code>cdn.jsdelivr.net/npm/mermaid@10</code>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" crossorigin="anonymous"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "dark",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", padding: 10 },
+      themeVariables: {
+        darkMode: true,
+        background: "#101010",
+        primaryColor: "#1c1c1c",
+        primaryTextColor: "#eceae8",
+        secondaryColor: "#141414",
+        tertiaryColor: "#0a0a0a",
+        lineColor: "#f36e21",
+        secondaryTextColor: "#9a9693",
+        mainBkg: "#1a1a1a",
+        nodeBorder: "#3a3a3a",
+        clusterBkg: "#121212",
+        titleColor: "#f36e21",
+        edgeLabelBackground: "#1a1a1a"
+      }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  </script>
+  <script>
+    (function () {
+      document.querySelectorAll(".guide-ppt-frame .shot").forEach(function (img) {
+        function reveal() {
+          if (img.naturalWidth > 0) img.classList.add("show");
+        }
+        img.addEventListener("load", reveal);
+        if (img.complete && img.naturalWidth > 0) reveal();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,928 @@
+{
+  "audit_meta": {
+    "generated_at": "2026-03-25",
+    "scope": "frontend/js/*.js (7 business files, excluding echarts.min.js)",
+    "html_cross_referenced": ["app.html", "index.html"],
+    "total_files": 7,
+    "total_functions": 98,
+    "total_dom_ids_referenced": 78,
+    "total_event_listeners": 34,
+    "total_potential_bugs": 14
+  },
+
+  "files": {
+
+    "auth.js": {
+      "description": "角色会话管理，基于 sessionStorage 的登录/登出/权限检查",
+      "global_export": "window.Auth",
+      "lines": 35,
+
+      "functions": [
+        { "name": "Auth.login", "line": 6, "params": ["roleId"], "description": "将角色ID写入sessionStorage并跳转到app.html" },
+        { "name": "Auth.logout", "line": 11, "params": [], "description": "清除sessionStorage并跳转到index.html" },
+        { "name": "Auth.getCurrentRole", "line": 16, "params": [], "returns": "Object|null", "description": "从sessionStorage读取角色ID，返回AppData.roles中对应角色对象" },
+        { "name": "Auth.getRoleId", "line": 21, "params": [], "returns": "string", "description": "返回sessionStorage中的角色ID原始字符串" },
+        { "name": "Auth.hasPage", "line": 25, "params": ["pageId"], "returns": "boolean", "description": "检查当前角色是否有权访问指定页面" },
+        { "name": "Auth.isTreasurer", "line": 30, "params": [], "returns": "boolean", "description": "判断是否为司库经理角色" },
+        { "name": "Auth.isCFO", "line": 31, "params": [], "returns": "boolean", "description": "判断是否为财务总监角色" },
+        { "name": "Auth.isAnalyst", "line": 32, "params": [], "returns": "boolean", "description": "判断是否为资金分析师角色" },
+        { "name": "Auth.isBizFin", "line": 33, "params": [], "returns": "boolean", "description": "判断是否为业务财务角色" },
+        { "name": "Auth.isAdmin", "line": 34, "params": [], "returns": "boolean", "description": "判断是否为系统管理员角色" }
+      ],
+
+      "dom_ids_referenced": [],
+      "event_listeners": [],
+
+      "cross_module_calls": [
+        { "target": "AppData.roles", "location": "line 18", "type": "read", "purpose": "获取角色配置对象" }
+      ],
+
+      "data_flow": [
+        {
+          "source": "sessionStorage('cf_role')",
+          "transform": "AppData.roles[roleId] 查找",
+          "destination": "返回角色对象给调用方"
+        }
+      ],
+
+      "potential_bugs": []
+    },
+
+    "toast.js": {
+      "description": "轻量级 Toast 提示组件，动态创建DOM元素",
+      "global_export": "window.Toast",
+      "lines": 35,
+
+      "functions": [
+        { "name": "Toast._ensureContainer", "line": 8, "params": [], "description": "确保toast容器div存在，不存在则创建并挂载到body" },
+        { "name": "Toast.show", "line": 16, "params": ["type", "title", "desc"], "description": "显示一条toast，3秒后自动淡出移除" },
+        { "name": "Toast.success", "line": 30, "params": ["msg"], "description": "显示成功类型toast" },
+        { "name": "Toast.warn", "line": 31, "params": ["msg"], "description": "显示警告类型toast" },
+        { "name": "Toast.warning", "line": 32, "params": ["msg"], "description": "warn的别名" },
+        { "name": "Toast.danger", "line": 33, "params": ["msg"], "description": "显示危险类型toast" },
+        { "name": "Toast.info", "line": 34, "params": ["msg"], "description": "显示信息类型toast" }
+      ],
+
+      "dom_ids_referenced": [],
+      "dom_elements_created": [
+        { "tag": "div", "class": "toast-container", "purpose": "toast消息容器" },
+        { "tag": "div", "class": "toast {type}", "purpose": "单条toast消息" }
+      ],
+
+      "event_listeners": [],
+      "cross_module_calls": [],
+
+      "data_flow": [
+        {
+          "source": "调用参数 (type, title, desc)",
+          "transform": "创建DOM元素，设置innerHTML",
+          "destination": "动态插入document.body"
+        }
+      ],
+
+      "potential_bugs": []
+    },
+
+    "data.js": {
+      "description": "全局数据存储 + API客户端 + 后端加载 + Mock数据回退 + 业务工具函数",
+      "global_exports": ["window.AppData", "window.API", "window.loadFromBackend", "window.calcDeviationLevel", "window.calcDeviationForExec", "window.refreshClosedLoopKPI", "window.validateRecord", "window.toggleServiceHealth", "window.refreshStats"],
+      "lines": 408,
+
+      "functions": [
+        { "name": "API.get", "line": 81, "params": ["path"], "returns": "Promise<Object>", "async": true, "description": "HTTP GET请求" },
+        { "name": "API.post", "line": 87, "params": ["path", "body"], "returns": "Promise<Object>", "async": true, "description": "HTTP POST请求" },
+        { "name": "API.put", "line": 97, "params": ["path", "body"], "returns": "Promise<Object>", "async": true, "description": "HTTP PUT请求" },
+        { "name": "API.del", "line": 107, "params": ["path"], "returns": "Promise<Object>", "async": true, "description": "HTTP DELETE请求" },
+        { "name": "loadFromBackend", "line": 115, "params": [], "returns": "Promise<boolean>", "async": true, "description": "尝试从后端加载全部数据，失败则加载Mock" },
+        { "name": "_loadMockData", "line": 144, "params": [], "scope": "file-private", "description": "加载完整Mock数据到AppData各字段" },
+        { "name": "calcDeviationLevel", "line": 313, "params": ["rate"], "returns": "{level, color}", "description": "根据偏差率返回偏差等级和颜色" },
+        { "name": "calcDeviationForExec", "line": 321, "params": ["exec"], "returns": "Array<{subject, planned, actual, rate, level, color}>", "description": "计算执行记录的各科目偏差" },
+        { "name": "refreshClosedLoopKPI", "line": 336, "params": [], "description": "根据偏差日志和预警队列重算闭环KPI指标" },
+        { "name": "validateRecord", "line": 361, "params": ["rec"], "returns": "Array<string>", "description": "校验资金流记录，返回错误消息数组" },
+        { "name": "toggleServiceHealth", "line": 375, "params": ["serviceKey"], "description": "切换系统健康状态（ok→degraded→offline循环）" },
+        { "name": "refreshStats", "line": 384, "params": [], "description": "从AppData.records重新计算统计数据" }
+      ],
+
+      "dom_ids_referenced": [],
+      "event_listeners": [],
+
+      "cross_module_calls": [
+        { "target": "API.get", "location": "lines 118-125", "type": "call", "purpose": "从后端加载8个API端点数据" }
+      ],
+
+      "api_endpoints_called": [
+        "/api/dashboard/stats",
+        "/api/subjects",
+        "/api/businesses",
+        "/api/records?page_size=200",
+        "/api/plans",
+        "/api/fx-exposures",
+        "/api/mapping-rules",
+        "/api/time-periods"
+      ],
+
+      "data_flow": [
+        {
+          "source": "Backend API 或 Mock数据",
+          "transform": "直接赋值给AppData各字段",
+          "destination": "AppData (全局状态对象)"
+        },
+        {
+          "source": "AppData.records.items",
+          "transform": "遍历统计流入/流出/确认数",
+          "destination": "AppData.stats"
+        },
+        {
+          "source": "AppData.deviationLogs + AppData.alertQueue",
+          "transform": "计算平均偏差、采纳率等",
+          "destination": "AppData.closedLoopKPI"
+        }
+      ],
+
+      "appdata_schema": {
+        "roles": "Object - 5个角色定义(treasurer/cfo/analyst/bizfin/admin)",
+        "navItems": "Array - 导航菜单分组定义",
+        "stats": "Object|null - 统计汇总",
+        "subjects": "Array - 资金流科目列表",
+        "businesses": "Array - 资金业务列表",
+        "records": "{items:Array, total:number} - 资金流记录",
+        "plans": "Array - 资金计划列表",
+        "fxExposures": "Array - 外汇敞口列表",
+        "mappingRules": "Array - 取数映射规则",
+        "timePeriods": "Array - 时间段配置",
+        "analysisResult": "Object|null - 分析预测结果",
+        "subjectBizMapping": "Array - 科目↔业务映射",
+        "subjectPlanMapping": "Array - 科目↔计划映射",
+        "syncLogs": "Array - 同步日志",
+        "fetchTasks": "Array - 定时任务",
+        "deviationLogs": "Array - 偏差日志",
+        "alertQueue": "Array - 预警队列",
+        "closedLoopKPI": "Object|null - 闭环效能KPI",
+        "actualExecution": "Array - 实际执行记录",
+        "systemHealth": "Object - 5个子系统健康状态"
+      },
+
+      "potential_bugs": [
+        {
+          "id": "DATA-BUG-001",
+          "severity": "LOW",
+          "location": "line 79 (API.base = '')",
+          "description": "API.base 为空字符串，所有API调用使用相对路径。如果前端部署在不同域名/端口，所有API调用将404。需通过环境配置设置API基地址。",
+          "type": "configuration"
+        },
+        {
+          "id": "DATA-BUG-002",
+          "severity": "LOW",
+          "location": "lines 81-111 (API methods)",
+          "description": "API方法均无请求超时机制，如果后端不响应会无限等待。建议添加AbortController超时。",
+          "type": "missing_error_handling"
+        }
+      ]
+    },
+
+    "router.js": {
+      "description": "Hash-based SPA路由，构建侧边栏导航、页面切换、权限校验",
+      "global_export": "window.Router",
+      "lines": 88,
+
+      "functions": [
+        { "name": "Router.init", "line": 8, "params": [], "description": "初始化路由：校验登录、构建导航、绑定hashchange、触发首次dispatch" },
+        { "name": "Router._buildNav", "line": 18, "params": [], "description": "根据角色权限动态构建侧边栏导航菜单" },
+        { "name": "Router.navigate", "line": 43, "params": ["pageId"], "description": "导航到指定页面，无权限则跳转首页" },
+        { "name": "Router.getCurrent", "line": 51, "params": [], "returns": "string", "description": "获取当前hash路由页面ID" },
+        { "name": "Router.onNavigate", "line": 55, "params": ["fn"], "description": "注册页面切换回调" },
+        { "name": "Router._dispatch", "line": 59, "params": [], "description": "核心路由分发：权限检查、面板切换、导航高亮、调用回调" }
+      ],
+
+      "dom_ids_referenced": [
+        { "id": "sidebar-nav", "method": "getElementById", "line": 19, "exists_in_html": true },
+        { "id": "page-{page}", "method": "getElementById", "line": 69, "pattern": "page-dashboard/cashflow/analysis/plan/fx/basedata/integration/stages", "exists_in_html": true },
+        { "id": "current-tab-name", "method": "getElementById", "line": 76, "exists_in_html": true }
+      ],
+
+      "dom_selectors_used": [
+        { "selector": ".page-panel", "method": "querySelectorAll", "line": 68, "purpose": "隐藏所有页面面板" },
+        { "selector": ".nav-item", "method": "querySelectorAll", "line": 72, "purpose": "更新导航项高亮状态" }
+      ],
+
+      "event_listeners": [
+        { "target": "window", "event": "hashchange", "handler": "Router._dispatch", "line": 14 },
+        { "target": "各nav-item按钮", "event": "click", "handler": "Router.navigate(item.id)", "line": 37, "dynamic": true }
+      ],
+
+      "cross_module_calls": [
+        { "target": "Auth.getCurrentRole()", "location": "lines 9,22,45,63", "type": "call" },
+        { "target": "Auth.hasPage(pageId)", "location": "lines 44,61", "type": "call" },
+        { "target": "AppData.navItems", "location": "line 23", "type": "read" }
+      ],
+
+      "data_flow": [
+        {
+          "source": "window.location.hash",
+          "transform": "解析pageId → 权限校验 → 面板切换",
+          "destination": "DOM (.page-panel active切换) + 回调通知app.js"
+        },
+        {
+          "source": "AppData.navItems + Auth.getCurrentRole().pages",
+          "transform": "过滤可见页面 → 生成按钮",
+          "destination": "DOM (#sidebar-nav)"
+        }
+      ],
+
+      "potential_bugs": []
+    },
+
+    "charts.js": {
+      "description": "ECharts图表封装，6个图表方法对应Dashboard/Analysis/Plan/FX页面",
+      "global_export": "window.Charts",
+      "lines": 249,
+
+      "functions": [
+        { "name": "Charts._get", "line": 8, "params": ["domId"], "returns": "echarts.ECharts|null", "description": "获取或创建ECharts实例，带缓存和resize监听" },
+        { "name": "Charts._emptyOpt", "line": 26, "params": ["text"], "returns": "Object", "description": "生成空状态的ECharts配置" },
+        { "name": "Charts.positionTrend", "line": 34, "params": ["domId", "records"], "description": "Dashboard头寸趋势图（柱+线）" },
+        { "name": "Charts.flowPie", "line": 73, "params": ["domId", "stats"], "description": "Dashboard流入/流出构成饼图" },
+        { "name": "Charts.analysisPosition", "line": 98, "params": ["domId", "result"], "description": "Analysis头寸走势图（双线+双柱）" },
+        { "name": "Charts.planCompare", "line": 153, "params": ["domId", "plans", "actualExecs"], "description": "Plan计划vs实际对比柱状图" },
+        { "name": "Charts.fxDist", "line": 199, "params": ["domId", "fxList"], "description": "FX敞口分布饼图（按币对）" },
+        { "name": "Charts.fxHedge", "line": 220, "params": ["domId", "fxList"], "description": "FX对冲比率横条图" }
+      ],
+
+      "dom_ids_referenced_via_params": [
+        { "id": "chart-position-trend", "called_from": "app.js line 53", "exists_in_html": true },
+        { "id": "chart-flow-pie", "called_from": "app.js line 54", "exists_in_html": true },
+        { "id": "chart-analysis-position", "called_from": "app.js line 660", "exists_in_html": true },
+        { "id": "chart-plan-compare", "called_from": "app.js line 714", "exists_in_html": true },
+        { "id": "chart-fx-dist", "called_from": "app.js line 1032", "exists_in_html": true },
+        { "id": "chart-fx-hedge", "called_from": "app.js line 1033", "exists_in_html": true }
+      ],
+
+      "event_listeners": [
+        { "target": "window", "event": "resize", "handler": "chart.resize()", "line": 20, "note": "为每个图表实例都绑定一次resize，可能造成多个resize监听" }
+      ],
+
+      "cross_module_calls": [
+        { "target": "echarts (第三方库)", "type": "call", "methods": ["echarts.init", "echarts.graphic.LinearGradient"] }
+      ],
+
+      "data_flow": [
+        {
+          "source": "AppData.records.items (via app.js)",
+          "transform": "按日期分组汇总流入流出",
+          "destination": "ECharts positionTrend 图表"
+        },
+        {
+          "source": "AppData.stats",
+          "transform": "按比例拆分流入流出构成",
+          "destination": "ECharts flowPie 图表"
+        },
+        {
+          "source": "AppData.analysisResult",
+          "transform": "提取periods/position数据",
+          "destination": "ECharts analysisPosition 图表"
+        }
+      ],
+
+      "potential_bugs": [
+        {
+          "id": "CHART-BUG-001",
+          "severity": "LOW",
+          "location": "lines 11,15 (_get method)",
+          "description": "变量 `var dom` 在同一函数作用域内声明了两次（line 11和line 15）。JavaScript的var提升不会报错，但首次的 `dom` 赋值会被覆盖。实际上line 11的dom只在echarts未加载时使用，line 15在正常路径执行。逻辑正确但代码不够清晰。",
+          "type": "code_smell"
+        },
+        {
+          "id": "CHART-BUG-002",
+          "severity": "LOW",
+          "location": "line 20",
+          "description": "每次创建新图表实例时都绑定 window.resize 监听器，但从不解绑。若图表容器DOM被移除/替换，旧的resize回调仍会触发chart.resize()，可能导致console警告。",
+          "type": "memory_leak"
+        }
+      ]
+    },
+
+    "ai.js": {
+      "description": "AI对话面板，集成DeepSeek API、后端Agent API、本地Fallback。支持Markdown渲染和页面操作指令解析。",
+      "global_exports": ["window.AI", "window._fmtWan (全局函数)"],
+      "lines": 352,
+
+      "functions": [
+        { "name": "AI.init", "line": 15, "params": [], "description": "初始化AI面板：绑定浮动按钮、关闭按钮、发送按钮、输入框回车事件" },
+        { "name": "AI.toggleDrawer", "line": 24, "params": ["open"], "description": "开关AI抽屉面板，并触发图表resize" },
+        { "name": "AI.send", "line": 35, "params": [], "async": true, "description": "发送消息：先尝试后端API，失败走DeepSeek，再失败走本地Fallback" },
+        { "name": "AI._onReply", "line": 62, "params": ["text"], "description": "处理AI回复：渲染消息、记录历史、解析指令" },
+        { "name": "AI._buildSystemPrompt", "line": 71, "params": [], "returns": "string", "description": "构建DeepSeek系统提示词，包含实时业务数据和操作指令说明" },
+        { "name": "AI._callDeepSeek", "line": 131, "params": [], "async": true, "returns": "string", "description": "调用DeepSeek API获取回复" },
+        { "name": "AI._localFallback", "line": 168, "params": ["msg"], "returns": "string", "description": "离线模式下的关键词匹配回复，支持12种意图识别" },
+        { "name": "AI._renderMarkdown", "line": 212, "params": ["text"], "returns": "string(HTML)", "description": "简易Markdown→HTML渲染(加粗/代码/标题/列表)" },
+        { "name": "AI._appendMsg", "line": 244, "params": ["text", "role"], "description": "向聊天区域追加消息气泡" },
+        { "name": "AI._setLoading", "line": 260, "params": ["on"], "description": "显示/隐藏加载动画（三点打字机效果）" },
+        { "name": "AI._parseCommands", "line": 278, "params": ["text"], "description": "从回复文本中提取```json代码块中的指令" },
+        { "name": "AI._exec", "line": 286, "params": ["cmd"], "description": "执行解析出的指令(navigate/run_analysis/refresh_dashboard/batch_confirm/export_csv/new_plan/fetch_data/toast)" },
+        { "name": "_fmtWan", "line": 344, "params": ["v"], "returns": "string", "scope": "global", "description": "数字格式化为万/亿单位" }
+      ],
+
+      "dom_ids_referenced": [
+        { "id": "ai-float-toggle", "method": "getElementById", "line": 16, "event": "click", "exists_in_html": true },
+        { "id": "ai-close-btn", "method": "getElementById", "line": 17, "event": "click", "exists_in_html": true },
+        { "id": "ai-send-btn", "method": "getElementById", "line": 18, "event": "click", "exists_in_html": true },
+        { "id": "ai-input", "method": "getElementById", "lines": [19, 36], "event": "keydown", "exists_in_html": true },
+        { "id": "app-shell", "method": "getElementById", "line": 25, "exists_in_html": true },
+        { "id": "ai-body", "method": "getElementById", "lines": [245, 262], "exists_in_html": true },
+        { "id": "ai-typing", "method": "getElementById", "line": 265, "exists_in_html": false, "note": "动态创建的元素ID" },
+        { "id": "an-btn-run", "method": "getElementById", "line": 298, "exists_in_html": true },
+        { "id": "dash-btn-refresh", "method": "getElementById", "line": 305, "exists_in_html": true },
+        { "id": "cf-btn-batch-confirm", "method": "getElementById", "line": 312, "exists_in_html": true },
+        { "id": "cf-btn-export", "method": "getElementById", "line": 319, "exists_in_html": true },
+        { "id": "plan-btn-new", "method": "getElementById", "line": 326, "exists_in_html": true },
+        { "id": "cf-btn-fetch", "method": "getElementById", "line": 333, "exists_in_html": true }
+      ],
+
+      "event_listeners": [
+        { "target": "#ai-float-toggle", "event": "click", "handler": "AI.toggleDrawer(true)", "line": 16 },
+        { "target": "#ai-close-btn", "event": "click", "handler": "AI.toggleDrawer(false)", "line": 17 },
+        { "target": "#ai-send-btn", "event": "click", "handler": "AI.send()", "line": 18 },
+        { "target": "#ai-input", "event": "keydown", "handler": "Enter键(非Shift)触发AI.send()", "line": 19 },
+        { "target": "document", "event": "DOMContentLoaded", "handler": "AI.init()", "line": 351 }
+      ],
+
+      "cross_module_calls": [
+        { "target": "Charts._instances", "location": "line 29", "type": "read", "purpose": "AI面板开关时触发图表resize" },
+        { "target": "API.post('/api/agent/chat', ...)", "location": "line 45", "type": "call", "purpose": "发送聊天消息到后端Agent" },
+        { "target": "Auth.getRoleId()", "location": "line 45", "type": "call", "purpose": "传递角色ID到后端" },
+        { "target": "Auth.getCurrentRole()", "location": "line 73", "type": "call", "purpose": "构建系统提示词时获取角色信息" },
+        { "target": "Auth.hasPage()", "location": "line 290", "type": "call", "purpose": "执行navigate指令前权限检查" },
+        { "target": "AppData.stats", "location": "lines 72,169", "type": "read" },
+        { "target": "AppData.plans", "location": "lines 74,191", "type": "read" },
+        { "target": "AppData.fxExposures", "location": "lines 75,176", "type": "read" },
+        { "target": "AppData.alertQueue", "location": "line 76", "type": "read" },
+        { "target": "AppData.systemHealth", "location": "line 77", "type": "read" },
+        { "target": "AppData.closedLoopKPI", "location": "line 78", "type": "read" },
+        { "target": "Router.navigate()", "location": "lines 291,296,303,310,317,324,331", "type": "call" },
+        { "target": "Toast.info()", "location": "line 292", "type": "call" },
+        { "target": "Toast.show()", "location": "line 338", "type": "call" }
+      ],
+
+      "supported_commands": [
+        { "action": "navigate", "params": ["page"], "target_pages": ["dashboard","cashflow","analysis","plan","fx","basedata","integration","stages"] },
+        { "action": "run_analysis", "clicks": "#an-btn-run" },
+        { "action": "refresh_dashboard", "clicks": "#dash-btn-refresh" },
+        { "action": "batch_confirm", "clicks": "#cf-btn-batch-confirm" },
+        { "action": "export_csv", "clicks": "#cf-btn-export" },
+        { "action": "new_plan", "clicks": "#plan-btn-new" },
+        { "action": "fetch_data", "clicks": "#cf-btn-fetch" },
+        { "action": "toast", "params": ["type", "message"] }
+      ],
+
+      "data_flow": [
+        {
+          "source": "用户输入 (#ai-input)",
+          "transform": "先后端API → DeepSeek API → 本地关键词匹配",
+          "destination": "AI聊天面板 (#ai-body) + 可能触发页面操作指令"
+        },
+        {
+          "source": "AppData.stats/plans/fxExposures/alertQueue/closedLoopKPI/systemHealth",
+          "transform": "汇总为DeepSeek系统提示词",
+          "destination": "DeepSeek API请求的system message"
+        },
+        {
+          "source": "AI回复文本中的```json代码块",
+          "transform": "JSON.parse → _exec分发",
+          "destination": "Router.navigate / DOM按钮点击 / Toast提示"
+        }
+      ],
+
+      "potential_bugs": [
+        {
+          "id": "AI-BUG-001",
+          "severity": "HIGH",
+          "location": "line 7",
+          "description": "DeepSeek API Key 硬编码在前端源码中: 'sk-65fd66592ad844418561d900501bd32b'。任何访问页面的用户都可以在浏览器DevTools中看到并盗用该密钥。应改为后端代理或环境变量注入。",
+          "type": "security"
+        },
+        {
+          "id": "AI-BUG-002",
+          "severity": "LOW",
+          "location": "line 131",
+          "description": "_callDeepSeek 定义为 `async function ()` 无参数，但在 line 50 调用时传入了 `msg` 参数 `this._callDeepSeek(msg)`。参数被忽略，函数内部通过 this._history 获取消息。功能正确但参数不一致，影响代码可读性。",
+          "type": "code_smell"
+        },
+        {
+          "id": "AI-BUG-003",
+          "severity": "MEDIUM",
+          "location": "lines 296-335 (_exec function)",
+          "description": "AI指令通过 setTimeout + DOM click 模拟按钮点击（如 #an-btn-run）。如果Router.navigate尚未完成页面渲染（异步加载），setTimeout(500ms)可能不足以等待DOM就绪，导致 getElementById 返回 null。当前有 `if (btn)` 保护，但操作会静默失败。",
+          "type": "race_condition"
+        },
+        {
+          "id": "AI-BUG-004",
+          "severity": "LOW",
+          "location": "line 252",
+          "description": "用户消息通过 replace 转义HTML特殊字符后直接设为innerHTML，但转义链只处理 &, <, >，未处理引号。如果用户输入包含 `\"` + `onerror=...` 等payload，在某些边界情况下可能有XSS风险（当前场景风险较低因为置于div.textContent-like上下文）。",
+          "type": "security_minor"
+        }
+      ]
+    },
+
+    "app.js": {
+      "description": "应用主入口，8个页面的完整渲染逻辑和交互，包含CRUD操作、跨模块数据流、模态框管理",
+      "global_exports": [
+        "window.setCfPage", "window.viewRecord", "window.confirmRecord",
+        "window.editPlan", "window.submitPlan", "window.approvePlan", "window.executePlan", "window.completePlan",
+        "window.toggleTreeNode", "window.toggleBizValid", "window.deleteTimePeriod",
+        "window.deleteSBMap", "window.deleteSPMap",
+        "window.viewRule", "window.toggleRule", "window.deleteRule",
+        "window.toggleTask", "window.runTask",
+        "window.handleAlert", "window.renderDashboardHealth",
+        "window.closeModal", "window.fmtNum", "window.fmtAmt"
+      ],
+      "lines": 1561,
+      "execution_type": "async IIFE (立即执行异步函数)",
+
+      "functions": [
+        { "name": "(IIFE entry)", "line": 5, "description": "异步自执行入口：校验登录→加载数据→初始化路由" },
+        { "name": "onNavigate", "line": 21, "params": ["page"], "scope": "closure", "description": "路由回调分发，switch-case到8个渲染函数" },
+
+        { "section": "=== DASHBOARD ===", "functions": [
+          { "name": "renderDashboard", "line": 38, "description": "渲染总览看板：KPI卡片+图表+告警+闭环KPI+健康状态+预警队列" },
+          { "name": "kpi", "line": 74, "params": ["label","value","sub","delta","navPage"], "returns": "string(HTML)", "description": "生成单个KPI卡片HTML" },
+          { "name": "insightHTML", "line": 84, "params": ["type","text","navPage"], "returns": "string(HTML)", "description": "生成告警卡片HTML" },
+          { "name": "_bindDashClickable", "line": 89, "description": "绑定KPI卡片和告警卡片的点击跳转" },
+          { "name": "_renderClosedLoopKPI", "line": 99, "description": "渲染闭环效能KPI进度条" },
+          { "name": "_renderAlertQueue", "line": 124, "description": "渲染预警处理中心列表" },
+          { "name": "_renderSystemHealth", "line": 158, "description": "渲染系统健康状态网格" },
+          { "name": "renderDashboardHealth (window)", "line": 173, "description": "供外部调用的健康状态刷新" },
+          { "name": "_updateDegradationUI", "line": 178, "description": "根据AI/银行接口状态禁用/启用相关按钮" },
+          { "name": "handleAlert (window)", "line": 206, "params": ["id","action"], "description": "处理预警：采纳/拒绝" }
+        ]},
+
+        { "section": "=== CASHFLOW ===", "functions": [
+          { "name": "renderCashflow", "line": 245, "description": "渲染资金流管理页：填充单位筛选+加载表格" },
+          { "name": "loadCfTable", "line": 250, "async": true, "description": "加载资金流表格（优先后端API，fallback本地过滤）" },
+          { "name": "renderCfTableData", "line": 275, "params": ["data"], "description": "渲染表格行和分页" },
+          { "name": "setCfPage (window)", "line": 300, "params": ["p"], "description": "设置当前页码并重载表格" },
+          { "name": "viewRecord (window)", "line": 302, "params": ["id"], "description": "弹窗显示记录详情" },
+          { "name": "confirmRecord (window)", "line": 317, "params": ["id"], "description": "确认单条记录" },
+          { "name": "_simulateFetchData", "line": 356, "params": ["unit"], "returns": "number", "description": "模拟从集成系统获取数据，返回新增条数" }
+        ]},
+
+        { "section": "=== ANALYSIS ===", "functions": [
+          { "name": "renderAnalysis", "line": 483, "description": "渲染分析预测页" },
+          { "name": "_showAnalysisActions", "line": 491, "params": ["show"], "description": "显示/隐藏下发和导出按钮" },
+          { "name": "buildLocalAnalysis", "line": 581, "params": ["params"], "returns": "Object", "description": "构建本地分析结果（14个周期的模拟数据）" },
+          { "name": "drawAnalysis", "line": 659, "params": ["result"], "description": "绘制分析图表和科目矩阵表格" }
+        ]},
+
+        { "section": "=== PLAN ===", "functions": [
+          { "name": "renderPlan", "line": 690, "description": "渲染资金计划页：chips+表格+图表+偏差日志" },
+          { "name": "renderPlanTable", "line": 718, "params": ["list"], "description": "渲染计划明细表格（含状态流转按钮）" },
+          { "name": "editPlan (window)", "line": 739, "params": ["id"], "description": "编辑计划弹窗" },
+          { "name": "submitPlan (window)", "line": 765, "params": ["id"], "description": "提交计划" },
+          { "name": "approvePlan (window)", "line": 775, "params": ["id"], "description": "审批计划" },
+          { "name": "executePlan (window)", "line": 783, "params": ["id"], "description": "下发执行计划" },
+          { "name": "completePlan (window)", "line": 791, "params": ["id"], "description": "完成计划+填写实际执行+触发偏差分析" },
+          { "name": "_runDeviationAnalysis", "line": 899, "params": ["plan","actualJson"], "description": "运行偏差分析：生成偏差日志+预警" },
+          { "name": "_renderDeviationLogTable", "line": 964, "description": "渲染偏差日志表格" }
+        ]},
+
+        { "section": "=== FX ===", "functions": [
+          { "name": "renderFx", "line": 1014, "description": "渲染外汇敞口页：KPI+表格+图表" }
+        ]},
+
+        { "section": "=== BASEDATA ===", "functions": [
+          { "name": "renderBaseData", "line": 1066, "description": "渲染基础数据页（5个子Tab）" },
+          { "name": "renderSubjectTree", "line": 1083, "description": "渲染科目树" },
+          { "name": "toggleTreeNode (window)", "line": 1103, "params": ["btn"], "description": "展开/折叠树节点" },
+          { "name": "renderBizTable", "line": 1111, "description": "渲染业务列表表格" },
+          { "name": "toggleBizValid (window)", "line": 1120, "params": ["id"], "description": "切换业务有效状态" },
+          { "name": "renderTimePeriods", "line": 1125, "description": "渲染时间段配置列表" },
+          { "name": "deleteTimePeriod (window)", "line": 1137, "params": ["id"], "description": "删除时间段" },
+          { "name": "renderSBMap", "line": 1143, "description": "渲染科目↔业务映射表格" },
+          { "name": "deleteSBMap (window)", "line": 1152, "params": ["id"], "description": "删除科目↔业务映射" },
+          { "name": "renderSPMap", "line": 1158, "description": "渲染科目↔计划映射表格" },
+          { "name": "deleteSPMap (window)", "line": 1171, "params": ["id"], "description": "删除科目↔计划映射" }
+        ]},
+
+        { "section": "=== INTEGRATION ===", "functions": [
+          { "name": "renderIntegration", "line": 1283, "description": "渲染数据集成页" },
+          { "name": "_renderRulesTable", "line": 1290, "description": "渲染映射规则表格" },
+          { "name": "viewRule (window)", "line": 1301, "params": ["id"], "description": "查看规则详情弹窗" },
+          { "name": "toggleRule (window)", "line": 1314, "params": ["id"], "description": "启用/禁用规则" },
+          { "name": "deleteRule (window)", "line": 1319, "params": ["id"], "description": "删除规则" },
+          { "name": "_addSyncLog", "line": 1356, "params": ["system","action","count","status","remark"], "description": "添加同步日志记录" },
+          { "name": "_renderSyncLog", "line": 1366, "description": "渲染同步日志列表" },
+          { "name": "_renderTasksTable", "line": 1381, "description": "渲染定时任务表格" },
+          { "name": "toggleTask (window)", "line": 1391, "params": ["id"], "description": "暂停/启动任务" },
+          { "name": "runTask (window)", "line": 1396, "params": ["id"], "description": "立即执行任务" },
+          { "name": "_bindIntCards", "line": 1435, "description": "绑定集成系统卡片点击事件" }
+        ]},
+
+        { "section": "=== STAGES ===", "functions": [
+          { "name": "renderStages", "line": 1484, "description": "渲染两阶段模型页：卡片选中+模块卡片点击跳转" }
+        ]},
+
+        { "section": "=== MODAL ===", "functions": [
+          { "name": "openModal", "line": 1516, "params": ["title","bodyHtml","onConfirm","readonly"], "description": "打开模态框（支持只读和确认两种模式）" },
+          { "name": "closeModal (window)", "line": 1531, "description": "关闭模态框" }
+        ]},
+
+        { "section": "=== UTILITY ===", "functions": [
+          { "name": "fmtAmt (window)", "line": 1540, "params": ["v"], "returns": "string", "description": "金额格式化（万/亿）" },
+          { "name": "fmtNum (window)", "line": 1546, "params": ["v"], "returns": "string", "description": "数字千分位格式化" },
+          { "name": "populateUnitSelect", "line": 1553, "params": ["id"], "description": "动态填充单位下拉选择框" }
+        ]}
+      ],
+
+      "dom_ids_referenced": [
+        { "id": "topbar-avatar", "line": 9, "exists_in_html": true },
+        { "id": "topbar-username", "line": 10, "exists_in_html": true },
+        { "id": "topbar-logout", "line": 13, "event": "click", "exists_in_html": true },
+
+        { "id": "dash-kpi", "line": 47, "exists_in_html": true },
+        { "id": "dash-alerts", "line": 66, "exists_in_html": true },
+        { "id": "dash-loop-kpi", "line": 101, "exists_in_html": true },
+        { "id": "dash-alert-queue", "line": 126, "exists_in_html": true },
+        { "id": "dash-alert-badge", "line": 127, "exists_in_html": true },
+        { "id": "dash-sys-health", "line": 159, "exists_in_html": true },
+        { "id": "dash-btn-refresh", "line": 231, "event": "click", "exists_in_html": true },
+        { "id": "m-alert-reason", "line": 219, "modal_dynamic": true },
+
+        { "id": "cf-filter-unit", "lines": [251, 328, 329], "exists_in_html": true },
+        { "id": "cf-filter-status", "lines": [252, 329], "exists_in_html": true },
+        { "id": "cf-filter-currency", "lines": [253, 330], "exists_in_html": true },
+        { "id": "cf-table-body", "line": 276, "exists_in_html": true },
+        { "id": "cf-pagination", "line": 292, "exists_in_html": true },
+        { "id": "cf-btn-query", "line": 326, "event": "click", "exists_in_html": true },
+        { "id": "cf-btn-reset", "line": 327, "event": "click", "exists_in_html": true },
+        { "id": "cf-btn-fetch", "line": 335, "event": "click", "exists_in_html": true },
+        { "id": "cf-btn-batch-confirm", "line": 408, "event": "click", "exists_in_html": true },
+        { "id": "cf-btn-export", "line": 421, "event": "click", "exists_in_html": true },
+        { "id": "cf-btn-add", "line": 435, "event": "click", "exists_in_html": true },
+        { "id": "m-rec-unit", "line": 445, "modal_dynamic": true },
+        { "id": "m-rec-currency", "line": 446, "modal_dynamic": true },
+        { "id": "m-rec-amount", "line": 447, "modal_dynamic": true },
+        { "id": "m-rec-date", "line": 448, "modal_dynamic": true },
+        { "id": "m-rec-status", "line": 450, "modal_dynamic": true },
+        { "id": "m-rec-errors", "line": 457, "modal_dynamic": true },
+        { "id": "m-fetch-unit", "line": 346, "modal_dynamic": true },
+
+        { "id": "an-unit", "lines": [484, 516], "exists_in_html": true },
+        { "id": "an-period-config", "line": 500, "exists_in_html": true },
+        { "id": "an-opening", "line": 501, "exists_in_html": true },
+        { "id": "an-btn-run", "line": 496, "event": "click", "exists_in_html": true },
+        { "id": "an-btn-to-plan", "lines": [492, 512, 872], "event": "click", "exists_in_html": true },
+        { "id": "an-btn-export", "lines": [493, 561], "event": "click", "exists_in_html": true },
+        { "id": "an-matrix-head", "line": 662, "exists_in_html": true },
+        { "id": "an-matrix-body", "line": 681, "exists_in_html": true },
+        { "id": "m-an-plan-type", "line": 526, "modal_dynamic": true },
+        { "id": "m-an-plan-label", "line": 527, "modal_dynamic": true },
+
+        { "id": "plan-chips", "lines": [694, 700], "exists_in_html": true },
+        { "id": "plan-table-body", "line": 719, "exists_in_html": true },
+        { "id": "plan-btn-from-cf", "line": 830, "event": "click", "exists_in_html": true },
+        { "id": "plan-btn-from-analysis", "line": 870, "event": "click", "exists_in_html": true },
+        { "id": "plan-btn-new", "line": 875, "event": "click", "exists_in_html": true },
+        { "id": "plan-btn-run-deviation", "line": 979, "event": "click", "exists_in_html": true },
+        { "id": "plan-deviation-area", "line": 986, "exists_in_html": true },
+        { "id": "plan-deviation-log-body", "line": 966, "exists_in_html": true },
+
+        { "id": "fx-kpi", "line": 1020, "exists_in_html": true },
+        { "id": "fx-table-body", "line": 1024, "exists_in_html": true },
+        { "id": "fx-btn-add", "line": 1036, "event": "click", "exists_in_html": true },
+
+        { "id": "bd-tabs", "line": 1071, "event": "click", "exists_in_html": true },
+        { "id": "bd-subjects", "line": 1077, "exists_in_html": true },
+        { "id": "bd-businesses", "line": 1077, "exists_in_html": true },
+        { "id": "bd-timeperiods", "line": 1077, "exists_in_html": true },
+        { "id": "bd-sbmap", "line": 1077, "exists_in_html": true },
+        { "id": "bd-spmap", "line": 1077, "exists_in_html": true },
+        { "id": "bd-subject-tree", "line": 1100, "exists_in_html": true },
+        { "id": "bd-biz-body", "line": 1113, "exists_in_html": true },
+        { "id": "bd-tp-body", "line": 1127, "exists_in_html": true },
+        { "id": "bd-sbmap-body", "line": 1145, "exists_in_html": true },
+        { "id": "bd-spmap-body", "line": 1161, "exists_in_html": true },
+        { "id": "bd-btn-add-subject", "line": 1177, "event": "click", "exists_in_html": true },
+        { "id": "bd-btn-add-biz", "line": 1204, "event": "click", "exists_in_html": true },
+        { "id": "bd-btn-add-tp", "line": 1221, "event": "click", "exists_in_html": true },
+        { "id": "bd-btn-add-sbmap", "line": 1238, "event": "click", "exists_in_html": true },
+        { "id": "bd-btn-add-spmap", "line": 1259, "event": "click", "exists_in_html": true },
+
+        { "id": "int-rules-body", "line": 1292, "exists_in_html": true },
+        { "id": "int-btn-add-rule", "line": 1325, "event": "click", "exists_in_html": true },
+        { "id": "int-btn-sync", "line": 1343, "event": "click", "exists_in_html": true },
+        { "id": "int-sync-log", "line": 1368, "exists_in_html": true },
+        { "id": "int-tasks-body", "line": 1383, "exists_in_html": true },
+        { "id": "int-btn-add-task", "line": 1414, "event": "click", "exists_in_html": true },
+        { "id": "int-systems", "line": 1436, "exists_in_html": true },
+
+        { "id": "modal-title", "line": 1517, "exists_in_html": true },
+        { "id": "modal-body", "line": 1518, "exists_in_html": true },
+        { "id": "modal-footer", "line": 1520, "exists_in_html": true },
+        { "id": "modal-mask", "lines": [1524, 1531, 1534], "exists_in_html": true },
+        { "id": "modal-cancel", "line": 1525, "modal_dynamic": true },
+        { "id": "modal-confirm", "line": 1527, "modal_dynamic": true },
+        { "id": "modal-close-btn", "line": 1533, "event": "click", "exists_in_html": true }
+      ],
+
+      "event_listeners": [
+        { "target": "#topbar-logout", "event": "click", "handler": "Auth.logout()", "line": 13 },
+        { "target": "#dash-btn-refresh", "event": "click", "handler": "刷新统计+KPI+渲染看板", "line": 231 },
+        { "target": "#cf-btn-query", "event": "click", "handler": "重置页码+加载表格", "line": 326 },
+        { "target": "#cf-btn-reset", "event": "click", "handler": "清空筛选+重置页码+加载表格", "line": 327 },
+        { "target": "#cf-btn-fetch", "event": "click", "handler": "弹窗获取数据", "line": 335 },
+        { "target": "#cf-btn-batch-confirm", "event": "click", "handler": "弹窗批量确认", "line": 408 },
+        { "target": "#cf-btn-export", "event": "click", "handler": "导出CSV", "line": 421 },
+        { "target": "#cf-btn-add", "event": "click", "handler": "弹窗新增单据", "line": 435 },
+        { "target": "#an-btn-run", "event": "click", "handler": "运行分析", "line": 496 },
+        { "target": "#an-btn-to-plan", "event": "click", "handler": "下发至计划", "line": 512 },
+        { "target": "#an-btn-export", "event": "click", "handler": "导出报告CSV", "line": 561 },
+        { "target": "#plan-chips (delegated)", "event": "click", "handler": "切换计划期间标签", "line": 700 },
+        { "target": "#plan-btn-from-cf", "event": "click", "handler": "从资金流获取数据建计划", "line": 830 },
+        { "target": "#plan-btn-from-analysis", "event": "click", "handler": "从分析结果建计划", "line": 870 },
+        { "target": "#plan-btn-new", "event": "click", "handler": "新建空白计划", "line": 875 },
+        { "target": "#plan-btn-run-deviation", "event": "click", "handler": "运行偏差检测", "line": 979 },
+        { "target": "#fx-btn-add", "event": "click", "handler": "新增外汇敞口", "line": 1036 },
+        { "target": "#bd-tabs (delegated)", "event": "click", "handler": "切换基础数据子Tab", "line": 1071 },
+        { "target": "#bd-btn-add-subject", "event": "click", "handler": "新增科目", "line": 1177 },
+        { "target": "#bd-btn-add-biz", "event": "click", "handler": "新增业务", "line": 1204 },
+        { "target": "#bd-btn-add-tp", "event": "click", "handler": "新增时间段", "line": 1221 },
+        { "target": "#bd-btn-add-sbmap", "event": "click", "handler": "新增科目↔业务映射", "line": 1238 },
+        { "target": "#bd-btn-add-spmap", "event": "click", "handler": "新增科目↔计划映射", "line": 1259 },
+        { "target": "#int-btn-add-rule", "event": "click", "handler": "新增映射规则", "line": 1325 },
+        { "target": "#int-btn-sync", "event": "click", "handler": "手动同步", "line": 1343 },
+        { "target": "#int-btn-add-task", "event": "click", "handler": "新增定时任务", "line": 1414 },
+        { "target": "#modal-close-btn", "event": "click", "handler": "closeModal()", "line": 1533 },
+        { "target": "#modal-mask", "event": "click", "handler": "点击遮罩关闭(e.target===e.currentTarget)", "line": 1534 }
+      ],
+
+      "cross_module_calls": [
+        { "target": "Auth.getCurrentRole()", "location": "line 6", "type": "call" },
+        { "target": "Auth.logout()", "location": "line 13", "type": "call" },
+        { "target": "Auth.hasPage()", "location": "via Router internally", "type": "indirect" },
+        { "target": "loadFromBackend()", "location": "line 15", "type": "call", "module": "data.js" },
+        { "target": "Router.onNavigate()", "location": "line 17", "type": "call" },
+        { "target": "Router.init()", "location": "line 18", "type": "call" },
+        { "target": "Router.navigate()", "location": "lines 19,92,93,95,556,etc", "type": "call" },
+        { "target": "AppData.*", "location": "throughout", "type": "read/write", "note": "读写几乎所有AppData字段" },
+        { "target": "refreshStats()", "location": "lines 39,321,348,414,etc", "type": "call", "module": "data.js" },
+        { "target": "refreshClosedLoopKPI()", "location": "lines 40,212,232,961", "type": "call", "module": "data.js" },
+        { "target": "calcDeviationLevel()", "location": "lines 913,972", "type": "call", "module": "data.js" },
+        { "target": "calcDeviationForExec()", "location": "line 990", "type": "call", "module": "data.js" },
+        { "target": "validateRecord()", "location": "line 452", "type": "call", "module": "data.js" },
+        { "target": "toggleServiceHealth()", "location": "line 165 (onclick string)", "type": "call", "module": "data.js" },
+        { "target": "Charts.positionTrend()", "location": "line 53", "type": "call" },
+        { "target": "Charts.flowPie()", "location": "line 54", "type": "call" },
+        { "target": "Charts.analysisPosition()", "location": "line 660", "type": "call" },
+        { "target": "Charts.planCompare()", "location": "line 714", "type": "call" },
+        { "target": "Charts.fxDist()", "location": "line 1032", "type": "call" },
+        { "target": "Charts.fxHedge()", "location": "line 1033", "type": "call" },
+        { "target": "Toast.success()", "location": "多处", "type": "call" },
+        { "target": "Toast.warn()", "location": "多处", "type": "call" },
+        { "target": "Toast.info()", "location": "多处", "type": "call" },
+        { "target": "API.get()", "location": "line 260", "type": "call" }
+      ],
+
+      "data_flow": [
+        {
+          "name": "登录→初始化",
+          "source": "Auth.getCurrentRole()",
+          "transform": "验证角色→加载后端数据→初始化路由",
+          "destination": "页面渲染"
+        },
+        {
+          "name": "Dashboard数据流",
+          "source": "AppData.stats + AppData.records + AppData.fxExposures + AppData.plans + AppData.alertQueue",
+          "transform": "汇总KPI、图表数据、告警列表",
+          "destination": "#dash-kpi, #chart-position-trend, #chart-flow-pie, #dash-alerts, #dash-loop-kpi, #dash-sys-health, #dash-alert-queue"
+        },
+        {
+          "name": "资金流CRUD",
+          "source": "用户输入(筛选/新增) + 后端API/Mock数据",
+          "transform": "过滤+分页 / 数据校验+写入AppData",
+          "destination": "#cf-table-body + AppData.records.items"
+        },
+        {
+          "name": "分析→计划跨模块链路",
+          "source": "buildLocalAnalysis() 生成分析结果",
+          "transform": "按科目汇总 → 按单位分配 → 创建计划记录",
+          "destination": "AppData.plans (新增草稿计划) → renderPlan()"
+        },
+        {
+          "name": "计划完成→偏差分析→预警闭环",
+          "source": "completePlan()中用户输入的实际执行金额",
+          "transform": "_runDeviationAnalysis: 计算偏差率→生成偏差日志→生成预警→刷新KPI",
+          "destination": "AppData.deviationLogs + AppData.alertQueue + AppData.closedLoopKPI"
+        },
+        {
+          "name": "集成系统获取数据",
+          "source": "_simulateFetchData() 随机生成",
+          "transform": "按映射规则模拟拉取 → 去重 → 追加记录",
+          "destination": "AppData.records.items + AppData.syncLogs"
+        }
+      ],
+
+      "potential_bugs": [
+        {
+          "id": "APP-BUG-001",
+          "severity": "MEDIUM",
+          "location": "lines 150-151 (_renderAlertQueue inline onclick)",
+          "description": "HTML模板中使用 `onclick=\"handleAlert(id,'采纳')\"` 和 `onclick=\"handleAlert(id,'拒绝')\"` 内联事件。这依赖 handleAlert 在 window 作用域（line 206 已设置 window.handleAlert），可以工作。但内联onclick是不推荐的做法，如果id是注入值可能有XSS风险。当前id是数字安全。",
+          "type": "code_smell"
+        },
+        {
+          "id": "APP-BUG-002",
+          "severity": "MEDIUM",
+          "location": "line 165 (_renderSystemHealth inline onclick string)",
+          "description": "系统健康卡片的onclick使用字符串拼接：`onclick=\"toggleServiceHealth('key');this.closest('.page-panel')&&renderDashboardHealth()\"` 中引用了 `renderDashboardHealth` 函数。虽然 line 173 将其挂载到了 window，但代码也调用了 `_updateDegradationUI()` 只在 IIFE 闭包内定义。`renderDashboardHealth` 内部调用 `_updateDegradationUI()` 可以工作（因为闭包引用），但代码可读性差。",
+          "type": "code_smell"
+        },
+        {
+          "id": "APP-BUG-003",
+          "severity": "LOW",
+          "location": "line 1069 (_bdTabsBound)",
+          "description": "`_bdTabsBound` 标志位在IIFE顶层设置（line 1068-1069），而非在 renderBaseData() 内部。这意味着 bd-tabs 的事件只绑定一次，不管是否导航到该页面。如果 #bd-tabs 元素在页面切换时被销毁重建（当前不会），事件将丢失。当前架构下所有 page-panel 始终存在于 DOM，故不是问题。",
+          "type": "design_note"
+        },
+        {
+          "id": "APP-BUG-004",
+          "severity": "LOW",
+          "location": "lines 1516-1528 (openModal)",
+          "description": "openModal 每次都重新创建 modal-cancel 和 modal-confirm 按钮（通过innerHTML），并绑定新的 addEventListener。旧按钮因DOM替换自动清理不会导致内存泄漏。但如果用户快速多次打开modal，理论上事件绑定和innerHTML操作之间有微小竞态窗口。",
+          "type": "code_smell"
+        },
+        {
+          "id": "APP-BUG-005",
+          "severity": "MEDIUM",
+          "location": "lines 278-287 (renderCfTableData inline onclick)",
+          "description": "资金流表格行中使用 `onclick=\"viewRecord(id)\"` 和 `onclick=\"confirmRecord(id)\"` 内联事件绑定。同类问题还出现在计划表格(line 728-731)、业务表格(line 1116)、映射表格(line 1148)、规则表格(line 1295-1297)、任务表格(line 1386-1387)。所有内联onclick均引用 window 全局函数，功能正确但违反关注点分离原则。",
+          "type": "code_smell"
+        },
+        {
+          "id": "APP-BUG-006",
+          "severity": "MEDIUM",
+          "location": "line 374 (_simulateFetchData)",
+          "description": "AppData.records.items.reduce 假设 items 数组非空且每条都有数字id。如果items为空，reduce初始值为0（正确）。但如果某条记录的id不是数字，Math.max会返回NaN。当前Mock数据中id总是数字，但从后端加载时应确保。",
+          "type": "robustness"
+        }
+      ]
+    }
+  },
+
+  "cross_file_analysis": {
+    "module_dependency_graph": {
+      "app.html_load_order": ["echarts.min.js", "data.js", "auth.js", "toast.js", "router.js", "charts.js", "ai.js", "app.js"],
+      "index.html_load_order": ["data.js", "auth.js"],
+      "dependencies": {
+        "auth.js": { "depends_on": ["data.js (AppData.roles)"], "depended_by": ["router.js", "ai.js", "app.js"] },
+        "toast.js": { "depends_on": [], "depended_by": ["ai.js", "app.js"] },
+        "data.js": { "depends_on": [], "depended_by": ["auth.js", "router.js", "charts.js", "ai.js", "app.js"] },
+        "router.js": { "depends_on": ["data.js", "auth.js"], "depended_by": ["ai.js", "app.js"] },
+        "charts.js": { "depends_on": ["echarts.min.js"], "depended_by": ["ai.js", "app.js"] },
+        "ai.js": { "depends_on": ["data.js", "auth.js", "toast.js", "router.js", "charts.js"], "depended_by": ["app.js (indirect)"] },
+        "app.js": { "depends_on": ["data.js", "auth.js", "toast.js", "router.js", "charts.js"] }
+      },
+      "load_order_correct": true
+    },
+
+    "global_namespace_pollution": {
+      "window_properties_set": [
+        "AppData", "API", "Auth", "Toast", "Router", "Charts", "AI",
+        "loadFromBackend", "calcDeviationLevel", "calcDeviationForExec",
+        "refreshClosedLoopKPI", "validateRecord", "toggleServiceHealth", "refreshStats",
+        "_fmtWan",
+        "setCfPage", "viewRecord", "confirmRecord",
+        "editPlan", "submitPlan", "approvePlan", "executePlan", "completePlan",
+        "toggleTreeNode", "toggleBizValid", "deleteTimePeriod",
+        "deleteSBMap", "deleteSPMap",
+        "viewRule", "toggleRule", "deleteRule",
+        "toggleTask", "runTask",
+        "handleAlert", "renderDashboardHealth",
+        "closeModal", "fmtNum", "fmtAmt"
+      ],
+      "total_globals": 36,
+      "risk": "HIGH — 36个全局变量/函数可能与第三方库冲突"
+    },
+
+    "dom_id_cross_reference": {
+      "all_ids_in_html": [
+        "app-shell", "topbar-logout", "topbar-avatar", "topbar-username",
+        "sidebar", "sidebar-nav", "content-main", "current-tab-name",
+        "page-dashboard", "dash-btn-refresh", "dash-kpi", "chart-position-trend", "chart-flow-pie",
+        "dash-alerts", "dash-loop-kpi", "dash-sys-health", "dash-alert-badge", "dash-alert-queue",
+        "page-cashflow", "cf-filter", "cf-filter-unit", "cf-filter-status", "cf-filter-currency",
+        "cf-btn-query", "cf-btn-reset", "cf-btn-fetch", "cf-btn-batch-confirm", "cf-btn-export", "cf-btn-add",
+        "cf-table", "cf-table-body", "cf-pagination",
+        "page-analysis", "an-unit", "an-period-config", "an-opening",
+        "an-btn-run", "an-btn-to-plan", "an-btn-export",
+        "chart-analysis-position", "an-matrix-table", "an-matrix-head", "an-matrix-body",
+        "page-plan", "plan-chips", "plan-btn-from-cf", "plan-btn-from-analysis", "plan-btn-new",
+        "plan-table-body", "chart-plan-compare", "plan-btn-run-deviation", "plan-deviation-area", "plan-deviation-log-body",
+        "page-fx", "fx-kpi", "chart-fx-dist", "chart-fx-hedge", "fx-table-body", "fx-btn-add",
+        "page-basedata", "bd-tabs", "bd-subjects", "bd-businesses", "bd-timeperiods", "bd-sbmap", "bd-spmap",
+        "bd-subject-tree", "bd-btn-add-subject", "bd-biz-body", "bd-btn-add-biz",
+        "bd-tp-body", "bd-btn-add-tp", "bd-sbmap-body", "bd-btn-add-sbmap", "bd-spmap-body", "bd-btn-add-spmap",
+        "page-integration", "int-systems", "int-rules-body", "int-btn-sync", "int-btn-add-rule",
+        "int-sync-log", "int-tasks-body", "int-btn-add-task",
+        "page-stages",
+        "ai-panel", "ai-drawer", "ai-close-btn", "ai-body", "ai-drawer-compose", "ai-input", "ai-send-btn",
+        "ai-float-toggle",
+        "modal-mask", "modal-title", "modal-close-btn", "modal-body", "modal-footer",
+        "role-grid"
+      ],
+      "ids_referenced_in_js_but_not_in_html": [
+        {
+          "id": "ai-typing",
+          "referenced_in": "ai.js line 265",
+          "status": "SAFE — 动态创建并通过 getElementById 查找，有 null 检查"
+        }
+      ],
+      "ids_in_html_never_referenced_in_js": [
+        "sidebar", "content-main", "cf-filter", "cf-table", "an-matrix-table",
+        "ai-panel", "ai-drawer", "ai-drawer-compose", "role-grid"
+      ],
+      "orphaned_ids_analysis": "上述未引用的ID主要用于CSS样式定位或HTML结构标识，非功能性引用，属于正常情况"
+    },
+
+    "event_listener_complete_map": {
+      "DOMContentLoaded": [
+        { "file": "ai.js", "line": 351, "handler": "AI.init()" }
+      ],
+      "hashchange": [
+        { "file": "router.js", "line": 14, "handler": "Router._dispatch()" }
+      ],
+      "resize": [
+        { "file": "charts.js", "line": 20, "handler": "每个chart实例的resize()", "count": "最多6个" }
+      ],
+      "click_listeners": {
+        "count": 29,
+        "files": { "ai.js": 3, "router.js": "N (动态导航按钮)", "app.js": 26 }
+      },
+      "keydown_listeners": [
+        { "file": "ai.js", "line": 19, "target": "#ai-input", "key": "Enter" }
+      ],
+      "inline_onclick_count": {
+        "app.js_templates": 28,
+        "app.html_inline": 5,
+        "note": "共33处内联onclick事件绑定，均通过window全局函数调用"
+      }
+    },
+
+    "functions_called_but_never_defined_in_js": [],
+
+    "duplicate_functionality": [
+      {
+        "function_a": "_fmtWan (ai.js line 344)",
+        "function_b": "fmtAmt (app.js line 1540)",
+        "overlap": "两者都将数字格式化为万/亿，逻辑几乎相同。_fmtWan返回'万'，fmtAmt返回'万'（带空格）。建议统一使用一个。"
+      }
+    ]
+  },
+
+  "security_issues": [
+    {
+      "id": "SEC-001",
+      "severity": "CRITICAL",
+      "file": "ai.js",
+      "line": 7,
+      "description": "DeepSeek API密钥硬编码在前端JavaScript中：sk-65fd66592ad844418561d900501bd32b。任何用户都可通过浏览器查看源码获取此密钥。",
+      "recommendation": "1) 将API调用移至后端代理；2) 或使用环境变量在构建时注入；3) 绝不在客户端暴露API密钥"
+    },
+    {
+      "id": "SEC-002",
+      "severity": "LOW",
+      "file": "auth.js",
+      "description": "认证仅依赖 sessionStorage 中的角色ID字符串，无令牌/签名验证。用户可通过 sessionStorage.setItem('cf_role','treasurer') 伪造任意角色。",
+      "recommendation": "如需真实认证，应使用JWT令牌+后端验证"
+    },
+    {
+      "id": "SEC-003",
+      "severity": "LOW",
+      "file": "app.js",
+      "description": "多处使用 innerHTML 渲染用户可控数据（如单位名称、科目名称），虽然当前数据来自Mock/受控后端，但未做HTML转义。如果后端数据被污染，可能导致XSS。",
+      "recommendation": "使用 textContent 或添加 HTML 转义辅助函数"
+    }
+  ],
+
+  "architecture_summary": {
+    "pattern": "全局对象单例 + Hash SPA路由 + 过程式渲染",
+    "state_management": "单一全局 AppData 对象，所有模块直接读写",
+    "rendering": "手动DOM操作（innerHTML模板字符串），非Virtual DOM",
+    "api_strategy": "后端优先 → 本地Mock回退（graceful degradation）",
+    "ai_integration": "三级回退：后端Agent → DeepSeek API → 本地关键词匹配",
+    "strengths": [
+      "代码结构清晰，模块职责分明",
+      "完整的业务闭环：资金流→分析→计划→执行→偏差→预警→AI建议",
+      "优雅降级设计（后端不可用时自动切换Mock）",
+      "系统健康监控+UI降级（按钮禁用等）",
+      "AI指令系统设计完善，支持8种页面操作"
+    ],
+    "weaknesses": [
+      "36个全局变量污染window命名空间",
+      "大量innerHTML拼接存在XSS隐患",
+      "API密钥前端暴露",
+      "无模块化构建（无import/export，纯script标签加载）",
+      "app.js单文件1561行过于庞大",
+      "窗口resize事件监听器可能累积"
+    ]
+  }
+}

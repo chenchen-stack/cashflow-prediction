@@ -1,0 +1,2106 @@
+/**
+ * 资金预测智能体 · 统一提案幻灯 增补样式（与 ../../PPT/deck.css 串联使用）
+ */
+
+/* 翻页过渡略拉长，与封面入场节奏同量级 */
+:root {
+  --dur-deck: 0.62s;
+  --dur-deck-long: 0.88s;
+}
+
+/* —— 封面动效 —— */
+@keyframes u-hero-glow-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.82;
+  }
+  100% {
+    transform: translate(5%, 4%) scale(1.1);
+    opacity: 1;
+  }
+}
+@keyframes u-hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes u-hero-mega-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 42px, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+@keyframes u-hero-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes u-hero-chip-pop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.slide--u-hero {
+  padding-top: max(0.25rem, env(safe-area-inset-top, 0px)) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: calc(2.35rem + env(safe-area-inset-bottom, 0px)) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #030303;
+}
+.slide--u-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 38%, black 15%, transparent 72%);
+  pointer-events: none;
+}
+.slide--u-hero::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 48% 42% at 18% 12%, rgba(243, 110, 33, 0.24), transparent 58%),
+    radial-gradient(ellipse 42% 48% at 88% 78%, rgba(243, 110, 33, 0.11), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 52% 102%, rgba(255, 150, 80, 0.07), transparent 50%);
+  animation: u-hero-glow-drift 16s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.slide__inner--hero-full {
+  position: relative;
+  z-index: 1;
+  width: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-height: calc(100dvh - 4rem);
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 0 clamp(0.85rem, 4.2vw, 3rem);
+  text-align: left;
+  overflow-x: hidden;
+  overflow-y: visible;
+  scrollbar-width: thin;
+}
+
+.u-hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding-top: 0.15rem;
+}
+.u-hero-brand {
+  font-family: "DM Sans", "PingFang SC", system-ui, sans-serif;
+  font-size: clamp(0.72rem, 1.15vw, 0.82rem);
+  letter-spacing: 0.32em;
+  font-weight: 600;
+  color: rgba(244, 244, 243, 0.42);
+}
+.u-hero-proposal-tag {
+  font-size: clamp(0.62rem, 1vw, 0.7rem);
+  letter-spacing: 0.2em;
+  padding: 0.38rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(243, 110, 33, 0.4);
+  color: var(--accent-text-muted);
+  background: rgba(243, 110, 33, 0.07);
+  box-shadow: 0 0 32px rgba(243, 110, 33, 0.12);
+}
+
+.u-hero-core {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: clamp(0.5rem, 2vh, 1.25rem) 0 clamp(0.75rem, 2.5vh, 1.5rem);
+  position: relative;
+}
+.u-hero-core::before {
+  content: "资金预测";
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+  font-size: clamp(7rem, 26vw, 19rem);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.022);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  user-select: none;
+}
+.u-hero-eyebrow {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0.2rem;
+  font-size: clamp(0.68rem, 1.25vw, 0.8rem);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.u-hero-mega {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0 0.25rem;
+  font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+  font-size: clamp(3.4rem, 12.5vw, 7.25rem);
+  font-weight: 700;
+  line-height: 0.96;
+  letter-spacing: -0.038em;
+  color: #faf8f5;
+  text-shadow:
+    0 0 100px rgba(243, 110, 33, 0.22),
+    0 28px 64px rgba(0, 0, 0, 0.55);
+}
+.u-hero-mega::after {
+  content: "";
+  display: block;
+  width: min(42vw, 300px);
+  height: 4px;
+  margin: 0.75rem auto 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-text-muted), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: u-hero-underline 1s cubic-bezier(0.16, 1, 0.3, 1) 0.72s forwards;
+}
+.u-hero-lead {
+  position: relative;
+  z-index: 1;
+  margin: 1.15rem 0 0;
+  max-width: 36em;
+  font-size: clamp(1.02rem, 2.05vw, 1.32rem);
+  line-height: 1.55;
+  font-weight: 500;
+  color: rgba(244, 244, 243, 0.82);
+}
+.u-hero-boundary {
+  position: relative;
+  z-index: 1;
+  margin: 0.85rem 0 0;
+  max-width: 34em;
+  font-size: clamp(0.82rem, 1.35vw, 0.95rem);
+  line-height: 1.62;
+  color: var(--text-quiet);
+}
+.u-hero-chips {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem 0.55rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.u-hero-chip {
+  display: inline-block;
+  font-size: clamp(0.58rem, 1vw, 0.66rem);
+  letter-spacing: 0.14em;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+.u-hero-chip:hover {
+  border-color: rgba(243, 110, 33, 0.45);
+  color: var(--text);
+  box-shadow: 0 0 24px rgba(243, 110, 33, 0.12);
+}
+
+/* 覆盖 deck 子块统一入场，改由封面独立错层 */
+.slide--u-hero.is-on .slide__inner--hero-full > *:not(aside.slide__notes) {
+  animation: none !important;
+}
+.slide--u-hero.is-on .u-hero-brand {
+  animation: u-hero-fade-up 0.88s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+}
+.slide--u-hero.is-on .u-hero-proposal-tag {
+  animation: u-hero-fade-up 0.88s cubic-bezier(0.16, 1, 0.3, 1) 0.12s backwards;
+}
+.slide--u-hero.is-on .u-hero-eyebrow {
+  animation: u-hero-fade-up 0.92s cubic-bezier(0.16, 1, 0.3, 1) 0.14s backwards;
+}
+.slide--u-hero.is-on .u-hero-mega {
+  animation: u-hero-mega-in 1.12s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards;
+}
+.slide--u-hero.is-on .u-hero-lead {
+  animation: u-hero-fade-up 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+}
+.slide--u-hero.is-on .u-hero-boundary {
+  animation: u-hero-fade-up 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.52s backwards;
+}
+.slide--u-hero.is-on .u-hero-chip:nth-child(1) {
+  animation: u-hero-chip-pop 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.58s backwards;
+}
+.slide--u-hero.is-on .u-hero-chip:nth-child(2) {
+  animation: u-hero-chip-pop 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.66s backwards;
+}
+.slide--u-hero.is-on .u-hero-chip:nth-child(3) {
+  animation: u-hero-chip-pop 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.74s backwards;
+}
+.slide--u-hero.is-on .u-hero-chip:nth-child(4) {
+  animation: u-hero-chip-pop 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.82s backwards;
+}
+.slide--u-hero.is-on .u-hero-filmstrip {
+  animation: u-hero-fade-up 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.68s backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide--u-hero::after {
+    animation: none !important;
+  }
+  .slide--u-hero .u-hero-mega::after {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+  .slide--u-hero.is-on .u-hero-brand,
+  .slide--u-hero.is-on .u-hero-proposal-tag,
+  .slide--u-hero.is-on .u-hero-eyebrow,
+  .slide--u-hero.is-on .u-hero-mega,
+  .slide--u-hero.is-on .u-hero-lead,
+  .slide--u-hero.is-on .u-hero-boundary,
+  .slide--u-hero.is-on .u-hero-chip,
+  .slide--u-hero.is-on .u-hero-filmstrip {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* —— 内页与封面统一：底纹、暖光、入场节奏（不覆盖附录封面/附录内页/报价/内嵌报告已有渐变） —— */
+.slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report),
+.slide--split {
+  background: #030303;
+}
+.slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report)::before,
+.slide--split::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 92% 84% at 50% 42%, black 16%, transparent 74%);
+}
+.slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report)::after,
+.slide--split::after {
+  content: "";
+  position: absolute;
+  inset: -32%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  background:
+    radial-gradient(ellipse 48% 42% at 12% 18%, rgba(243, 110, 33, 0.1), transparent 58%),
+    radial-gradient(ellipse 42% 48% at 88% 72%, rgba(243, 110, 33, 0.055), transparent 55%);
+  animation: u-hero-glow-drift 18s ease-in-out infinite alternate;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report) .slide__inner,
+.slide--split .slide__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* 子块入场：与封面同缓动与位移幅度，错层略拉长 */
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap) {
+  animation: u-hero-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(1),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(1) {
+  animation-delay: 0.06s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(2),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(2) {
+  animation-delay: 0.14s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(3),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(3) {
+  animation-delay: 0.24s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(4),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(4) {
+  animation-delay: 0.34s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(5),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(5) {
+  animation-delay: 0.44s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(6),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(6) {
+  animation-delay: 0.54s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(7),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(7) {
+  animation-delay: 0.64s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(8),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(8) {
+  animation-delay: 0.74s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(9),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(9) {
+  animation-delay: 0.84s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(10),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(10) {
+  animation-delay: 0.94s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(11),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(11) {
+  animation-delay: 1.04s;
+}
+.slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(12),
+.slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap):nth-child(12) {
+  animation-delay: 1.14s;
+}
+
+/* 居中页主标题：与封面同系渐变底线（宽页左对齐时从左侧展开） */
+.slide__inner--center h1.headline::after,
+.slide__inner--center h1.headline-sm::after,
+.slide__inner--center h1.headline-xs::after {
+  content: "";
+  display: block;
+  width: min(220px, 42vw);
+  height: 3px;
+  margin: 0.55rem auto 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-text-muted), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+}
+.slide__inner--wide h1.headline::after,
+.slide__inner--wide h1.headline-sm::after,
+.slide__inner--wide h1.headline-xs::after {
+  content: "";
+  display: block;
+  width: min(200px, 36vw);
+  height: 3px;
+  margin: 0.5rem 0 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-text-muted), transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.slide.is-on .slide__inner--center h1.headline::after,
+.slide.is-on .slide__inner--center h1.headline-sm::after,
+.slide.is-on .slide__inner--center h1.headline-xs::after {
+  animation: u-hero-underline 1s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
+}
+.slide.is-on .slide__inner--wide h1.headline::after,
+.slide.is-on .slide__inner--wide h1.headline-sm::after,
+.slide.is-on .slide__inner--wide h1.headline-xs::after {
+  animation: u-hero-underline 1s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
+}
+
+/* 实机页副标题：轻量底线 */
+.slide--split .headline-xs::after {
+  content: "";
+  display: block;
+  width: min(160px, 28vw);
+  height: 2px;
+  margin: 0.45rem 0 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.slide--split.is-on .headline-xs::after {
+  animation: u-hero-underline 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+}
+
+/* Why 卡片：与封面 chip 同类的悬停反馈 */
+.u-why-card {
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.u-why-card:hover {
+  border-color: rgba(243, 110, 33, 0.38);
+  box-shadow: 0 0 28px rgba(243, 110, 33, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report)::after,
+  .slide--split::after {
+    animation: none !important;
+  }
+  .slide--void:not(.slide--u-hero):not(.slide--report).is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap),
+  .slide--split.is-on .slide__inner > *:not(aside.slide__notes):not(.u-appendix-logic):not(.u-price-wrap) {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .slide__inner--center h1.headline::after,
+  .slide__inner--center h1.headline-sm::after,
+  .slide__inner--center h1.headline-xs::after,
+  .slide__inner--wide h1.headline::after,
+  .slide__inner--wide h1.headline-sm::after,
+  .slide__inner--wide h1.headline-xs::after,
+  .slide--split .headline-xs::after {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+  .slide.is-on .u-price-wrap .u-price-tier,
+  .slide.is-on .u-appendix-logic .u-appendix-card {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .u-why-card:hover {
+    transform: none;
+  }
+}
+
+.slide__inner--wide {
+  width: min(calc(100vw - 1.5rem), min(96vw, 1520px)) !important;
+  max-width: calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 1.5rem);
+  text-align: left;
+}
+.slide__inner--center { text-align: center; margin-left: auto; margin-right: auto; }
+
+/* 断点链可视化 */
+.u-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin-top: 1.75rem;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.u-chain-node {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.03);
+}
+.u-chain-node strong { color: var(--text); font-weight: 600; }
+.u-chain-arrow {
+  color: var(--accent-text);
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* 两阶段 */
+.u-phase-svg { width: 100%; max-width: 900px; height: auto; margin: 1rem auto 0; display: block; }
+
+/* 闭环条 */
+.u-loop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1.5rem;
+  font-size: clamp(0.85rem, 1.5vw, 0.98rem);
+  color: var(--text-dim);
+}
+.u-loop span {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(243, 110, 33, 0.06);
+}
+.u-loop .u-loop-arrow { border: none; background: none; color: var(--accent-text); padding: 0 0.15rem; }
+
+/* Fab 表 */
+.u-fab {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.7rem, 1.05vw, 0.8rem);
+  margin-top: 1rem;
+  color: var(--text-dim);
+}
+.u-fab th, .u-fab td {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.u-fab th {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-quiet);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.u-fab td strong { color: var(--text); }
+.u-fab .ph1 { color: #8ec5e8; font-weight: 700; font-size: 0.62rem; }
+.u-fab .ph2 { color: var(--accent-text); font-weight: 700; font-size: 0.62rem; }
+
+/* Why 卡片 */
+.u-why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+  text-align: left;
+}
+@media (max-width: 800px) {
+  .u-why-grid { grid-template-columns: 1fr; }
+}
+.u-why-card {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid var(--accent);
+  background: rgba(243, 110, 33, 0.05);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.u-why-card b {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-text-muted);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+.u-why-grid .u-why-card:nth-child(6) {
+  grid-column: 1 / -1;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 竞品矩阵 */
+.u-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.72rem, 1.1vw, 0.82rem);
+  margin-top: 1rem;
+  color: var(--text-dim);
+}
+.u-matrix th, .u-matrix td {
+  border: 1px solid var(--line);
+  padding: 0.5rem 0.55rem;
+  vertical-align: top;
+  text-align: left;
+}
+.u-matrix th {
+  color: var(--text-quiet);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.03);
+}
+.u-matrix td strong { color: var(--text); }
+
+/* 国内 API 价目表（两列略密） */
+.u-api-mini {
+  font-size: clamp(0.62rem, 1vw, 0.74rem);
+  margin-top: 0.5rem;
+}
+.u-api-mini th,
+.u-api-mini td {
+  padding: 0.35rem 0.45rem;
+  vertical-align: top;
+}
+.u-api-mini a {
+  color: var(--accent-text);
+  word-break: break-all;
+}
+
+/* 报价主视觉 */
+.slide--u-price {
+  background: linear-gradient(165deg, #080807 0%, #12100e 40%, #1a1512 100%);
+}
+.u-price-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 900px) {
+  .u-price-wrap { grid-template-columns: 1fr; }
+}
+.u-price-tier {
+  position: relative;
+  padding: 1.35rem 1.2rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: left;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide.is-on .u-price-wrap .u-price-tier {
+  animation: u-hero-fade-up 0.88s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.slide.is-on .u-price-wrap .u-price-tier:nth-child(1) { animation-delay: 0.12s; }
+.slide.is-on .u-price-wrap .u-price-tier:nth-child(2) { animation-delay: 0.22s; }
+.slide.is-on .u-price-wrap .u-price-tier:nth-child(3) { animation-delay: 0.32s; }
+.slide.is-on .u-price-wrap .u-price-tier:hover {
+  transform: translateY(-4px);
+  border-color: rgba(243, 110, 33, 0.28);
+}
+.u-price-tier::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), #c44a1a);
+  opacity: 0.85;
+}
+.u-price-tier h3 {
+  font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.u-price-tier .u-yuan {
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+.u-price-tier p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.u-price-foot {
+  margin-top: 1.35rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--text-quiet);
+  max-width: 70ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* 时间轴 */
+.u-time {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+.u-time-step {
+  flex: 1 1 140px;
+  min-width: 120px;
+  padding: 0.85rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.02);
+}
+.u-time-step .wk {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--accent-text);
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+.u-time-step p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* 脱敏案例块 */
+.u-case {
+  margin-top: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  text-align: left;
+  background: rgba(255, 255, 255, 0.02);
+  max-width: 58ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.u-case h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--text-quiet);
+  font-weight: 600;
+}
+.u-case p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+.u-foot {
+  font-size: 0.7rem;
+  color: var(--text-quiet);
+  margin-top: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  max-width: 65ch;
+}
+
+/* —— TCO「总账」页：横向流程 + 卡片（替代大段列表） —— */
+.slide--u-tco .slide__inner--tco {
+  text-align: left;
+  max-width: min(1480px, 100%);
+}
+.u-tco-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.u-tco-header .kicker {
+  margin-bottom: 0.35rem;
+}
+.u-tco-header .headline-sm {
+  margin: 0;
+}
+.slide--u-tco .u-tco-header h1.headline-sm::after {
+  margin-left: auto;
+  margin-right: auto;
+  transform-origin: center;
+}
+
+.u-tco-flow {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.u-tco-spine {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+.u-tco-spine__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(243, 110, 33, 0.35), rgba(255, 255, 255, 0.12), rgba(243, 110, 33, 0.35), transparent);
+}
+.u-tco-spine__label {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--text-quiet);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.u-tco-lanes {
+  display: grid;
+  grid-template-columns:
+    minmax(10rem, 1fr) auto
+    minmax(10rem, 1fr) auto
+    minmax(10rem, 1fr) auto
+    minmax(10.5rem, 1.2fr);
+  align-items: stretch;
+  gap: 0 0.15rem;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 0.15rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.u-tco-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(0.85rem, 1.2vw, 1.1rem);
+  min-height: 8rem;
+}
+.u-tco-arrow span {
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 9px solid rgba(255, 255, 255, 0.18);
+  filter: drop-shadow(0 0 6px rgba(243, 110, 33, 0.15));
+}
+.u-tco-arrow--accent span {
+  border-left-color: rgba(243, 110, 33, 0.65);
+}
+
+.u-tco-card {
+  position: relative;
+  padding: 0.65rem 0.75rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.028);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  min-width: 0;
+  min-height: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.u-tco-card__step {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.55rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--accent-text-muted);
+  border: 1px solid rgba(243, 110, 33, 0.35);
+  background: rgba(243, 110, 33, 0.08);
+  font-variant-numeric: tabular-nums;
+}
+.u-tco-card__title {
+  margin: 0 1.6rem 0.2rem 0;
+  font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+  font-size: clamp(0.82rem, 1.35vw, 0.98rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.u-tco-card__sub {
+  margin: 0 0 0.45rem;
+  font-size: clamp(0.58rem, 1vw, 0.68rem);
+  color: var(--text-quiet);
+  line-height: 1.35;
+}
+
+.u-tco-card__chips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+.u-tco-card__chips li {
+  margin: 0;
+  padding: 0.28rem 0.45rem;
+  border-radius: 6px;
+  font-size: clamp(0.58rem, 0.95vw, 0.7rem);
+  line-height: 1.35;
+  color: var(--text-dim);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.u-tco-card__chips li strong {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.u-tco-card__hint {
+  margin: 0.45rem 0 0;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--line);
+  font-size: clamp(0.55rem, 0.9vw, 0.65rem);
+  line-height: 1.4;
+  color: var(--text-quiet);
+}
+.u-tco-card__hint strong {
+  color: var(--text-dim);
+}
+
+.u-tco-card--ours {
+  border-color: rgba(243, 110, 33, 0.42);
+  background:
+    linear-gradient(145deg, rgba(243, 110, 33, 0.09) 0%, rgba(255, 255, 255, 0.02) 42%, rgba(0, 0, 0, 0.2) 100%);
+  box-shadow:
+    0 0 0 1px rgba(243, 110, 33, 0.12),
+    0 16px 48px rgba(0, 0, 0, 0.35);
+}
+.u-tco-card--ours .u-tco-card__step {
+  color: var(--accent-text);
+  border-color: rgba(243, 110, 33, 0.55);
+  background: rgba(243, 110, 33, 0.14);
+}
+
+.u-tco-footer {
+  margin-top: 0.55rem !important;
+  text-align: center !important;
+  max-width: none !important;
+  font-size: clamp(0.62rem, 1.05vw, 0.74rem) !important;
+  line-height: 1.45 !important;
+  color: rgba(163, 163, 163, 0.85) !important;
+}
+.u-tco-footer code {
+  font-size: 0.9em;
+}
+
+@media (max-width: 1180px) {
+  .u-tco-lanes {
+    grid-template-columns: 1fr;
+    gap: 0.2rem 0;
+  }
+  .u-tco-arrow {
+    width: 100%;
+    min-height: 1.1rem;
+    height: 1.35rem;
+  }
+  .u-tco-arrow span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border: none;
+    border-right: 2px solid rgba(255, 255, 255, 0.22);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.22);
+    transform: rotate(45deg);
+    margin-top: -0.35rem;
+  }
+  .u-tco-arrow--accent span {
+    border-right-color: rgba(243, 110, 33, 0.7);
+    border-bottom-color: rgba(243, 110, 33, 0.7);
+  }
+}
+
+.slide--demo .slide__inner {
+  width: min(calc(100vw - 1.25rem), min(98vw, 1580px)) !important;
+  max-width: calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 1.25rem);
+  overflow-x: auto !important; /* 与 embed min-width:920px 配套，避免实机列被父级 overflow:hidden 裁切 */
+}
+.slide--u-hero .slide__inner--hero-full {
+  max-height: none !important;
+  overflow: visible;
+}
+
+/* 脚本生成的示意 PNG（与幻灯深色主题一致；实机仍以 iframe 为准） */
+.u-slide-graphic {
+  display: block;
+  width: 100%;
+  max-width: min(96vw, 1120px);
+  height: auto;
+  margin: 1rem auto 0;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+  vertical-align: top;
+}
+.slide__inner--wide .u-slide-graphic {
+  margin-left: 0;
+  margin-right: 0;
+}
+.slide__inner--center .u-slide-graphic {
+  margin-left: auto;
+  margin-right: auto;
+}
+.u-slide-graphic-caption {
+  font-size: 0.62rem;
+  color: var(--text-quiet);
+  margin: 0.35rem 0 0;
+  text-align: left;
+  max-width: min(96vw, 1120px);
+}
+.slide__inner--center .u-slide-graphic-caption {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  max-width: 52ch;
+}
+
+/* 竞品参考链接表 */
+.u-links-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.68rem, 1.05vw, 0.78rem);
+  margin-top: 1rem;
+  color: var(--text-dim);
+}
+.u-links-table th,
+.u-links-table td {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.u-links-table th {
+  color: var(--text-quiet);
+  font-weight: 600;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.04);
+}
+.u-links-table a {
+  color: var(--accent-text);
+  word-break: break-all;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(243, 110, 33, 0.35);
+}
+.u-links-table a:hover {
+  border-bottom-color: var(--accent-text);
+}
+.u-links-table td strong { color: var(--text); }
+
+/* 内嵌长文报告 */
+.slide--report {
+  align-items: flex-start;
+  padding-top: clamp(1rem, 2.5vw, 1.75rem);
+}
+.slide--report .slide__inner {
+  width: min(96vw, 1320px);
+  max-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin: 0 auto;
+}
+.slide--report .headline-xs {
+  margin-bottom: 0.35rem;
+}
+.slide--report .report-frame-wrap {
+  flex: 1;
+  min-height: min(68vh, 600px);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0e0e0e;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+.slide--report .report-frame-wrap iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  border: 0;
+  display: block;
+}
+
+/* 市场估价报告 · 原生附录幻灯（替代 iframe） */
+.slide--appendix-cover {
+  background:
+    radial-gradient(ellipse 100% 85% at 40% -5%, rgba(243, 110, 33, 0.16), transparent 58%),
+    radial-gradient(ellipse 60% 50% at 95% 80%, rgba(243, 110, 33, 0.05), transparent 50%),
+    linear-gradient(180deg, #0f0d0b 0%, #050504 100%);
+}
+.u-appendix-tag {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin-bottom: 0.35rem;
+}
+.u-appendix-deeplink {
+  margin-top: 1.25rem;
+  font-size: 0.78rem;
+}
+.u-appendix-deeplink a {
+  color: var(--accent-text);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(243, 110, 33, 0.45);
+  padding-bottom: 1px;
+}
+.u-appendix-deeplink a:hover {
+  border-bottom-color: var(--accent-text);
+}
+
+.slide--appendix {
+  background:
+    radial-gradient(ellipse 120% 90% at 50% -8%, rgba(243, 110, 33, 0.13), transparent 52%),
+    radial-gradient(ellipse 70% 60% at 100% 40%, rgba(255, 190, 120, 0.04), transparent 42%),
+    linear-gradient(165deg, #0b0a09 0%, #060605 48%, #0c0b0a 100%);
+}
+.u-appendix-logic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vh, 1.2rem);
+  margin-top: clamp(0.4rem, 1.5vh, 0.85rem);
+  min-height: min(36vh, 340px);
+  align-content: stretch;
+}
+@media (max-width: 800px) {
+  .u-appendix-logic {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+}
+.u-appendix-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: clamp(0.85rem, 2vh, 1.3rem) clamp(1rem, 2.4vw, 1.35rem);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.018) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 28px 56px -28px rgba(0, 0, 0, 0.85);
+  font-size: clamp(0.74rem, 1.05vw, 0.86rem);
+  line-height: 1.55;
+  color: var(--text-dim);
+  transition:
+    border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide.is-on .u-appendix-card:hover {
+  border-color: rgba(243, 110, 33, 0.38);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 32px 64px -24px rgba(243, 110, 33, 0.14);
+  transform: translateY(-3px);
+}
+.u-appendix-card strong {
+  display: block;
+  font-size: clamp(0.6rem, 0.88vw, 0.66rem);
+  letter-spacing: 0.12em;
+  color: var(--accent-text-muted);
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+.slide.is-on .u-appendix-logic .u-appendix-card {
+  animation: u-hero-fade-up 0.88s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.slide.is-on .u-appendix-logic .u-appendix-card:nth-child(1) { animation-delay: 0.1s; }
+.slide.is-on .u-appendix-logic .u-appendix-card:nth-child(2) { animation-delay: 0.2s; }
+.slide.is-on .u-appendix-logic .u-appendix-card:nth-child(3) { animation-delay: 0.3s; }
+.slide.is-on .u-appendix-logic .u-appendix-card:nth-child(4) { animation-delay: 0.4s; }
+
+.u-appendix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.62rem, 0.95vw, 0.74rem);
+  color: var(--text-dim);
+  margin-top: 0.35rem;
+}
+.u-appendix-table th,
+.u-appendix-table td {
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.45rem;
+  text-align: left;
+  vertical-align: top;
+}
+.u-appendix-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-quiet);
+  font-weight: 600;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+}
+.u-appendix-table td strong { color: var(--text); }
+.u-appendix-table--dense td,
+.u-appendix-table--dense th {
+  padding: 0.28rem 0.38rem;
+  font-size: clamp(0.58rem, 0.88vw, 0.68rem);
+}
+
+.u-appendix-diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+@media (max-width: 760px) {
+  .u-appendix-diff { grid-template-columns: 1fr; }
+}
+.u-appendix-diffcol {
+  padding: 0.85rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.u-appendix-diffcol h4 {
+  margin: 0 0 0.45rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--text-quiet);
+  font-weight: 600;
+}
+.u-appendix-diffcol ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+.u-appendix-diffcol li { margin-bottom: 0.35rem; }
+.u-appendix-diffcol--us {
+  border-color: rgba(243, 110, 33, 0.35);
+  background: rgba(243, 110, 33, 0.06);
+}
+
+.u-appendix-pre {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: var(--text-quiet);
+  overflow-x: auto;
+}
+
+.u-appendix-tco {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+@media (max-width: 800px) {
+  .u-appendix-tco { grid-template-columns: 1fr; }
+}
+.u-appendix-tco > div {
+  padding: 0.85rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: left;
+}
+.u-appendix-tco strong {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--accent-text);
+  margin-bottom: 0.25rem;
+}
+.u-appendix-tco span {
+  display: block;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.u-appendix-tco small {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+/* 图文并茂：双栏叙事 + 原型条 */
+.slide--u-story .u-story-grid {
+  display: grid;
+  grid-template-columns: 1fr min(42%, 420px);
+  gap: 1.25rem 1.5rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .slide--u-story .u-story-grid { grid-template-columns: 1fr; }
+}
+.u-story-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: clamp(0.78rem, 1.15vw, 0.88rem);
+  line-height: 1.65;
+  color: var(--text-dim);
+  max-width: 52ch;
+}
+.u-story-list li { margin-bottom: 0.65rem; }
+.u-story-list strong { color: var(--text); }
+.u-thumb-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+.u-thumb-grid figure {
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: #0a0a0a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.u-thumb-grid figcaption {
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--text-quiet);
+  padding: 0.25rem 0.35rem 0.4rem;
+  text-transform: uppercase;
+}
+.u-thumb-grid img {
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* 痛点页配图 */
+.u-duo {
+  display: grid;
+  grid-template-columns: 1fr min(38%, 340px);
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  text-align: left;
+}
+/* 右侧嵌实机：与 frontend embed.css .app-shell min-width:920px 对齐，右列须 ≥920 */
+.u-duo--live-right {
+  grid-template-columns: minmax(220px, min(28%, 320px)) minmax(920px, 1fr);
+  gap: 1.1rem 1.75rem;
+  align-items: start;
+}
+.u-duo--live-right > * {
+  min-width: 0;
+}
+.u-duo--live-right .u-duo__visual--embed {
+  width: 100%;
+}
+.u-duo--live-right .u-duo__stage {
+  min-width: 920px;
+}
+.u-duo--live-right .u-duo__figure {
+  width: 100%;
+  max-width: none;
+}
+@media (max-width: 900px) {
+  .u-duo { grid-template-columns: 1fr; }
+}
+@media (max-width: 1320px) {
+  .u-duo--live-right {
+    grid-template-columns: 1fr;
+  }
+  .u-duo--live-right .u-duo__stage {
+    min-width: 0;
+  }
+}
+
+.slide__inner:has(.u-duo--live-right) {
+  overflow-x: auto !important;
+}
+.u-duo__visual figure {
+  margin: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+}
+/* 左文右图：纯截图 fallback（无 iframe 的旧结构） */
+.u-duo__visual:not(.u-duo__visual--embed) img {
+  width: 100%;
+  height: auto;
+  max-height: min(42vh, 360px);
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.u-duo__visual--embed .u-duo__figure {
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.u-duo__visual--embed .u-duo__stage {
+  margin-top: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.4);
+}
+.u-duo__chain-viewport {
+  /* 高度不足时 toast/侧栏会被「截断感」；宽度由 u-duo--live-right 保证 */
+  height: clamp(360px, min(58vh, 62vw * 0.42), 720px) !important;
+  min-height: 320px !important;
+  background: #0d0d0d;
+  overflow: hidden;
+}
+.u-duo__chain-viewport iframe {
+  /* 覆盖 deck 默认亦可：确保撑满视口框 */
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100%;
+}
+.u-duo__visual figcaption {
+  font-size: 0.62rem;
+  color: var(--text-quiet);
+  margin-top: 0.35rem;
+}
+
+/* 首屏底栏：全宽四格掠影 */
+.slide--u-hero .u-hero-filmstrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.4rem, 1.4vw, 0.85rem);
+  width: 100%;
+  max-width: min(100%, 1040px);
+  margin: 0 auto;
+  padding-top: 0.35rem;
+}
+@media (max-width: 640px) {
+  .slide--u-hero .u-hero-filmstrip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.slide--u-hero .u-hero-filmstrip a {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide--u-hero .u-hero-filmstrip a:hover {
+  transform: translateY(-5px);
+  border-color: rgba(243, 110, 33, 0.55);
+  box-shadow:
+    0 24px 48px -20px rgba(243, 110, 33, 0.35),
+    0 0 0 1px rgba(243, 110, 33, 0.15);
+}
+.slide--u-hero .u-hero-filmstrip img {
+  width: 100%;
+  height: clamp(52px, 9vh, 76px);
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.slide--u-hero .u-hero-filmstrip span {
+  display: block;
+  font-size: clamp(0.52rem, 1vw, 0.6rem);
+  letter-spacing: 0.1em;
+  color: rgba(244, 244, 243, 0.55);
+  padding: 0.28rem 0.4rem 0.38rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.65));
+  text-align: center;
+}
+
+/* 交付甘特（SVG 容器） */
+.u-gantt-wrap {
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
+}
+.u-gantt-svg {
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 人力与人周 */
+.u-rsrc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.65rem, 1vw, 0.76rem);
+  margin-top: 0.85rem;
+  color: var(--text-dim);
+}
+.u-rsrc-table th,
+.u-rsrc-table td {
+  border: 1px solid var(--line);
+  padding: 0.4rem 0.45rem;
+  text-align: left;
+  vertical-align: top;
+}
+.u-rsrc-table th {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-quiet);
+  font-weight: 600;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+}
+.u-rsrc-table td strong { color: var(--text); }
+.u-rsrc-table .u-rsrc-total {
+  background: rgba(243, 110, 33, 0.08);
+  font-weight: 600;
+  color: var(--accent-text);
+}
+.u-pm-legend {
+  font-size: 0.68rem;
+  color: var(--text-quiet);
+  line-height: 1.55;
+  margin-top: 0.75rem;
+  max-width: 68ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide.is-on .u-appendix-logic .u-appendix-card,
+  .slide.is-on .u-price-wrap .u-price-tier {
+    animation: none !important;
+  }
+  .u-appendix-card,
+  .u-price-tier {
+    transition: none !important;
+  }
+  .slide.is-on .u-appendix-card:hover,
+  .slide.is-on .u-price-wrap .u-price-tier:hover {
+    transform: none !important;
+  }
+  .slide--u-hero .u-hero-filmstrip a {
+    transition: none !important;
+  }
+}
+
+/* =============================================================================
+   deck-unified（unified-proposal/index.html）：一屏版式 + 排版基线
+   内容超出时在 slide__inner 内纵向滚动，避免被 overflow:hidden 裁切。
+   ============================================================================= */
+body.deck-unified {
+  font-family: "DM Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --deck-ui-h: 3.1rem;
+  --slide-vpad: clamp(0.35rem, 0.9vh, 0.75rem);
+  --slide-hpad: clamp(0.65rem, 1.6vw, 1.15rem);
+  /* 与 slide 的 padding-bottom（底栏区）对齐，略留余量避免最后一行压在底栏下 */
+  --slide-inner-h: calc(100dvh - var(--deck-ui-h) - var(--slide-vpad) * 2 - env(safe-area-inset-bottom, 0px) - 0.35rem);
+}
+
+.deck-unified #deck .slide {
+  overflow: hidden;
+  padding: var(--slide-vpad) var(--slide-hpad);
+  padding-bottom: calc(var(--deck-ui-h) + 0.2rem + env(safe-area-inset-bottom, 0px));
+  align-content: start;
+}
+
+.deck-unified #deck .slide > .slide__inner {
+  max-height: var(--slide-inner-h);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.deck-unified .slide__inner--wide > .u-duo,
+.deck-unified .slide__inner--wide > .u-gantt-wrap,
+.deck-unified .slide__inner--wide > .u-why-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.deck-unified .slide__inner--wide > .u-fab,
+.deck-unified .slide__inner--wide > .u-matrix,
+.deck-unified .slide__inner--wide > .u-links-table,
+.deck-unified .slide__inner--wide > .u-rsrc-table {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.deck-unified .slide__inner--wide > .pain-bullets {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  margin-top: 0.35rem;
+}
+
+.deck-unified .slide--u-tco .slide__inner--wide {
+  gap: 0.15rem;
+}
+.deck-unified .slide--u-tco .u-tco-header {
+  margin-bottom: 0.25rem;
+  flex-shrink: 0;
+}
+.deck-unified .slide--u-tco .u-tco-flow {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: visible;
+  margin-top: 0.1rem;
+}
+.deck-unified .slide--u-tco .u-tco-spine {
+  gap: 0.45rem;
+}
+.deck-unified .slide--u-tco .u-tco-arrow {
+  min-height: clamp(3.25rem, 14vh, 5.5rem);
+}
+.deck-unified .slide--u-tco .u-tco-card {
+  padding: 0.5rem 0.55rem 0.55rem;
+}
+.deck-unified .slide--u-tco .u-tco-footer {
+  flex-shrink: 0;
+  margin-top: 0.35rem !important;
+}
+
+.deck-unified #deck .slide__inner--center:not(.slide__inner--hero-full) {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.deck-unified .slide--u-price .slide__inner {
+  justify-content: center;
+}
+
+.deck-unified #deck .slide .kicker {
+  margin: 0 0 0.35rem;
+  font-size: clamp(0.62rem, 1.05vh, 0.72rem);
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+}
+
+.deck-unified #deck .slide .headline-sm {
+  font-size: clamp(1.05rem, 2.8vh, 1.85rem);
+  line-height: 1.18;
+  margin: 0;
+}
+
+.deck-unified #deck .slide .headline {
+  font-size: clamp(1.35rem, 3.6vh, 2.65rem);
+  line-height: 1.12;
+  margin: 0;
+}
+
+.deck-unified #deck .slide .headline-xs {
+  font-size: clamp(0.95rem, 2.2vh, 1.35rem);
+  line-height: 1.22;
+  margin: 0 0 0.35rem;
+}
+
+.deck-unified #deck .slide .whisper {
+  margin: 0.35rem 0 0;
+  font-size: clamp(0.72rem, 1.35vh, 0.88rem);
+  line-height: 1.45;
+  max-width: 52ch;
+}
+
+.deck-unified #deck .slide--void .whisper {
+  font-size: clamp(0.72rem, 1.35vh, 0.88rem);
+  line-height: 1.45;
+  max-width: 54ch;
+}
+
+.deck-unified #deck .pain-bullets {
+  font-size: clamp(0.68rem, 1.2vh, 0.8rem);
+  line-height: 1.42;
+  margin-top: 0.4rem;
+}
+.deck-unified #deck .pain-bullets li {
+  margin-bottom: 0.32rem;
+  padding-left: 0.65rem;
+  border-left-width: 2px;
+}
+
+.deck-unified #deck .u-foot {
+  font-size: clamp(0.62rem, 1.1vh, 0.72rem);
+  line-height: 1.45;
+  margin-top: 0.4rem;
+}
+
+/* —— 封面：一屏、禁滚动 —— */
+.deck-unified .slide--u-hero {
+  overflow: hidden !important;
+}
+.deck-unified .slide--u-hero > .slide__inner--hero-full {
+  min-height: 0 !important;
+  height: var(--slide-inner-h);
+  max-height: var(--slide-inner-h) !important;
+  flex: 1 1 auto;
+  padding: 0.2rem var(--slide-hpad) 0.25rem;
+  gap: 0.2rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.deck-unified .u-hero-core {
+  padding: 0.15rem 0 0.2rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: center;
+}
+.deck-unified .u-hero-core::before {
+  font-size: clamp(3.5rem, 14vh, 9rem);
+  top: 48%;
+}
+.deck-unified .u-hero-mega {
+  font-size: clamp(2rem, 7.5vh, 3.85rem);
+  line-height: 1;
+}
+.deck-unified .u-hero-lead {
+  margin-top: 0.45rem;
+  font-size: clamp(0.72rem, 1.45vh, 0.95rem);
+  line-height: 1.45;
+  max-width: 38em;
+}
+.deck-unified .u-hero-boundary {
+  margin-top: 0.35rem;
+  font-size: clamp(0.65rem, 1.2vh, 0.8rem);
+  line-height: 1.45;
+  max-width: 36em;
+}
+.deck-unified .u-hero-chips {
+  margin-top: 0.45rem;
+  gap: 0.3rem 0.4rem;
+}
+.deck-unified .u-hero-chip {
+  padding: 0.28rem 0.6rem;
+  font-size: clamp(0.52rem, 0.95vh, 0.6rem);
+}
+.deck-unified .slide--u-hero .u-hero-filmstrip {
+  padding-top: 0.15rem;
+  gap: 0.35rem;
+}
+.deck-unified .slide--u-hero .u-hero-filmstrip span {
+  padding: 0.2rem 0.3rem 0.28rem;
+  font-size: clamp(0.5rem, 0.9vh, 0.58rem);
+}
+
+/* —— 双栏 + 实机：高度随视口收缩，保证标题+左栏+ iframe 同屏 —— */
+.deck-unified .u-duo {
+  margin-top: 0.25rem;
+  gap: 0.5rem 0.85rem;
+  align-items: start;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.deck-unified .u-duo--live-right {
+  grid-template-columns: minmax(200px, min(30%, 300px)) minmax(0, 1fr);
+}
+.deck-unified .u-duo--live-right .u-duo__stage {
+  min-width: 0;
+  max-width: 100%;
+}
+.deck-unified .u-duo__chain-viewport {
+  height: min(32vh, calc(var(--slide-inner-h) - 7.5rem)) !important;
+  min-height: 180px !important;
+  max-height: 42vh !important;
+}
+.deck-unified .u-duo__copy .whisper {
+  margin-bottom: 0.35rem !important;
+  font-size: clamp(0.65rem, 1.15vh, 0.78rem) !important;
+  line-height: 1.42 !important;
+}
+.deck-unified .u-duo__copy .u-duo__lead {
+  text-align: left;
+  margin: 0 0 0.4rem;
+  max-width: none;
+}
+.deck-unified .u-duo__copy .u-duo__footnote {
+  margin-top: 0.4rem !important;
+  text-align: left;
+  max-width: none;
+  color: var(--text-quiet);
+  font-size: clamp(0.62rem, 1.05vh, 0.74rem) !important;
+}
+.deck-unified .u-duo__copy .pain-bullets {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+}
+.deck-unified .u-chain {
+  margin-top: 0.35rem;
+  gap: 0.25rem 0.35rem;
+}
+.deck-unified .u-chain-node {
+  padding: 0.28rem 0.5rem;
+  font-size: clamp(0.6rem, 1.05vh, 0.72rem);
+}
+.deck-unified .u-duo__visual figcaption {
+  font-size: 0.55rem;
+  margin-top: 0.2rem;
+}
+
+.deck-unified .slide__inner:has(.u-duo--live-right) {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+/* 左栏文案过长时仅在左栏内细滚动，避免整页撑破 */
+.deck-unified .u-duo--live-right .u-duo__copy {
+  max-height: min(52vh, calc(var(--slide-inner-h) - 4.75rem));
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  padding-right: 0.2rem;
+}
+
+/* —— 表与矩阵：更紧、仍可读 —— */
+.deck-unified .u-fab {
+  font-size: clamp(0.6rem, 1.05vh, 0.72rem);
+  margin-top: 0.35rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.deck-unified .u-fab th,
+.deck-unified .u-fab td {
+  padding: 0.28rem 0.38rem;
+}
+.deck-unified .u-matrix {
+  font-size: clamp(0.6rem, 1.05vh, 0.72rem);
+  margin-top: 0.35rem;
+}
+.deck-unified .u-matrix th,
+.deck-unified .u-matrix td {
+  padding: 0.3rem 0.4rem;
+}
+.deck-unified .u-links-table {
+  font-size: clamp(0.58rem, 1vh, 0.68rem);
+  margin-top: 0.35rem;
+}
+.deck-unified .u-links-table th,
+.deck-unified .u-links-table td {
+  padding: 0.28rem 0.38rem;
+}
+
+/* —— 阶段条、甘特、人周 —— */
+.deck-unified .u-loop {
+  margin-top: 0.45rem;
+  gap: 0.35rem 0.65rem;
+  font-size: clamp(0.65rem, 1.15vh, 0.78rem);
+}
+.deck-unified .u-loop span {
+  padding: 0.25rem 0.55rem;
+}
+.deck-unified .u-phase-svg {
+  margin-top: 0.35rem;
+  max-height: min(22vh, 200px);
+  width: auto;
+}
+.deck-unified .u-gantt-wrap {
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.35rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: visible;
+}
+.deck-unified .u-gantt-svg {
+  max-height: min(20vh, 180px);
+}
+.deck-unified .u-rsrc-table {
+  font-size: clamp(0.58rem, 1vh, 0.68rem);
+  margin-top: 0.35rem;
+}
+.deck-unified .u-rsrc-table th,
+.deck-unified .u-rsrc-table td {
+  padding: 0.26rem 0.32rem;
+}
+.deck-unified .u-pm-legend {
+  font-size: clamp(0.58rem, 1vh, 0.68rem);
+  margin-top: 0.4rem;
+  line-height: 1.42;
+}
+
+/* —— Why 卡片 —— */
+.deck-unified .u-why-grid {
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: visible;
+  align-content: start;
+}
+.deck-unified .u-why-card {
+  padding: 0.45rem 0.55rem;
+  font-size: clamp(0.62rem, 1.1vh, 0.74rem);
+  line-height: 1.42;
+}
+.deck-unified .u-why-card b {
+  font-size: 0.58rem;
+  margin-bottom: 0.2rem;
+}
+
+/* —— 附录 —— */
+.deck-unified .slide--appendix .slide__inner,
+.deck-unified .slide--appendix-cover .slide__inner {
+  gap: 0.2rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  justify-content: flex-start;
+}
+.deck-unified .u-appendix-logic {
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+.deck-unified .u-appendix-card {
+  padding: 0.4rem 0.5rem;
+  font-size: clamp(0.58rem, 1.05vh, 0.68rem);
+}
+.deck-unified .u-appendix-card strong {
+  font-size: 0.62rem;
+}
+.deck-unified .u-appendix-table {
+  font-size: clamp(0.55rem, 0.95vh, 0.65rem);
+  margin-top: 0.25rem;
+}
+.deck-unified .u-appendix-table th,
+.deck-unified .u-appendix-table td {
+  padding: 0.22rem 0.3rem;
+}
+.deck-unified .u-appendix-table--dense th,
+.deck-unified .u-appendix-table--dense td {
+  padding: 0.18rem 0.26rem;
+}
+.deck-unified .u-appendix-diffcol {
+  padding: 0.45rem 0.55rem;
+  font-size: clamp(0.58rem, 1vh, 0.68rem);
+}
+.deck-unified .u-appendix-pre {
+  font-size: clamp(0.52rem, 0.9vh, 0.62rem);
+  padding: 0.35rem 0.45rem;
+  margin-top: 0.25rem;
+  line-height: 1.35;
+}
+.deck-unified .u-appendix-tco > div {
+  padding: 0.45rem 0.55rem;
+}
+.deck-unified .u-appendix-tco small {
+  font-size: 0.58rem;
+}
+
+/* —— 案例 / 报价 / 时间轴 —— */
+.deck-unified .u-case {
+  margin-top: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  max-width: 54ch;
+}
+.deck-unified .slide__inner--center .u-case {
+  max-height: min(46vh, calc(var(--slide-inner-h) - 6rem));
+  overflow-y: auto;
+  scrollbar-width: thin;
+  text-align: left;
+}
+.deck-unified .u-case p {
+  font-size: clamp(0.65rem, 1.15vh, 0.78rem);
+  line-height: 1.45;
+}
+.deck-unified .u-time {
+  margin-top: 0.45rem;
+  gap: 0.45rem;
+}
+.deck-unified .u-time-step {
+  padding: 0.5rem 0.55rem;
+}
+.deck-unified .u-time-step p {
+  font-size: clamp(0.62rem, 1.05vh, 0.72rem);
+  line-height: 1.4;
+}
+.deck-unified .u-price-wrap {
+  margin-top: 0.45rem;
+  gap: 0.55rem;
+}
+.deck-unified .u-price-tier {
+  padding: 0.65rem 0.75rem 0.75rem;
+}
+.deck-unified .u-price-tier .u-yuan {
+  font-size: clamp(1.05rem, 2.2vh, 1.45rem);
+  margin-bottom: 0.35rem;
+}
+.deck-unified .u-price-tier p {
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+.deck-unified .u-price-foot {
+  margin-top: 0.55rem;
+  font-size: 0.62rem;
+}
+
+/* —— 实机四页：左窄右高随视口 —— */
+.deck-unified .slide--demo .kicker {
+  margin-bottom: 0.2rem;
+}
+.deck-unified .slide--demo .headline-xs {
+  margin-bottom: 0.25rem;
+}
+.deck-unified .slide--demo .demo-layout {
+  margin-top: 0.25rem;
+  gap: 0.65rem 1rem;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.deck-unified .slide--demo .func-panel {
+  font-size: clamp(0.68rem, 1.2vh, 0.8rem);
+  line-height: 1.45;
+  padding-left: 0.75rem;
+}
+.deck-unified .slide--demo .func-panel h3 {
+  margin-bottom: 0.45rem;
+  font-size: 0.62rem;
+}
+.deck-unified .slide--demo .pain-hook {
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  font-size: clamp(0.62rem, 1.05vh, 0.72rem);
+}
+.deck-unified .slide--demo .demo-stage .stage-viewport {
+  height: min(46vh, calc(var(--slide-inner-h) - 5.5rem)) !important;
+  min-height: 200px !important;
+  max-height: 52vh !important;
+}
+
+/* —— 一天流程页 —— */
+.deck-unified .slide--u-story .u-story-grid {
+  margin-top: 0.35rem;
+  gap: 0.65rem 1rem;
+  align-items: center;
+}
+.deck-unified .u-story-list {
+  font-size: clamp(0.65rem, 1.15vh, 0.78rem);
+  line-height: 1.42;
+}
+.deck-unified .u-story-list li {
+  margin-bottom: 0.35rem;
+}
+
+/* 标题下划线略上移 */
+.deck-unified .slide__inner--wide h1.headline-sm::after,
+.deck-unified .slide__inner--wide h1.headline::after {
+  margin-top: 0.35rem;
+}
+.deck-unified .slide__inner--center h1.headline-sm::after,
+.deck-unified .slide__inner--center h1.headline::after {
+  margin-top: 0.35rem;
+}

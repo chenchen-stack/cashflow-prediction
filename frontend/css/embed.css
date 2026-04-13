@@ -1,0 +1,11 @@
+/**
+ * ?embed=1：提案 PPT / iframe 内演示
+ * 保证侧栏 + 主内容最小宽度，避免表格与 DataAgent 被裁切
+ */
+html.embed {
+  overflow-x: auto;
+}
+
+body.embed .app-shell {
+  min-width: 1180px;
+}

@@ -1,0 +1,1444 @@
+/**
+ * 资金预测 · 统一提案 独立视觉体系（与风控橙色系区分）
+ * 依赖 body.cashflow-proposal，仅现金流 unified-proposal 引用
+ */
+
+body.cashflow-proposal {
+  --void: #05080a;
+  --void-deep: #030506;
+  --accent: #3ee4d0;
+  --accent-soft: rgba(62, 228, 208, 0.18);
+  --accent-text: #7ff5e8;
+  --accent-text-muted: #5ecfc4;
+  --cf-ice: #a5f3fc;
+  --cf-line: rgba(165, 243, 252, 0.12);
+  --cf-line-strong: rgba(165, 243, 252, 0.22);
+  --cf-glass: rgba(12, 24, 28, 0.55);
+  --cf-glass-border: rgba(94, 207, 196, 0.28);
+  font-family: "Outfit", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+body.cashflow-proposal .headline,
+body.cashflow-proposal .headline-sm,
+body.cashflow-proposal .headline-xs,
+body.cashflow-proposal .kicker {
+  font-family: "Outfit", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+}
+
+body.cashflow-proposal .u-hero-mega {
+  font-family: "Outfit", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  text-shadow:
+    0 0 120px rgba(62, 228, 208, 0.18),
+    0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+body.cashflow-proposal .u-hero-mega::after {
+  background: linear-gradient(90deg, transparent, var(--accent), var(--cf-ice), transparent);
+}
+
+body.cashflow-proposal .slide--void {
+  background: var(--void-deep);
+}
+
+body.cashflow-proposal .slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report)::before,
+body.cashflow-proposal .slide--split::before {
+  background-image:
+    linear-gradient(rgba(165, 243, 252, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(165, 243, 252, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 96% 88% at 50% 42%, black 18%, transparent 76%);
+}
+
+body.cashflow-proposal .slide--void:not(.slide--u-hero):not(.slide--u-price):not(.slide--appendix):not(.slide--appendix-cover):not(.slide--report)::after,
+body.cashflow-proposal .slide--split::after {
+  background:
+    radial-gradient(ellipse 50% 44% at 10% 20%, rgba(62, 228, 208, 0.12), transparent 60%),
+    radial-gradient(ellipse 44% 50% at 92% 70%, rgba(56, 189, 248, 0.08), transparent 58%),
+    radial-gradient(ellipse 60% 38% at 48% 100%, rgba(34, 211, 238, 0.06), transparent 52%);
+  opacity: 1;
+}
+
+body.cashflow-proposal .slide--u-hero {
+  background: #020405;
+}
+
+body.cashflow-proposal .slide--u-hero::after {
+  background:
+    radial-gradient(ellipse 46% 40% at 20% 10%, rgba(62, 228, 208, 0.2), transparent 58%),
+    radial-gradient(ellipse 40% 46% at 85% 75%, rgba(56, 189, 248, 0.1), transparent 55%),
+    radial-gradient(ellipse 52% 36% at 50% 105%, rgba(34, 211, 238, 0.08), transparent 48%);
+}
+
+body.cashflow-proposal .u-hero-proposal-tag {
+  border-color: rgba(62, 228, 208, 0.45);
+  background: rgba(62, 228, 208, 0.08);
+  box-shadow: 0 0 40px rgba(62, 228, 208, 0.12);
+  color: var(--accent-text-muted);
+}
+
+body.cashflow-proposal .u-hero-chip:hover {
+  border-color: rgba(62, 228, 208, 0.5);
+  box-shadow: 0 0 28px rgba(62, 228, 208, 0.14);
+}
+
+body.cashflow-proposal .slide--u-hero .u-hero-filmstrip a:hover {
+  border-color: rgba(62, 228, 208, 0.55);
+  box-shadow: 0 24px 48px -20px rgba(62, 228, 208, 0.28);
+}
+
+body.cashflow-proposal .u-why-card {
+  border-left-color: var(--accent);
+  background: rgba(62, 228, 208, 0.05);
+}
+
+body.cashflow-proposal .u-tco-card--ours {
+  border-color: rgba(62, 228, 208, 0.45);
+  background: linear-gradient(145deg, rgba(62, 228, 208, 0.1) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(0, 0, 0, 0.22) 100%);
+  box-shadow: 0 0 0 1px rgba(62, 228, 208, 0.12), 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+body.cashflow-proposal .u-tco-arrow--accent span {
+  border-left-color: rgba(62, 228, 208, 0.7);
+}
+
+body.cashflow-proposal .deck-chapter-tick:hover::after,
+body.cashflow-proposal .deck-chapter-tick:focus-visible::after {
+  border-color: rgba(62, 228, 208, 0.9);
+}
+
+body.cashflow-proposal .deck-chapter-tick.is-active::after {
+  background: rgba(62, 228, 208, 0.28);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(62, 228, 208, 0.5);
+}
+
+body.cashflow-proposal .deck-chapter-tick.is-active .deck-chapter-tick__label {
+  color: var(--accent-text);
+}
+
+body.cashflow-proposal .deck-progress > span {
+  background: linear-gradient(90deg, #2dd4bf, #38bdf8);
+  opacity: 0.92;
+}
+
+body.cashflow-proposal a.deck-link {
+  color: var(--accent-text);
+}
+body.cashflow-proposal a.deck-link:hover {
+  border-bottom-color: rgba(62, 228, 208, 0.45);
+}
+
+/* ------------------------------------------------------------------
+   与风控参考稿相近的「可视区」尺寸：略收紧边距、略增高内容区；
+   主滚动条落在 #deck .slide > .slide__inner（整页滑动，非仅左栏小条）。
+   ------------------------------------------------------------------ */
+body.deck-unified.cashflow-proposal {
+  --slide-vpad: clamp(0.28rem, 0.8vh, 0.65rem);
+  --slide-hpad: clamp(0.45rem, 1.25vw, 0.95rem);
+  --slide-inner-h: calc(
+    100dvh - var(--deck-ui-h) - var(--slide-vpad) * 2 - env(safe-area-inset-bottom, 0px) - 0.28rem
+  );
+  /* Keynote 版心：接近 16:9 演示区，避免超宽屏「一条贴在左边」 */
+  --cf-stage-max: 1560px;
+  --cf-keynote-head: min(26rem, 86vw);
+  --cf-table-max: min(980px, 91vw);
+  --cf-trio-gap: clamp(0.65rem, 1.8vw, 1.15rem);
+}
+
+/* 舞台宽度上限 + 水平居中（底栏 deck-ui 仍全宽） */
+body.deck-unified.cashflow-proposal #deck {
+  left: max(0px, calc(50% - min(50vw, calc(var(--cf-stage-max) * 0.5))));
+  right: max(0px, calc(50% - min(50vw, calc(var(--cf-stage-max) * 0.5))));
+  width: auto;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide > .slide__inner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: rgba(62, 228, 208, 0.55) rgba(4, 12, 14, 0.65);
+}
+
+/* ========= 实机四页：吃掉剩余高度，嵌入区加高 —— 避免 unified-deck 52vh 把界面压扁 ========= */
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo > .slide__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: var(--slide-inner-h);
+  max-height: var(--slide-inner-h);
+  width: min(100%, var(--cf-stage-max)) !important;
+  max-width: min(100%, var(--cf-stage-max)) !important;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  overflow-x: auto !important;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .kicker {
+  flex-shrink: 0;
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .headline-xs {
+  flex-shrink: 0;
+  text-align: left;
+  max-width: none;
+  margin-bottom: 0.3rem;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(180px, min(28vw, 300px)) minmax(0, 1fr);
+  gap: clamp(0.55rem, 1.4vw, 0.95rem) clamp(0.75rem, 1.8vw, 1.25rem);
+  align-items: stretch;
+  margin-top: 0.2rem;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .func-panel {
+  align-self: start;
+  padding-left: clamp(0.45rem, 1vw, 0.75rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-stage {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  margin-top: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-stage .stage-chrome {
+  flex-shrink: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-stage .stage-viewport {
+  flex: 1 1 auto !important;
+  min-height: clamp(440px, 48vh, 720px) !important;
+  height: auto !important;
+  max-height: none !important;
+  width: 100% !important;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--demo aside.slide__notes {
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body.deck-unified.cashflow-proposal #deck .slide.slide--demo .demo-stage .stage-viewport {
+    min-height: clamp(380px, 42vh, 560px) !important;
+  }
+}
+
+body.deck-unified.cashflow-proposal #deck .slide > .slide__inner::-webkit-scrollbar {
+  width: 10px;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide > .slide__inner::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide > .slide__inner::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(62, 228, 208, 0.55), rgba(56, 189, 248, 0.45));
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide > .slide__inner::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.7), rgba(56, 189, 248, 0.6));
+}
+
+/* 标题与说明略放大，接近大屏提案读感 */
+body.deck-unified.cashflow-proposal #deck .slide .headline-sm {
+  font-size: clamp(1.12rem, 3.05vh, 2.05rem);
+  line-height: 1.16;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide .headline {
+  font-size: clamp(1.42rem, 3.9vh, 2.88rem);
+  line-height: 1.1;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide .headline-xs {
+  font-size: clamp(1rem, 2.35vh, 1.42rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide .whisper {
+  max-width: min(64ch, 96%);
+  font-size: clamp(0.76rem, 1.42vh, 0.92rem);
+  line-height: 1.48;
+}
+
+/* 左文右机：均衡双栏 + 整体居中，减轻「左重右空」 */
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo > .kicker,
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo > .headline-sm {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--cf-keynote-head);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo.u-duo--live-right {
+  max-width: min(1240px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+body.deck-unified.cashflow-proposal .u-duo--live-right {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: clamp(0.75rem, 1.8vh, 1.15rem) clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
+  min-height: min(calc(var(--slide-inner-h) - 7.5rem), 78vh);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo__copy .u-duo__lead {
+  text-align: center;
+  max-width: min(36rem, 92%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo__copy .u-chain {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo__copy .pain-bullets {
+  max-width: min(38rem, 94%);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo__copy .u-duo__footnote {
+  text-align: center;
+  max-width: min(40rem, 94%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-duo .u-duo__copy {
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__chain-viewport {
+  height: min(66vh, calc(var(--slide-inner-h) - 6rem)) !important;
+  min-height: clamp(260px, 42vh, 560px) !important;
+  max-height: 72vh !important;
+}
+
+body.deck-unified.cashflow-proposal .u-duo--live-right .u-duo__copy {
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
+  align-self: center;
+}
+
+body.deck-unified.cashflow-proposal .u-duo--live-right .u-duo__visual {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.deck-unified.cashflow-proposal .u-duo--live-right .u-duo__figure {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__copy .whisper {
+  font-size: clamp(0.76rem, 1.42vh, 0.92rem) !important;
+  line-height: 1.48 !important;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__copy .u-duo__footnote {
+  font-size: clamp(0.66rem, 1.12vh, 0.82rem) !important;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__copy .pain-bullets li {
+  font-size: clamp(0.78rem, 1.38vh, 0.96rem) !important;
+  line-height: 1.52 !important;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__copy .u-chain {
+  margin-top: 0.45rem;
+  gap: 0.35rem 0.45rem;
+}
+
+body.deck-unified.cashflow-proposal .u-duo__copy .u-chain-node {
+  padding: 0.32rem 0.52rem;
+  font-size: clamp(0.66rem, 1.12vh, 0.8rem);
+}
+
+/* 双栏页标题区略放大（与右侧实机体量匹配） */
+body.deck-unified.cashflow-proposal #deck .slide:has(.u-duo) .headline-sm {
+  font-size: clamp(1.2rem, 3.35vh, 2.25rem);
+  line-height: 1.14;
+}
+
+/* ------------------------------------------------------------------
+   规范版心：竖向居中 + 占满可用高度（短内容居中，超长 safe 回落为顶对齐可滚动）
+   排除封面 / 实机 / 「一天怎么用」专用竖向分配页。
+   ------------------------------------------------------------------ */
+body.deck-unified.cashflow-proposal #deck .slide:not(.slide--u-hero):not(.slide--demo):not(.slide--cf-dayflow) > .slide__inner {
+  min-height: var(--slide-inner-h);
+  justify-content: center;
+}
+
+@supports (justify-content: safe center) {
+  body.deck-unified.cashflow-proposal #deck .slide:not(.slide--u-hero):not(.slide--demo):not(.slide--cf-dayflow) > .slide__inner {
+    justify-content: safe center;
+  }
+}
+
+/* unified-deck 把两阶段 SVG 压到 ≈200px 高 → 整页显得极扁；放开并按屏宽放大 */
+body.deck-unified.cashflow-proposal #deck .u-phase-svg {
+  max-height: none !important;
+  width: min(98vw, 1240px);
+  max-width: 100%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: clamp(0.55rem, 2vh, 1.35rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide:has(.u-phase-svg) .headline-sm {
+  font-size: clamp(1.18rem, 3.15vh, 2.12rem);
+  line-height: 1.15;
+}
+
+/* 上线顺序页：甘特示意勿再压成细条 */
+body.deck-unified.cashflow-proposal #deck .u-gantt-svg {
+  max-height: min(38vh, 320px) !important;
+  width: min(100%, 1100px);
+  height: auto;
+}
+
+/* 合同里程碑宽屏居中块：标题与图作为一组，左右留白对称 */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide.slide__inner--center {
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  text-align: center;
+}
+
+/* TCO 四卡横排：卡片拉高、字号加大，视觉更「立得住」 */
+body.deck-unified.cashflow-proposal .slide--u-tco .slide__inner--tco {
+  max-width: min(1620px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-header {
+  margin-bottom: clamp(0.45rem, 1.5vh, 0.85rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-flow {
+  gap: clamp(0.55rem, 1.6vh, 0.95rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-card {
+  min-height: clamp(14rem, 36vh, 22rem);
+  padding: clamp(0.8rem, 1.9vh, 1.15rem) clamp(0.9rem, 1.9vw, 1.25rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-card__title {
+  font-family: "Outfit", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  font-size: clamp(0.92rem, 1.5vw + 0.5vh, 1.12rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-card__sub {
+  font-size: clamp(0.66rem, 1.05vw + 0.35vh, 0.8rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-card__chips li {
+  font-size: clamp(0.64rem, 1vw + 0.32vh, 0.78rem);
+  padding: 0.34rem 0.5rem;
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-card__hint {
+  font-size: clamp(0.6rem, 0.95vw + 0.3vh, 0.74rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-arrow {
+  min-height: clamp(12rem, 34vh, 20rem);
+}
+
+body.deck-unified.cashflow-proposal .slide--u-tco .u-tco-footer {
+  margin-top: clamp(0.65rem, 1.8vh, 1rem) !important;
+  font-size: clamp(0.68rem, 1.15vw + 0.35vh, 0.82rem) !important;
+}
+
+/* 附录：覆盖 unified-deck 的 flex-start + 加大表格与卡片（竞品地图等不再缩在顶角） */
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix > .slide__inner,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover > .slide__inner {
+  justify-content: center;
+  min-height: var(--slide-inner-h);
+  gap: 0.4rem;
+}
+
+@supports (justify-content: safe center) {
+  body.deck-unified.cashflow-proposal #deck .slide.slide--appendix > .slide__inner,
+  body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover > .slide__inner {
+    justify-content: safe center;
+  }
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover .u-appendix-table {
+  width: 100%;
+  font-size: clamp(0.76rem, 1.45vh, 0.94rem);
+  margin-top: 0.5rem;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table th,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table td,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover .u-appendix-table th,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover .u-appendix-table td {
+  padding: 0.5rem 0.58rem;
+  line-height: 1.48;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table--dense th,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table--dense td {
+  padding: 0.36rem 0.48rem;
+  font-size: clamp(0.68rem, 1.2vh, 0.82rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-card {
+  padding: 0.55rem 0.65rem;
+  font-size: clamp(0.7rem, 1.22vh, 0.84rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-card strong {
+  font-size: 0.78rem;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-diffcol {
+  padding: 0.55rem 0.65rem;
+  font-size: clamp(0.7rem, 1.2vh, 0.84rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-tco > div {
+  padding: 0.55rem 0.65rem;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-tco small {
+  font-size: clamp(0.62rem, 1.05vh, 0.74rem);
+}
+
+/* 正文竞品矩阵（非附录） */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-matrix {
+  font-size: clamp(0.7rem, 1.28vh, 0.86rem);
+  margin-top: 0.45rem;
+  width: 100%;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-matrix th,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-matrix td {
+  padding: 0.4rem 0.5rem;
+  line-height: 1.45;
+}
+
+/* 避免 flex:1 把表/列表拽满整列，导致「只有顶上有字、下面被表撑死」 */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-matrix,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-fab,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-links-table,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-rsrc-table,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .pain-bullets,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-why-grid,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-gantt-wrap {
+  flex: 0 1 auto;
+}
+
+body.deck-unified.cashflow-proposal #deck .pain-bullets li {
+  font-size: clamp(0.76rem, 1.4vh, 0.95rem);
+  line-height: 1.52;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--center .u-case {
+  max-width: min(62ch, 94vw);
+  max-height: min(56vh, calc(var(--slide-inner-h) - 5.25rem));
+}
+
+body.deck-unified.cashflow-proposal #deck .u-case p {
+  font-size: clamp(0.74rem, 1.32vh, 0.9rem);
+  line-height: 1.5;
+}
+
+/* 封面：deck-unified 把 mega 压得过小，恢复大屏主标题与加宽副文案 */
+body.deck-unified.cashflow-proposal .slide--u-hero > .slide__inner--hero-full {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.deck-unified.cashflow-proposal .u-hero-mega {
+  font-size: clamp(3.15rem, 9.2vw, 6.75rem) !important;
+  line-height: 0.98 !important;
+}
+
+body.deck-unified.cashflow-proposal .u-hero-core::before {
+  font-size: clamp(5.5rem, 20vw, 15rem) !important;
+}
+
+body.deck-unified.cashflow-proposal .u-hero-eyebrow {
+  font-size: clamp(0.7rem, 0.95vw + 0.45vh, 0.92rem);
+}
+
+body.deck-unified.cashflow-proposal .u-hero-lead {
+  max-width: min(42em, 91vw);
+  font-size: clamp(0.95rem, 1.65vw + 0.75vh, 1.36rem);
+}
+
+body.deck-unified.cashflow-proposal .u-hero-boundary {
+  max-width: min(40em, 89vw);
+  font-size: clamp(0.8rem, 1.1vw + 0.6vh, 1.02rem);
+}
+
+/* 全片叙事区：占满 slide 内宽（左右留白仅来自 .slide 的 padding） */
+body.cashflow-proposal .slide__inner--wide {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ========= Keynote 叙事层：标题居中收窄，表格/矩阵落在版心，附录表不再「横铺半边空」 ========= */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide {
+  text-align: center;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--tco,
+body.deck-unified.cashflow-proposal #deck .slide--u-tco .slide__inner--wide {
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .kicker,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .headline-sm,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .headline,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .headline-xs {
+  max-width: var(--cf-keynote-head);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .whisper:not(.u-duo__lead):not(.u-duo__footnote) {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  max-width: min(48ch, 92vw);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-fab,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-matrix,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-links-table,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-rsrc-table,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-why-grid {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--cf-table-max);
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > aside.slide__notes {
+  text-align: left;
+  max-width: min(46ch, 88vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .pain-bullets {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(52ch, var(--cf-table-max));
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .cf-keynote-trio {
+  flex: 0 1 auto;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .cf-supplement,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .cf-money-tagline {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-foot,
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .u-appendix-deeplink {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(54ch, 92vw);
+  text-align: center;
+}
+
+/* ========= Why us（slide--cf-why）：3×2 规整网格，标题/正文分层对齐 ========= */
+body.deck-unified.cashflow-proposal #deck .slide__inner--cf-why > .u-why-grid--cf {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.52rem, 1.2vh, 0.8rem);
+  margin-top: clamp(0.6rem, 1.55vh, 1.05rem);
+  width: 100%;
+  max-width: min(1180px, 94vw);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  align-items: stretch;
+  flex: 0 1 auto;
+}
+
+/* 覆盖 unified-deck 中「第 6 张整行」布局，避免底行单卡悬空 */
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card:nth-child(6) {
+  grid-column: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide__inner--cf-why > .headline-sm {
+  font-size: clamp(1.18rem, 3.15vh, 2.18rem);
+  line-height: 1.16;
+}
+
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 0;
+  margin: 0;
+  padding: clamp(0.65rem, 1.4vh, 0.9rem) clamp(0.75rem, 1.3vw, 0.98rem);
+  border-radius: 12px;
+  border: 1px solid var(--cf-line-strong);
+  border-left: 3px solid var(--accent);
+  background: rgba(62, 228, 208, 0.065);
+  box-sizing: border-box;
+}
+
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card__ttl {
+  margin: 0 0 0.36rem;
+  padding: 0;
+  font-size: clamp(0.86rem, 1.45vh + 0.3vw, 1.06rem);
+  font-weight: 600;
+  color: var(--accent-text);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+}
+
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card__body {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: clamp(0.61rem, 1.02vh, 0.73rem);
+  line-height: 1.46;
+  color: rgba(198, 218, 215, 0.92);
+}
+
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card__body strong {
+  color: rgba(236, 252, 248, 0.96);
+  font-weight: 600;
+}
+
+body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card:hover {
+  border-color: rgba(62, 228, 208, 0.48);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.34);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.deck-unified.cashflow-proposal #deck .u-why-grid--cf .u-why-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  body.deck-unified.cashflow-proposal #deck .slide__inner--cf-why > .u-why-grid--cf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  body.deck-unified.cashflow-proposal #deck .slide__inner--cf-why > .u-why-grid--cf {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-table,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix-cover .u-appendix-table {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--cf-table-max);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-logic,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-diff,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-tco,
+body.deck-unified.cashflow-proposal #deck .slide.slide--appendix .u-appendix-pre {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--cf-table-max);
+  text-align: left;
+}
+
+/* POC 三柱（slide--cf-keynote） */
+body.deck-unified.cashflow-proposal #deck .slide__inner--cf-keynote > .headline-sm {
+  font-size: clamp(1.2rem, 3.25vh, 2.28rem);
+  line-height: 1.18;
+  max-width: min(20em, 92vw);
+}
+
+.cf-keynote-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cf-trio-gap);
+  width: 100%;
+  max-width: min(1180px, 100%);
+  margin: clamp(0.85rem, 2.2vh, 1.6rem) auto 0;
+  text-align: left;
+}
+
+.cf-keynote-pillar {
+  padding: clamp(1.05rem, 2.4vh, 1.45rem) clamp(0.9rem, 1.6vw, 1.15rem);
+  border-radius: 18px;
+  background: rgba(10, 22, 26, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--cf-glass-border);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: clamp(10.5rem, 26vh, 14.5rem);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cf-keynote-pillar:hover {
+  border-color: rgba(62, 228, 208, 0.4);
+  box-shadow:
+    0 20px 52px rgba(0, 0, 0, 0.42),
+    0 0 36px rgba(62, 228, 208, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.cf-keynote-idx {
+  font-size: clamp(1.75rem, 3.8vh, 2.5rem);
+  font-weight: 700;
+  color: rgba(62, 228, 208, 0.28);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.cf-keynote-pillar__ttl {
+  margin: 0;
+  font-size: clamp(0.9rem, 1.55vh + 0.38vw, 1.08rem);
+  font-weight: 600;
+  color: #f2faf9;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+}
+
+.cf-keynote-pillar__body {
+  margin: 0;
+  font-size: clamp(0.74rem, 1.25vh + 0.3vw, 0.9rem);
+  line-height: 1.58;
+  color: rgba(198, 218, 215, 0.9);
+  flex: 1;
+}
+
+.cf-keynote-pillar__body strong {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+p.cf-keynote-foot {
+  max-width: min(50ch, 92vw);
+  margin: clamp(1rem, 2.6vh, 1.65rem) auto 0;
+  text-align: center;
+  font-size: clamp(0.68rem, 1.12vh, 0.82rem);
+  line-height: 1.55;
+  color: rgba(148, 180, 176, 0.92);
+}
+
+@media (max-width: 920px) {
+  .cf-keynote-trio {
+    grid-template-columns: 1fr;
+    max-width: min(520px, 100%);
+  }
+
+  .cf-keynote-pillar {
+    min-height: 0;
+  }
+}
+
+/* ========= 小号补充说明（主信息之下） ========= */
+body.deck-unified.cashflow-proposal .cf-supplement {
+  margin: 0.55rem auto 0;
+  max-width: min(52ch, 92vw);
+  text-align: center;
+  font-size: clamp(0.6rem, 1.02vh, 0.72rem);
+  line-height: 1.48;
+  color: rgba(148, 176, 172, 0.88);
+}
+
+body.deck-unified.cashflow-proposal .cf-supplement--mute {
+  font-size: clamp(0.56rem, 0.92vh, 0.66rem);
+  opacity: 0.82;
+  margin-top: 0.3rem;
+}
+
+body.deck-unified.cashflow-proposal .cf-supplement--links {
+  max-width: min(60ch, 95vw);
+}
+
+body.deck-unified.cashflow-proposal .cf-supplement--links a {
+  color: var(--accent-text-muted);
+}
+
+body.deck-unified.cashflow-proposal .cf-supplement--nav {
+  margin-top: 0.35rem;
+  font-size: clamp(0.58rem, 0.98vh, 0.7rem);
+}
+
+/* 上线顺序：横向双卡 + 大号主标题 */
+body.deck-unified.cashflow-proposal #deck .slide.slide--cf-pipeline > .slide__inner.slide__inner--cf-pipeline {
+  justify-content: center;
+  gap: clamp(0.42rem, 1.35vh, 0.8rem);
+  padding-top: clamp(0.35rem, 1.5vh, 1rem);
+  padding-bottom: clamp(0.35rem, 1.5vh, 1rem);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .headline {
+  font-size: clamp(1.48rem, 4.1vh, 2.88rem);
+  max-width: min(22em, 94vw);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .cf-phase-row,
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .u-loop,
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .cf-supplement {
+  flex: 0 1 auto;
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.7rem, 1.8vw, 1.2rem);
+  width: 100%;
+  max-width: min(940px, 94vw);
+  margin: clamp(0.95rem, 2.4vh, 1.65rem) auto 0;
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-card {
+  padding: clamp(1rem, 2.2vh, 1.4rem) clamp(1rem, 2vw, 1.25rem);
+  border-radius: 16px;
+  background: rgba(12, 22, 26, 0.78);
+  border: 1px solid var(--cf-glass-border);
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.34);
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-card--accent {
+  border-color: rgba(62, 228, 208, 0.42);
+  background: linear-gradient(158deg, rgba(62, 228, 208, 0.09), rgba(6, 14, 16, 0.88));
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-card__tag {
+  display: inline-block;
+  font-size: clamp(0.56rem, 0.98vw, 0.66rem);
+  letter-spacing: 0.16em;
+  color: var(--accent-text-muted);
+  font-weight: 600;
+  margin-bottom: 0.32rem;
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-card__lead {
+  margin: 0 0 0.42rem;
+  font-size: clamp(1.08rem, 2.35vh, 1.48rem);
+  font-weight: 600;
+  color: #f2faf9;
+  letter-spacing: -0.02em;
+}
+
+body.deck-unified.cashflow-proposal .cf-phase-card__bullets {
+  margin: 0;
+  font-size: clamp(0.8rem, 1.38vh, 0.96rem);
+  line-height: 1.48;
+  color: rgba(198, 218, 215, 0.91);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .u-loop {
+  margin-top: clamp(0.8rem, 2vh, 1.3rem);
+  justify-content: center;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-pipeline .u-loop span:not(.u-loop-arrow) {
+  font-size: clamp(0.74rem, 1.38vh, 0.9rem);
+  padding: 0.38rem 0.68rem;
+}
+
+@media (max-width: 720px) {
+  body.deck-unified.cashflow-proposal .cf-phase-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 功能清单：横向卡片，大标题小注脚 */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .cf-fab-grid {
+  flex: 0 1 auto;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 288px), 1fr));
+  gap: clamp(0.5rem, 1.3vh, 0.8rem);
+  width: 100%;
+  max-width: min(1200px, 100%);
+  margin: clamp(0.7rem, 1.9vh, 1.2rem) auto 0;
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card {
+  padding: clamp(0.82rem, 1.75vh, 1.08rem) clamp(0.82rem, 1.45vw, 1.02rem);
+  border-radius: 14px;
+  background: rgba(10, 20, 24, 0.74);
+  border: 1px solid var(--cf-line-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card--agent {
+  border-color: rgba(62, 228, 208, 0.38);
+  background: linear-gradient(165deg, rgba(62, 228, 208, 0.08), rgba(6, 12, 14, 0.9));
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__ttl {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.7vh + 0.38vw, 1.22rem);
+  font-weight: 600;
+  color: #f4faf9;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__ph {
+  flex-shrink: 0;
+  font-size: 0.64rem;
+  font-weight: 700;
+  padding: 0.18rem 0.42rem;
+  border-radius: 6px;
+  border: 1px solid rgba(165, 243, 252, 0.22);
+  line-height: 1.2;
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__ph.ph1 {
+  color: #8ec5e8;
+  background: rgba(56, 189, 248, 0.09);
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__ph.ph2 {
+  color: var(--accent-text);
+  border-color: rgba(62, 228, 208, 0.35);
+  background: rgba(62, 228, 208, 0.11);
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__val {
+  margin: 0;
+  font-size: clamp(0.82rem, 1.32vh + 0.3vw, 0.98rem);
+  line-height: 1.42;
+  color: rgba(210, 230, 226, 0.93);
+}
+
+body.deck-unified.cashflow-proposal .cf-fab-card__note {
+  margin: 0;
+  margin-top: 0.12rem;
+  padding-top: 0.42rem;
+  border-top: 1px solid var(--cf-line);
+  font-size: clamp(0.6rem, 1vh, 0.72rem);
+  line-height: 1.38;
+  color: rgba(148, 175, 170, 0.8);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-fab > .headline-sm {
+  font-size: clamp(1.22rem, 3.25vh, 2.25rem);
+}
+
+/* 三笔钱：横向三柱 */
+body.deck-unified.cashflow-proposal #deck .slide__inner--wide > .cf-money-trio {
+  flex: 0 1 auto;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cf-trio-gap);
+  width: 100%;
+  max-width: min(1200px, 100%);
+  margin: clamp(0.85rem, 2.2vh, 1.45rem) auto 0;
+  text-align: left;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar {
+  padding: clamp(1.05rem, 2.4vh, 1.45rem) clamp(0.92rem, 1.7vw, 1.15rem);
+  border-radius: 18px;
+  background: rgba(10, 22, 26, 0.82);
+  border: 1px solid var(--cf-glass-border);
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.36);
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar__idx {
+  font-size: clamp(1.65rem, 3.6vh, 2.35rem);
+  font-weight: 700;
+  color: rgba(62, 228, 208, 0.26);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar__ttl {
+  margin: 0.35rem 0 0.25rem;
+  font-size: clamp(1.12rem, 2.35vh, 1.52rem);
+  font-weight: 600;
+  color: #f6faf9;
+  letter-spacing: -0.02em;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar__lead {
+  margin: 0 0 0.4rem;
+  font-size: clamp(0.84rem, 1.4vh, 1.02rem);
+  font-weight: 600;
+  color: var(--accent-text);
+  line-height: 1.3;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar__body {
+  margin: 0;
+  font-size: clamp(0.74rem, 1.22vh + 0.25vw, 0.88rem);
+  line-height: 1.52;
+  color: rgba(198, 218, 215, 0.9);
+}
+
+body.deck-unified.cashflow-proposal .cf-money-pillar__body strong {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+body.deck-unified.cashflow-proposal .cf-money-tagline {
+  margin: clamp(0.85rem, 2vh, 1.25rem) auto 0;
+  max-width: min(46ch, 92vw);
+  text-align: center;
+  font-size: clamp(0.84rem, 1.42vh, 1.02rem);
+  line-height: 1.42;
+  color: rgba(224, 242, 238, 0.93);
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-money > .headline-sm {
+  font-size: clamp(1.25rem, 3.45vh, 2.38rem);
+  line-height: 1.14;
+}
+
+@media (max-width: 920px) {
+  body.deck-unified.cashflow-proposal .cf-money-trio {
+    grid-template-columns: 1fr;
+    max-width: min(440px, 100%);
+  }
+}
+
+/* 竞品表：主体略放大，脚注改小号类 */
+body.deck-unified.cashflow-proposal .slide__inner--cf-competitor .u-matrix.cf-matrix-tall {
+  font-size: clamp(0.76rem, 1.32vh, 0.92rem);
+  margin-top: 0.55rem;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-competitor .u-matrix.cf-matrix-tall th {
+  font-size: clamp(0.62rem, 1.05vh, 0.74rem);
+  padding: 0.42rem 0.48rem;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-competitor .u-matrix.cf-matrix-tall td {
+  padding: 0.4rem 0.48rem;
+  line-height: 1.42;
+}
+
+body.deck-unified.cashflow-proposal .slide__inner--cf-competitor > .headline-sm {
+  font-size: clamp(1.15rem, 3.05vh, 2.08rem);
+}
+
+/* ========== 「一天怎么用」· 满屏高度 + 全宽（覆盖 #deck .slide__inner 的 flex-start） ========== */
+body.deck-unified.cashflow-proposal #deck .slide.slide--cf-dayflow {
+  padding-left: max(0.35rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.35rem, env(safe-area-inset-right, 0px));
+  padding-top: max(var(--slide-vpad), env(safe-area-inset-top, 0px));
+}
+
+body.deck-unified.cashflow-proposal #deck .slide.slide--cf-dayflow > .slide__inner.slide__inner--cf-dayflow {
+  min-height: var(--slide-inner-h);
+  max-height: var(--slide-inner-h);
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: clamp(0.2rem, 1dvh, 0.55rem);
+}
+
+body.deck-unified.cashflow-proposal #deck .slide--cf-dayflow .cf-dayflow__head {
+  flex-shrink: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide--cf-dayflow .cf-dayflow__rail {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  align-content: stretch;
+  gap: clamp(0.45rem, 1.2vw, 0.95rem);
+  padding: clamp(0.25rem, 0.9dvh, 0.65rem) 0;
+  margin-top: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide--cf-dayflow .cf-dayflow__path {
+  flex-shrink: 0;
+}
+
+body.deck-unified.cashflow-proposal #deck .slide--cf-dayflow aside.slide__notes {
+  flex-shrink: 0;
+  margin-top: 0.15rem !important;
+  margin-bottom: 0 !important;
+}
+
+.cf-dayflow__head .kicker {
+  color: var(--accent-text-muted) !important;
+  letter-spacing: 0.22em;
+  font-size: clamp(0.62rem, 1.1vw, 0.74rem) !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.cf-dayflow__head .headline-sm {
+  font-size: clamp(1.35rem, 2.6dvh + 1.15vw, 2.9rem) !important;
+  line-height: 1.12 !important;
+  font-weight: 600;
+  max-width: min(100%, 52rem);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 clamp(0.25rem, 1vw, 0.75rem);
+  box-sizing: border-box;
+}
+
+.cf-dayflow__head .headline-sm::after {
+  background: linear-gradient(90deg, transparent, var(--accent), var(--cf-ice), transparent) !important;
+  margin-top: 0.65rem !important;
+  width: min(200px, 36vw) !important;
+}
+
+.cf-dayflow__rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.5rem, 1.5vw, 1.1rem);
+  align-items: stretch;
+  padding: clamp(0.35rem, 1.2vh, 0.85rem) 0;
+  margin-top: 0.15rem;
+}
+
+.cf-dayflow__rail::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: clamp(1.85rem, 4.2dvh, 2.35rem);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(62, 228, 208, 0.35), rgba(56, 189, 248, 0.35), transparent);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cf-dayflow__card {
+  position: relative;
+  z-index: 1;
+  text-align: left;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+  padding: clamp(0.75rem, 1.6dvh, 1.25rem) clamp(0.85rem, 1.5vw, 1.2rem);
+  border-radius: clamp(14px, 1.1dvh, 18px);
+  background: var(--cf-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--cf-glass-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 1dvh, 0.65rem);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.35s ease;
+}
+
+.cf-dayflow__card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(62, 228, 208, 0.45);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(62, 228, 208, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cf-dayflow__card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.cf-dayflow__icon {
+  flex-shrink: 0;
+  width: clamp(44px, 5.2dvh, 58px);
+  height: clamp(44px, 5.2dvh, 58px);
+  border-radius: clamp(12px, 1dvh, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, rgba(62, 228, 208, 0.2), rgba(56, 189, 248, 0.08));
+  border: 1px solid rgba(62, 228, 208, 0.35);
+  color: var(--accent-text);
+  box-shadow: 0 0 24px rgba(62, 228, 208, 0.12);
+}
+
+.cf-dayflow__icon svg {
+  width: clamp(22px, 2.65dvh, 30px);
+  height: clamp(22px, 2.65dvh, 30px);
+  opacity: 0.95;
+}
+
+.cf-dayflow__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.cf-dayflow__phase {
+  margin: 0;
+  font-size: clamp(0.58rem, 1vw, 0.68rem);
+  letter-spacing: 0.2em;
+  color: var(--accent-text-muted);
+  font-weight: 600;
+}
+
+.cf-dayflow__card-title {
+  margin: 0.2rem 0 0;
+  font-size: clamp(0.92rem, 1.35dvh + 0.35vw, 1.32rem);
+  font-weight: 600;
+  color: #f0faf9;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.cf-dayflow__card-body {
+  margin: 0;
+  font-size: clamp(0.72rem, 1.05dvh + 0.32vw, 1.02rem);
+  line-height: 1.52;
+  color: rgba(200, 220, 218, 0.88);
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.cf-dayflow__card-body strong {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.cf-dayflow__foot {
+  margin: 0;
+  padding-top: clamp(0.35rem, 0.9dvh, 0.55rem);
+  border-top: 1px solid var(--cf-line);
+  font-size: clamp(0.6rem, 0.85dvh + 0.2vw, 0.78rem);
+  color: rgba(148, 180, 176, 0.85);
+  line-height: 1.45;
+  flex-shrink: 0;
+}
+
+.cf-dayflow__path {
+  margin: 0.15rem auto 0;
+  padding: clamp(0.4rem, 0.95dvh, 0.55rem) clamp(0.85rem, 2vw, 1.15rem);
+  border-radius: 999px;
+  font-size: clamp(0.64rem, 0.95dvh + 0.2vw, 0.82rem);
+  letter-spacing: 0.06em;
+  color: rgba(200, 230, 226, 0.9);
+  background: rgba(8, 20, 24, 0.65);
+  border: 1px solid var(--cf-line-strong);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  max-width: 100%;
+}
+
+.cf-dayflow__path-label {
+  color: var(--accent-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  font-size: 0.62em;
+}
+
+.cf-dayflow__path a {
+  color: var(--accent-text);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.cf-dayflow__path a:hover {
+  border-bottom-color: rgba(62, 228, 208, 0.5);
+}
+
+@media (max-width: 1020px) {
+  .cf-dayflow__rail {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    padding-top: 0.2rem;
+  }
+  .cf-dayflow__rail::before {
+    display: none;
+  }
+  body.deck-unified.cashflow-proposal #deck .slide--cf-dayflow .cf-dayflow__rail {
+    flex: 1 1 auto;
+    grid-template-rows: none;
+  }
+  .cf-dayflow__card {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* 极矮视口：允许内层滚动，避免裁切 */
+@media (max-height: 520px) {
+  body.deck-unified.cashflow-proposal #deck .slide.slide--cf-dayflow > .slide__inner.slide__inner--cf-dayflow {
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+}

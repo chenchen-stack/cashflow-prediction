@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>资金预测智能体 · 演示稿入口</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #0a0a0a;
+      --text: #f4f4f3;
+      --dim: #a3a3a3;
+      --quiet: #737373;
+      --accent: #f36e21;
+      --line: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--void); color: var(--text);
+      display: grid; place-items: center; padding: 2rem;
+      font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+    }
+    .gate { text-align: center; max-width: 520px; }
+    h1 { font-size: clamp(1.45rem, 3.8vw, 1.85rem); font-weight: 500; margin: 0 0 2.25rem; letter-spacing: -0.02em; }
+    .links { display: flex; flex-direction: column; gap: 0.75rem; }
+    a {
+      display: block; padding: 1rem 1.2rem; border-radius: 6px;
+      text-decoration: none; color: var(--text); font-size: 1rem; font-weight: 500;
+      border: 1px solid var(--line);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    a:hover {
+      border-color: rgba(243, 110, 33, 0.35);
+      background: rgba(243, 110, 33, 0.06);
+    }
+    a span {
+      display: block; margin-top: 0.4rem; font-size: 0.72rem; font-weight: 400;
+      color: var(--quiet); font-family: system-ui, "PingFang SC", sans-serif; letter-spacing: 0.02em; line-height: 1.45;
+    }
+    .hint {
+      margin-top: 2.5rem; font-size: 0.7rem; line-height: 1.65; color: var(--quiet);
+      font-family: system-ui, "PingFang SC", sans-serif; text-align: left;
+    }
+    code { font-size: 0.68rem; background: rgba(255, 255, 255, 0.06); padding: 0.12rem 0.35rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="gate">
+    <h1>资金预测智能体 · 演讲稿</h1>
+    <div class="links">
+      <a href="brief.html">精简版 <span>整屏翻页 · 主叙事 · 对外评审与短讲</span></a>
+      <a href="detailed.html">详细版 <span>整屏翻页 · 左栏对照 + 实机 · 全模块与交付追问</span></a>
+      <a href="internal-rhythm.html">内部节奏 <span>分工与节点 · 不进入对外故事线</span></a>
+      <a href="协作导读-产品与演示稿.html">协作导读 <span>给设计/售前：产品背景 + 截图说明 · 单页流式</span></a>
+    </div>
+    <p class="hint">演示：全屏后按 → / 空格翻页；按 <code>N</code> 显示讲稿；<code>?presenter=1</code> 默认展开讲稿。建议浏览器宽度 ≥1280px。iframe 若空白：在 <code>frontend</code> 运行 <code>serve-frontend.bat</code> 后把地址改为 <code>http://127.0.0.1:8875/app.html?embed=1…</code>；或将截图放入 <code>assets/</code> 同名 PNG。</p>
+  </div>
+</body>
+</html>

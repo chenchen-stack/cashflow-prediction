@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>亿流 · 内部 · 组织与节奏</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="deck.css?v=202604118" />
+</head>
+<body class="deck-jobs">
+  <script type="application/json" id="deck-chapters-config">
+    [
+      {"label": "说明", "slide": 1},
+      {"label": "分工", "slide": 2}
+    ]
+  </script>
+
+  <div id="deck" aria-live="polite">
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--internal-cover is-on">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">内部专用</p>
+        <p class="story-hook">与主路演分离</p>
+        <h1 class="headline-sm">组织 · 节奏</h1>
+        <p class="story-sub" style="margin-top:1rem;">本页不进入对外叙事；用于周会、对齐与排期。主故事见 <a href="brief.html" class="deck-link">精简版路演</a>。</p>
+        <p class="memo-caption" style="margin-top:1.25rem;">下一页 · <strong>分工与节点</strong></p>
+      </div>
+    </section>
+
+    <section class="slide slide--void slide--viz slide--strategic-pack slide--team-roadmap">
+      <div class="slide__inner slide__inner--wide">
+        <p class="section-ribbon section-ribbon--fab">组织 · 节奏</p>
+        <h1 class="headline-sm" style="margin:0 0 0.55rem;">分工 · <span class="tx-a">下周节点</span></h1>
+        <div class="team-roadmap-grid">
+          <div class="team-roadmap-grid__card">
+            <span class="team-roadmap-grid__role">陈宣任</span>
+            <p>定位 · 客户 · 材料 · 汇报统筹</p>
+          </div>
+          <div class="team-roadmap-grid__card">
+            <span class="team-roadmap-grid__role">雨墨</span>
+            <p>架构 · API · 部署 · <strong>多租户方案</strong></p>
+          </div>
+          <div class="team-roadmap-grid__card">
+            <span class="team-roadmap-grid__role">玄烨</span>
+            <p>产品设计 · 中台 × 预测体系化</p>
+          </div>
+        </div>
+        <ul class="team-roadmap-dates">
+          <li>汇报前 <strong>2 天</strong> · 材料 FAB 定稿</li>
+          <li>汇报前 <strong>1 天</strong> · 内部预演</li>
+          <li><strong>下周一</strong> · Q1 回滚会 → 会后董事长专项</li>
+        </ul>
+        <p class="whisper whisper--links" style="margin-top:1rem;"><a href="index.html" class="deck-link-muted">PPT 入口</a></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="deck-ui">
+    <a class="deck-exit" href="index.html">返回</a>
+    <div class="deck-progress-wrap">
+      <div class="deck-progress" aria-hidden="true"><span></span></div>
+      <div class="deck-chapters" id="deck-chapters-ticks"></div>
+    </div>
+    <span class="deck-meta" id="deck-idx">1 / 2</span>
+    <span class="deck-hint">→ 翻页 · N 讲稿</span>
+  </div>
+  <script src="deck.js?v=202604118"></script>
+</body>
+</html>

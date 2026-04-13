@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>资金预测智能体 · 提案与估价</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #0a0a0a;
+      --text: #f4f4f3;
+      --quiet: #737373;
+      --accent: #14b8a6;
+      --line: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--void);
+      color: var(--text);
+      padding: 2rem 1.5rem 3rem;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h1 {
+      font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+      font-size: clamp(1.35rem, 3.5vw, 1.65rem);
+      font-weight: 500;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      color: var(--quiet);
+      font-size: 0.85rem;
+      margin: 0 0 2rem;
+      line-height: 1.55;
+    }
+    ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+    a.card {
+      display: block;
+      padding: 1.1rem 1.25rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      border: 1px solid rgba(20, 184, 166, 0.45);
+      background: rgba(20, 184, 166, 0.08);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    a.card:hover {
+      background: rgba(20, 184, 166, 0.14);
+      border-color: rgba(20, 184, 166, 0.55);
+    }
+    a.card span {
+      display: block;
+      margin-top: 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--quiet);
+      line-height: 1.5;
+    }
+    .back {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+    }
+    .back a { color: var(--quiet); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>提案与估价</h1>
+    <p class="sub">完整提案 PPT、市场估价与竞品分析长文集中在本目录。资金预测智能体侧重<strong>头寸可见、现金流预测与计划排程、偏差闭环</strong>；商务上突出<strong>收费模式（产品 / 实施 / 模型与云）</strong>与三档首年区间。原型为 <code>frontend/app.html</code>，嵌入幻灯用 <code>?embed=1#…</code>。</p>
+    <ul>
+      <li>
+        <a class="card" href="unified-proposal/index.html">
+          打开完整提案 PPT（全屏）
+          <span>竞品、甘特、人周、报价；<code>?slide=14</code> 起为估价报告<strong>原生 9 页</strong>。详版+计算器见 HTML。</span>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="市场估价与竞品分析报告.html#calc">
+          单独打开《市场估价与竞品分析》
+          <span>长文 HTML；内含主流模型单价、场景选型、六步公式、多模型对照演算与 <strong>#calc</strong> 交互计算器。</span>
+        </a>
+      </li>
+    </ul>
+    <p class="back"><a href="../PPT/index.html">← PPT 演示入口（精简门页）</a></p>
+  </div>
+</body>
+</html>
