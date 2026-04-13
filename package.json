@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "description": "现金流预测 Agent · 仓库根（Vercel 可与 frontend 二选一作为 Root）",
   "scripts": {
-    "build": "node -e \"process.exit(0)\""
+    "build": "node scripts/vercel-build-static.js"
   }
 }
