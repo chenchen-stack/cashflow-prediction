@@ -114,6 +114,20 @@ Agent 的定位不是替代司库签字，而是**缩短从「想问数」到「
 
 **开源仓库（若已推送）**：<https://github.com/chenchen-stack/cashflow-prediction> —— 欢迎 **Star** 与 **Fork**，便于团队复用与二次开发。
 
+### 同步代码到 GitHub（一键推送）
+
+- **应提交**：本仓库内的**源代码、README、脚本**；**不要**提交 Cursor 对话全文、API 密钥、`.env`、本机路径等敏感信息。
+- **一键脚本**（在工程根目录打开 PowerShell）：
+
+```powershell
+.\scripts\push-to-github.ps1
+# 自定义说明：.\scripts\push-to-github.ps1 -Message "feat: 你的说明"
+```
+
+无变更时脚本会提示并退出；有变更时会 `git add -A`、`commit`、`push origin main`（需已配置 `origin` 与凭据）。
+
+- **关于「对话实时上 GitHub」**：Cursor 里的对话**不会**也不建议作为仓库内容自动同步；**「实时更新」**在工程上指：你改完代码后运行上述脚本或自行 `git push`，GitHub 即展示最新代码与 README。
+
 ---
 
 ## 项目结构（开发者速览）
@@ -124,7 +138,7 @@ Agent 的定位不是替代司库签字，而是**缩短从「想问数」到「
 │   ├── agent*.py      # DeepSeek + 工具链
 │   └── workbench/     # 可选协作 API（8010）
 ├── frontend/          # SPA：app.html、样式与脚本
-├── scripts/           # nfr_smoke 等
+├── scripts/           # nfr_smoke、push-to-github.ps1 等
 ├── run.bat            # 一键启动
 └── README.md
 ```
