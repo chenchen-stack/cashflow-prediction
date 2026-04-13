@@ -1,0 +1,9 @@
+{
+  "name": "yiliu-cashflow-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "现金流预测 Agent · 静态前端（Vercel 部署用）",
+  "scripts": {
+    "build": "echo Static export — no build step"
+  }
+}
