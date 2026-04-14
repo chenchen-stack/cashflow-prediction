@@ -114,6 +114,19 @@ Agent 的定位不是替代司库签字，而是**缩短从「想问数」到「
 
 **开源仓库（若已推送）**：<https://github.com/chenchen-stack/cashflow-prediction> —— 欢迎 **Star** 与 **Fork**，便于团队复用与二次开发。
 
+### GitHub Pages（静态演示）
+
+推送至 `main` 后由 Actions 发布（见 `.github/workflows/deploy-github-pages.yml`）。仓库 **Settings → Pages → Build and deployment** 请将 **Source** 设为 **GitHub Actions**。
+
+| 说明 | 地址 |
+|------|------|
+| 站点根路径（自动进 `presentation.html` → 幻灯） | <https://chenchen-stack.github.io/cashflow-prediction/> |
+| 发布会入口（同上下跳转至 `PPT/brief-v2.html`） | <https://chenchen-stack.github.io/cashflow-prediction/presentation.html> |
+| 仅幻灯（内嵌 `frontend/app.html?embed=1` 原型） | <https://chenchen-stack.github.io/cashflow-prediction/PPT/brief-v2.html> |
+| 登录 / 工作台（`?app=1` 从根入口进入） | 根 URL 加 `?app=1` 或 <https://chenchen-stack.github.io/cashflow-prediction/frontend/index.html> |
+
+静态页无后端时，前端会回退 **Mock 演示数据**；完整 API 请在本地启动 `run.bat` 后访问 `http://localhost:8000`。
+
 ### 同步代码到 GitHub（一键推送）
 
 - **应提交**：本仓库内的**源代码、README、脚本**；**不要**提交 Cursor 对话全文、API 密钥、`.env`、本机路径等敏感信息。

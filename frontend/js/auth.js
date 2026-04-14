@@ -5,21 +5,31 @@
 window.Auth = {
   login: function (roleId) {
     sessionStorage.setItem('cf_role', roleId);
-    // HTTP 下用 /app 统一入口；file:// 本地打开时用相对路径
     if (window.location.protocol === 'file:') {
       window.location.href = 'app.html';
-    } else {
-      window.location.href = '/app';
+      return;
     }
+    var host = window.location.hostname || '';
+    /* GitHub Pages 等静态站无 /app 重写：与 index.html 同目录走 app.html */
+    if (host === 'chenchen-stack.github.io') {
+      window.location.href = 'app.html';
+      return;
+    }
+    window.location.href = '/app';
   },
 
   logout: function () {
     sessionStorage.removeItem('cf_role');
     if (window.location.protocol === 'file:') {
       window.location.href = 'index.html';
-    } else {
-      window.location.href = '/';
+      return;
     }
+    var host = window.location.hostname || '';
+    if (host === 'chenchen-stack.github.io') {
+      window.location.href = 'index.html';
+      return;
+    }
+    window.location.href = '/';
   },
 
   getCurrentRole: function () {

@@ -14,7 +14,8 @@
         if (/[?&]app=1(?:&|$)/.test(q)) {
           location.replace('frontend/index.html' + q + h);
         } else {
-          location.replace('PPT/brief-v2.html' + q + h);
+          /* 发布会入口：presentation.html → PPT/brief-v2.html（内嵌原型） */
+          location.replace('presentation.html' + q + h);
         }
         return;
       }
