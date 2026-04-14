@@ -137,6 +137,26 @@
       Router.navigate('cashflow');
     };
 
+    _renderDashAlertsStrip();
+
+    _renderClosedLoopKPI();
+    if (window.__cfBackendOk) {
+      var aqLoad = document.getElementById('dash-alert-queue');
+      if (aqLoad) {
+        aqLoad.innerHTML = '<div class="empty-state muted">大模型正结合资金流与流动性引擎生成预警…</div>';
+      }
+      _fetchLlmAlertQueue();
+    } else {
+      _renderAlertQueue();
+    }
+    _renderSystemHealth();
+    _bindDashClickable();
+  }
+
+  function _renderDashAlertsStrip() {
+    var s = AppData.stats || {};
+    var unc = s.unconfirmed || 0;
+    var pred = s.predicted || 0;
     var pr = s.pending_review || 0;
     var alerts = [];
     if (pr > 0) alerts.push(insightHTML('danger', '🔴 ' + pr + ' 笔大额资金流待审核', 'cashflow'));
@@ -145,14 +165,53 @@
     var draftPlans = (AppData.plans || []).filter(function (p) { return p.status === '草稿'; }).length;
     if (draftPlans > 0) alerts.push(insightHTML('warn', '📋 ' + draftPlans + ' 个计划草稿（后台仍存在，入口已合并至分析/预测）', 'analysis'));
     var pendingAlerts = (AppData.alertQueue || []).filter(function (a) { return a.status === '待处理'; }).length;
-    if (pendingAlerts > 0) alerts.push(insightHTML('danger', '🔔 ' + pendingAlerts + ' 条偏差预警待处理', 'analysis'));
+    if (pendingAlerts > 0) {
+      alerts.push(insightHTML('danger', '🔔 ' + pendingAlerts + ' 条预警待处理（含 AI 归纳）', 'analysis'));
+    }
     if (!alerts.length) alerts.push(insightHTML('success', '✅ 暂无告警'));
-    document.getElementById('dash-alerts').innerHTML = alerts.join('');
+    var el = document.getElementById('dash-alerts');
+    if (el) el.innerHTML = alerts.join('');
+  }
 
-    _renderClosedLoopKPI();
-    _renderAlertQueue();
-    _renderSystemHealth();
-    _bindDashClickable();
+  async function _fetchLlmAlertQueue() {
+    if (!window.__cfBackendOk || typeof API === 'undefined' || !API.post) return;
+    try {
+      var payload = {};
+      try {
+        var dk = window.__DEEPSEEK_API_KEY__ ? String(window.__DEEPSEEK_API_KEY__).trim() : '';
+        if (dk) payload.deepseek_api_key = dk;
+      } catch (e0) {}
+      var res = await API.post('/api/dashboard/llm-alert-queue', payload);
+      AppData.alertQueue = (res && res.alerts) ? res.alerts : [];
+      AppData.llmAlertQueueMeta = res ? { source: res.source, note: res.note } : null;
+      refreshClosedLoopKPI();
+      _renderAlertQueue();
+      _renderDashAlertsStrip();
+      _bindDashClickable();
+    } catch (e) {
+      console.warn('llm-alert-queue', e);
+      var msg = String(e.message || e);
+      AppData.llmAlertQueueMeta = { source: 'error', note: msg };
+      AppData.alertQueue = [
+        {
+          id: 900001,
+          type: '系统',
+          level: '关注',
+          title: '预警服务请求失败',
+          desc: msg + ' 请确认本页与后端同源访问（例：http://127.0.0.1:8000/app），且已启动 API：POST /api/dashboard/llm-alert-queue。',
+          target_page: 'dashboard',
+          created_at: new Date().toISOString().slice(0, 16).replace('T', ' '),
+          status: '待处理',
+          ai_suggestion: '打开浏览器开发者工具 Network 查看请求是否 404/CORS；刷新总览或检查 localStorage 的 cf_api_base。',
+          handled_at: null,
+          handle_action: null,
+        },
+      ];
+      refreshClosedLoopKPI();
+      _renderAlertQueue();
+      _renderDashAlertsStrip();
+      _bindDashClickable();
+    }
   }
 
   function kpi(label, value, sub, delta, navPage) {
@@ -220,7 +279,7 @@
     if (!queue.length) { container.innerHTML = '<div class="empty-state">暂无预警</div>'; return; }
 
     container.innerHTML = queue.map(function (a) {
-      var icon = a.level === '严重' ? '🔴' : a.level === '预警' ? '🟠' : a.level === '关注' ? '🟡' : '🟢';
+      var icon = a.level === '严重' ? '🔴' : a.level === '预警' ? '🟠' : a.level === '关注' ? '🟡' : a.level === '信息' ? '🔵' : '🟢';
       var badgeCls = a.status === '待处理' ? 'pending' : 'handled';
       var handledInfo = a.status === '已处理' ? '<div class="alert-q-time">处理方式: ' + (a.handle_action || '-') + ' · ' + (a.handled_at || '') + '</div>' : '';
       return '<div class="alert-q-item' + (a.status === '已处理' ? ' is-handled' : '') + '">' +
@@ -317,10 +376,14 @@
           Toast.info('已记录拒绝原因');
           closeModal();
           _renderAlertQueue();
+          _renderDashAlertsStrip();
+          _bindDashClickable();
         });
       return;
     }
     _renderAlertQueue();
+    _renderDashAlertsStrip();
+    _bindDashClickable();
   };
 
   _domOn('dash-btn-refresh', 'click', function () {
@@ -1616,43 +1679,38 @@
   }
 
   function renderBudgetForecastTable() {
-    var headEl = document.getElementById('liq-budget-forecast-head');
-    var bodyEl = document.getElementById('liq-budget-forecast-body');
-    if (!headEl || !bodyEl) return;
-    function draw(months, rows) {
-      var h = '<tr><th>单位</th>';
-      months.forEach(function (ym) { h += '<th class="num">' + ym + '</th>'; });
-      h += '<th class="num">额度</th><th class="num">计划上报额度</th><th class="num">执行数</th></tr>';
-      headEl.innerHTML = h;
-      var colCount = 1 + months.length + 3;
-      bodyEl.innerHTML = rows.map(function (r) {
-        var tr = '<tr><td><strong>' + r.unit + '</strong></td>';
-        months.forEach(function (ym) {
-          var v = (r.month_cells && r.month_cells[ym] != null) ? r.month_cells[ym] : 0;
-          tr += '<td class="num liq-budget-cell" role="button" tabindex="0" data-unit="' + String(r.unit).replace(/"/g, '&quot;') + '" data-ym="' + ym + '" title="点击查看科目明细">' + fmtNum(v) + '</td>';
-        });
-        tr += '<td class="num">' + fmtNum(r.quota) + '</td><td class="num">' + fmtNum(r.plan_report) + '</td><td class="num">' + fmtNum(r.executed) + '</td></tr>';
-        return tr;
-      }).join('');
-      if (!rows.length) {
-        bodyEl.innerHTML = '<tr><td colspan="' + colCount + '" class="empty-state muted">暂无数据</td></tr>';
+    function cacheMatrixAndRefresh(months, rows) {
+      window.__liqBudgetMatrix = { months: months || [], rows: rows || [] };
+      var last = window.__liqLastMvp;
+      if (last && last.monthly_summary && last.monthly_summary.length) {
+        _renderLiqMergedTable(last);
       }
     }
     if (backendOk) {
-      API.get('/api/budget-forecast/matrix?months=6').then(function (res) {
-        var months = (res && res.months) ? res.months : [];
-        var rows = (res && res.rows) ? res.rows : [];
-        if (!months.length || !rows.length) {
-          bodyEl.innerHTML = '<tr><td colspan="12" class="empty-state muted">暂无数据</td></tr>';
-          return;
-        }
-        draw(months, rows);
-      }).catch(function () {
-        _anBudgetForecastDemo(draw);
-        Toast.warn('预算表接口不可用，已展示演示数据');
-      });
+      API.get('/api/budget-forecast/matrix?months=6')
+        .then(function (res) {
+          var months = (res && res.months) ? res.months : [];
+          var rows = (res && res.rows) ? res.rows : [];
+          if (!months.length || !rows.length) {
+            window.__liqBudgetMatrix = { months: [], rows: [] };
+            var last2 = window.__liqLastMvp;
+            if (last2 && last2.monthly_summary && last2.monthly_summary.length) {
+              _renderLiqMergedTable(last2);
+            }
+            return;
+          }
+          cacheMatrixAndRefresh(months, rows);
+        })
+        .catch(function () {
+          _anBudgetForecastDemo(function (months, rows) {
+            cacheMatrixAndRefresh(months, rows);
+          });
+          Toast.warn('预算矩阵接口不可用，已展示演示数据');
+        });
     } else {
-      _anBudgetForecastDemo(draw);
+      _anBudgetForecastDemo(function (months, rows) {
+        cacheMatrixAndRefresh(months, rows);
+      });
     }
   }
 
@@ -2275,9 +2333,34 @@
     bodyEl.innerHTML = html.join('');
   }
 
+  function _updateAnalysisPositionHint(result) {
+    var el = document.getElementById('chart-analysis-position-hint');
+    if (!el) return;
+    var pos = result && result.position;
+    if (!pos) {
+      el.textContent = '';
+      return;
+    }
+    var inf = pos.inflow || [];
+    var ouf = pos.outflow || [];
+    var sumIn = inf.reduce(function (a, b) { return a + (Number(b) || 0); }, 0);
+    var sumOut = ouf.reduce(function (a, b) { return a + (Number(b) || 0); }, 0);
+    if (sumIn < 1e-6 && sumOut > 1e-6) {
+      el.textContent =
+        '说明：绿柱 = 根级「流入」科目（经营性/投资性/融资性流入等）在各时段汇总。当前明细行若只挂在流出类科目，或未拆分明细，则流入为 0、仅显示红柱。可在「现金流事件」为回款等补全流入科目明细行。';
+    } else if (sumIn < 1e-6 && sumOut < 1e-6) {
+      el.textContent =
+        '说明：分析引擎按单据「明细行」flows_json × 科目汇总。若仅有单据总额而无科目明细，或所选单位/币种无匹配流水，流入流出可能均为 0。';
+    } else {
+      el.textContent = '';
+    }
+  }
+
   function drawAnalysis(result) {
     if (!result || typeof result !== 'object') {
       console.warn('drawAnalysis: 无有效结果，跳过图表');
+      var _h = document.getElementById('chart-analysis-position-hint');
+      if (_h) _h.textContent = '';
       renderAnalysisDetailTable(null);
       return;
     }
@@ -2286,10 +2369,13 @@
       if (typeof Charts !== 'undefined' && Charts.analysisPosition) {
         Charts.analysisPosition('chart-analysis-position', { periods: [], position: { opening: [], inflow: [], outflow: [], closing: [] } });
       }
+      var _h2 = document.getElementById('chart-analysis-position-hint');
+      if (_h2) _h2.textContent = '';
       renderAnalysisDetailTable(null);
       return;
     }
     Charts.analysisPosition('chart-analysis-position', aligned);
+    _updateAnalysisPositionHint(aligned);
     bindAnalysisChartDrill();
     renderAnalysisDetailTable(aligned);
     renderAnUnitTreeTable();
@@ -2865,14 +2951,111 @@
     }).join('');
     return (
       '<div class="liq-nested-inner">' +
-      '<p class="liq-nested-caption">关键日抽样（按预测区间）</p>' +
+      '<p class="liq-nested-caption liq-nested-caption--tab">日级明细（预测区间内代表性日期）</p>' +
       '<table class="data-table liq-keyday-subtable">' +
       '<thead><tr><th>日期</th><th class="num">预计流入</th><th class="num">预计流出</th><th class="num">预计余额</th></tr></thead>' +
       '<tbody>' + body + '</tbody></table></div>'
     );
   }
 
-  /** 月汇总 + 关键日抽样合并为展开嵌套（与后端 mvp-forecast 同一 res） */
+  function _liqEscHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /** 预算矩阵：按月份汇总各单位单元格（与 budget-forecast/matrix 同源缓存） */
+  function _liqBudgetSumForYm(ym) {
+    var M = window.__liqBudgetMatrix;
+    if (!M || !M.rows || !ym) return null;
+    if (M.months && M.months.length && M.months.indexOf(ym) === -1) return null;
+    var s = 0;
+    var any = false;
+    M.rows.forEach(function (r) {
+      var v = r.month_cells && r.month_cells[ym];
+      if (v != null && !isNaN(v)) {
+        s += Number(v);
+        any = true;
+      }
+    });
+    return any ? s : null;
+  }
+
+  /** 展开行：各单位该月预算 + 可点击下钻（omitCaption：标签页模式下由页签承担标题） */
+  function _liqBudgetNestedHtml(ym, omitCaption) {
+    var M = window.__liqBudgetMatrix;
+    if (!M || !M.rows || !M.rows.length) {
+      return '<p class="liq-nested-empty">暂无预算矩阵（接入源加载后将显示）。</p>';
+    }
+    if (M.months && M.months.length && M.months.indexOf(ym) === -1) {
+      return '<p class="liq-nested-empty">该月不在预算矩阵时间窗内（通常为最近 6 个月滚动列）。</p>';
+    }
+    var body = M.rows
+      .map(function (r) {
+        var v = r.month_cells && r.month_cells[ym] != null ? r.month_cells[ym] : 0;
+        var uAttr = String(r.unit || '').replace(/"/g, '&quot;');
+        return (
+          '<tr><td><strong>' +
+          _liqEscHtml(r.unit) +
+          '</strong></td><td class="num liq-budget-cell" role="button" tabindex="0" data-unit="' +
+          uAttr +
+          '" data-ym="' +
+          _liqEscHtml(ym) +
+          '" title="点击查看科目明细">' +
+          fmtNum(v) +
+          '</td></tr>'
+        );
+      })
+      .join('');
+    var cap =
+      omitCaption
+        ? '<p class="liq-expand-hint muted">点击金额可下钻至科目明细（与资金计划口径一致）</p>'
+        : '<p class="liq-nested-caption">单位 · 本月预算执行（点击金额下钻科目明细）</p>';
+    return (
+      '<div class="liq-nested-inner liq-nested-inner--budget">' +
+      cap +
+      '<table class="data-table liq-budget-subtable"><thead><tr><th>单位</th><th class="num">预算执行</th></tr></thead><tbody>' +
+      body +
+      '</tbody></table></div>'
+    );
+  }
+
+  /** 单月展开区：标签页切换「关键日」/「预算」，避免上下两块重复堆叠 */
+  function _liqMonthDetailPanelHtml(nodes, ym) {
+    var safeId = String(ym || 'x').replace(/[^0-9A-Za-z-]/g, '_');
+    var keyBlock = _liqRenderNestedKeyDaysHtml(nodes);
+    var budgetBlock = _liqBudgetNestedHtml(ym, true);
+    return (
+      '<div class="liq-expand-panel" data-panel-ym="' +
+      _liqEscHtml(ym) +
+      '">' +
+      '<div class="liq-expand-tabs" role="tablist" aria-label="' +
+      _liqEscHtml(ym) +
+      ' 月下钻">' +
+      '<button type="button" class="liq-expand-tab is-active" role="tab" aria-selected="true" data-tab="keydays" id="liq-tab-kd-' +
+      safeId +
+      '">关键日</button>' +
+      '<button type="button" class="liq-expand-tab" role="tab" aria-selected="false" data-tab="budget" id="liq-tab-bd-' +
+      safeId +
+      '">单位预算</button>' +
+      '</div>' +
+      '<div class="liq-expand-panes">' +
+      '<div class="liq-expand-pane is-active" data-pane="keydays" role="tabpanel" aria-labelledby="liq-tab-kd-' +
+      safeId +
+      '">' +
+      keyBlock +
+      '</div>' +
+      '<div class="liq-expand-pane" data-pane="budget" role="tabpanel" aria-labelledby="liq-tab-bd-' +
+      safeId +
+      '" hidden="hidden">' +
+      budgetBlock +
+      '</div>' +
+      '</div></div>'
+    );
+  }
+
+  /** 月汇总 + 关键日 + 单位预算 合并为一张可多维下钻表（与 mvp-forecast 同一 res） */
   function _renderLiqMergedTable(res) {
     var tb = document.getElementById('liq-month-summary-body');
     if (!tb) return;
@@ -2880,7 +3063,7 @@
     var rows = (res && res.monthly_summary) ? res.monthly_summary : [];
     var byYm = _liqKeyNodesByYm((res && res.key_nodes) ? res.key_nodes : []);
     if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="5" class="empty-state muted">暂无月汇总，请先点击「预测」</td></tr>';
+      tb.innerHTML = '<tr><td colspan="6" class="empty-state muted">暂无月汇总，请先点击「预测」</td></tr>';
       return;
     }
     var html = [];
@@ -2889,20 +3072,52 @@
       var fc = m.is_forecast ? 'forecast' : 'history';
       var tag = m.is_forecast ? '<span class="badge badge-default" style="margin-left:6px;font-size:10px;">预测</span>' : '';
       var nodes = byYm[ym] || [];
+      var bSum = _liqBudgetSumForYm(ym);
+      var bCell = bSum != null ? fmtNum(bSum) : '—';
       html.push(
-        '<tr class="liq-month-row" data-ym="' + ym + '" data-fc="' + fc + '" data-inflow="' + m.inflow + '" data-outflow="' + m.outflow + '" data-net="' + m.net + '" title="点击行（非展开按钮）查看科目明细">' +
-        '<td class="liq-cell-expand"><button type="button" class="btn btn-ghost btn-sm liq-btn-expand" aria-expanded="false" aria-label="展开或收起该月关键日抽样">▸</button></td>' +
-        '<td><strong>' + ym + '</strong>' + tag + '</td>' +
-        '<td class="num">' + fmtNum(m.inflow) + '</td><td class="num">' + fmtNum(m.outflow) + '</td><td class="num">' + fmtNum(m.net) + '</td></tr>'
+        '<tr class="liq-month-row" data-ym="' +
+          ym +
+          '" data-fc="' +
+          fc +
+          '" data-inflow="' +
+          m.inflow +
+          '" data-outflow="' +
+          m.outflow +
+          '" data-net="' +
+          m.net +
+          '" title="点击行（非展开按钮）查看预测科目明细">' +
+          '<td class="liq-cell-expand">' +
+          '<button type="button" class="btn btn-ghost btn-sm liq-btn-expand" aria-expanded="false" aria-label="展开或收起本月明细" title="展开：关键日与单位预算（页签切换）">▸</button>' +
+          '</td>' +
+          '<td><strong>' +
+          ym +
+          '</strong>' +
+          tag +
+          '</td>' +
+          '<td class="num">' +
+          fmtNum(m.inflow) +
+          '</td><td class="num">' +
+          fmtNum(m.outflow) +
+          '</td><td class="num">' +
+          fmtNum(m.net) +
+          '</td>' +
+          '<td class="num liq-budget-sum-cell" title="各单位预算执行之和；展开后可在「单位预算」页签查看">' +
+          bCell +
+          '</td></tr>'
       );
       html.push(
-        '<tr class="liq-nested-wrap" style="display:none;"><td colspan="5" class="liq-nested-cell">' + _liqRenderNestedKeyDaysHtml(nodes) + '</td></tr>'
+        '<tr class="liq-nested-wrap" style="display:none;"><td colspan="6" class="liq-nested-cell">' +
+          _liqMonthDetailPanelHtml(nodes, ym) +
+          '</td></tr>'
       );
     });
     tb.innerHTML = html.join('');
   }
 
   function _renderLiqMergedDemo() {
+    _anBudgetForecastDemo(function (months, rows) {
+      window.__liqBudgetMatrix = { months: months, rows: rows };
+    });
     _renderLiqMergedTable({
       monthly_summary: [
         { year_month: '2026-04', inflow: 2463683, outflow: 1106859, net: 1356824, is_forecast: false },
@@ -3011,6 +3226,29 @@
     if (!pg || pg._liqMonthDrillBound) return;
     pg._liqMonthDrillBound = true;
     pg.addEventListener('click', function (e) {
+      var tab = e.target.closest && e.target.closest('.liq-expand-tab');
+      if (tab) {
+        e.preventDefault();
+        e.stopPropagation();
+        var panel = tab.closest('.liq-expand-panel');
+        if (!panel) return;
+        var name = tab.getAttribute('data-tab');
+        panel.querySelectorAll('.liq-expand-tab').forEach(function (t) {
+          var on = t.getAttribute('data-tab') === name;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        panel.querySelectorAll('.liq-expand-pane').forEach(function (p) {
+          var show = p.getAttribute('data-pane') === name;
+          p.classList.toggle('is-active', show);
+          if (show) {
+            p.removeAttribute('hidden');
+          } else {
+            p.setAttribute('hidden', 'hidden');
+          }
+        });
+        return;
+      }
       var exp = e.target.closest && e.target.closest('.liq-btn-expand');
       if (exp) {
         e.preventDefault();
@@ -3038,13 +3276,6 @@
       e.preventDefault();
       _liqOpenMonthSubjectModal(tr);
     });
-  }
-
-  function _liqEscHtml(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/"/g, '&quot;');
   }
 
   function _clearLiqRiskMetrics() {
@@ -3245,6 +3476,22 @@
     }
   }
 
+  function _liqForecastModelLabel(code) {
+    var c = String(code || '')
+      .toLowerCase()
+      .replace(/-/g, '_');
+    var map = {
+      rolling_smart: '滚动引擎 · 智能增长',
+      rolling_manual: '滚动引擎 · 固定增长',
+      arima: 'ARIMA（演示）',
+      prophet: 'Prophet（演示）',
+      lstm: 'LSTM（演示）',
+      transformer: 'Transformer（演示）',
+      llm_assist: '大模型辅助',
+    };
+    return map[c] || (code ? String(code) : '滚动引擎');
+  }
+
   async function _runLiqMvpForecast(opts) {
     opts = opts || {};
     var silent = !!opts.silent;
@@ -3252,6 +3499,8 @@
     var days = hz ? parseInt(hz.value, 10) || 90 : 90;
     var unitEl = document.getElementById('liq-mvp-unit');
     var unit = unitEl && unitEl.value ? unitEl.value : null;
+    var modelEl = document.getElementById('liq-forecast-model');
+    var forecastModel = modelEl && modelEl.value ? modelEl.value : 'rolling_smart';
     var sub = document.getElementById('liq-mvp-subtitle');
     var hint = document.getElementById('liq-mvp-hint');
     if (!backendOk) {
@@ -3260,7 +3509,12 @@
       if (typeof Charts !== 'undefined' && Charts.liquidityForecastDemo) Charts.liquidityForecastDemo('chart-forecast-curve', days);
       _renderLiqMergedDemo();
       if (sub) sub.textContent = '离线演示：随机曲线，请启动后端以对接真实资金流';
-      if (hint) hint.textContent = '离线模式：使用本地演示曲线；连接后端后按「资金流单据」月度汇总预测。';
+      if (hint) {
+        hint.textContent =
+          '离线模式：已选「' +
+          _liqForecastModelLabel(forecastModel) +
+          '」；曲线为本地演示。连接后端后将按所选模型在引擎说明中标注口径（统计/深度学习完整管线规划中）。';
+      }
       var noteOff = document.getElementById('liq-rolling-ai-note');
       if (noteOff) noteOff.innerHTML = '<strong>说明：</strong>离线模式为演示数据；连接后端后将与资金流单据及流动性引擎一致。';
       var riskOff = document.getElementById('liq-risk-alerts');
@@ -3279,6 +3533,7 @@
         unit: unit,
         only_confirmed: true,
         smart: true,
+        forecast_model: forecastModel,
       });
       window.__liqLastMvpForecastRes = res;
       _updateLiqRiskRefreshBtn();
@@ -3288,9 +3543,16 @@
       _renderLiqMergedTable(res);
       if (sub) {
         var gu = res.growth_used != null ? Number(res.growth_used).toFixed(4) : '—';
-        sub.textContent = '后端驱动 · 历史 ' + (res.history_months || 0) + ' 月 · growth=' + gu;
+        var fmDisp = _liqForecastModelLabel(res.forecast_model != null ? res.forecast_model : forecastModel);
+        sub.textContent =
+          '后端驱动 · ' + fmDisp + ' · 历史 ' + (res.history_months || 0) + ' 月 · growth=' + gu;
       }
-      if (hint) hint.textContent = '数据来源：cashflow_records 月度汇总（优先已确认），与「预测方案」月度引擎同款滚动模型。';
+      if (hint) {
+        hint.textContent =
+          '数据来源：cashflow_records 月度汇总（优先已确认），与「预测方案」月度引擎同款滚动模型；当前模型：' +
+          _liqForecastModelLabel(res.forecast_model != null ? res.forecast_model : forecastModel) +
+          '。';
+      }
       var note = document.getElementById('liq-rolling-ai-note');
       if (note) note.innerHTML = '<strong>引擎说明：</strong>' + String(res.method_note || '—').replace(/</g, '&lt;');
       var risk = document.getElementById('liq-risk-alerts');
@@ -3346,6 +3608,22 @@
         mvpUnit.appendChild(o);
       });
       if (prevM) mvpUnit.value = prevM;
+    }
+    var liqFm = document.getElementById('liq-forecast-model');
+    if (liqFm) {
+      try {
+        var savedFm = localStorage.getItem('cf_liq_forecast_model');
+        if (savedFm) {
+          var ok = false;
+          for (var i = 0; i < liqFm.options.length; i++) {
+            if (liqFm.options[i].value === savedFm) {
+              ok = true;
+              break;
+            }
+          }
+          if (ok) liqFm.value = savedFm;
+        }
+      } catch (e) {}
     }
     if (!_liqUiBound) {
       _liqUiBound = true;
@@ -3406,6 +3684,14 @@
       _liqDemoBound = true;
       var lpd = document.getElementById('liq-btn-predict-demo');
       if (lpd) lpd.addEventListener('click', function () { _runLiqMvpForecast({ silent: false }); });
+      var lfm = document.getElementById('liq-forecast-model');
+      if (lfm) {
+        lfm.addEventListener('change', function () {
+          try {
+            localStorage.setItem('cf_liq_forecast_model', lfm.value);
+          } catch (e) {}
+        });
+      }
       var lrd = document.getElementById('liq-btn-rules-demo');
       if (lrd) {
         lrd.addEventListener('click', function () {
@@ -3466,6 +3752,7 @@
 
   function renderBaseData() {
     renderSubjectTree();
+    _bindSubjectTreeClicks();
     renderBizTable();
     renderTimePeriods();
     renderSBMap();
@@ -3528,8 +3815,11 @@
         var dirBadge = s.direction === '流入' ? 'badge-success' : 'badge-danger';
         var un = (s.unit_name || '').trim();
         var unitSpan = un ? ' <span class="muted" style="font-size:11px;">· ' + _bdEsc(un) + '</span>' : '';
-        return '<div class="tree-node"><div class="tree-label">' +
-          (kids ? '<button class="tree-toggle" onclick="toggleTreeNode(this)">▸</button>' : '<span style="width:16px;display:inline-block"></span>') +
+        return '<div class="tree-node">' +
+          '<div class="tree-label' + (kids ? ' tree-label--parent' : '') + '" ' + (kids ? 'title="点击行展开或收起子科目"' : '') + '>' +
+          (kids
+            ? '<button type="button" class="tree-toggle" aria-expanded="true" aria-label="展开或收起子科目">▾</button>'
+            : '<span class="tree-toggle-spacer" aria-hidden="true"></span>') +
           '<span class="badge ' + dirBadge + '">' + s.direction + '</span> <strong class="mono">' + s.code + '</strong> ' + s.name + unitSpan +
           '</div>' + (kids ? '<div class="tree-children">' + build(s.id) + '</div>' : '') + '</div>';
       }).join('');
@@ -3538,12 +3828,48 @@
   }
 
   window.toggleTreeNode = function (btn) {
-    var children = btn.closest('.tree-node').querySelector('.tree-children');
+    if (!btn) return;
+    var node = btn.closest('.tree-node');
+    if (!node) return;
+    var children = null;
+    for (var ci = 0; ci < node.children.length; ci++) {
+      if (node.children[ci].classList && node.children[ci].classList.contains('tree-children')) {
+        children = node.children[ci];
+        break;
+      }
+    }
     if (!children) return;
-    var open = children.style.display !== 'none';
-    children.style.display = open ? 'none' : '';
-    btn.textContent = open ? '▸' : '▾';
+    var isHidden =
+      children.style.display === 'none' ||
+      (typeof getComputedStyle !== 'undefined' && getComputedStyle(children).display === 'none');
+    children.style.display = isHidden ? '' : 'none';
+    btn.textContent = isHidden ? '▾' : '▸';
+    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
   };
+
+  /** 科目树：整行可点展开（不仅小箭头）；委托在容器上，innerHTML 刷新不丢 */
+  function _bindSubjectTreeClicks() {
+    var root = document.getElementById('bd-subject-tree');
+    if (!root || root._subjectTreeBound) return;
+    root._subjectTreeBound = true;
+    root.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      if (t.closest('a')) return;
+      var toggleBtn = t.closest('.tree-toggle');
+      if (toggleBtn) {
+        e.preventDefault();
+        window.toggleTreeNode(toggleBtn);
+        return;
+      }
+      var lab = t.closest('.tree-label');
+      if (!lab || !lab.classList.contains('tree-label--parent')) return;
+      var innerToggle = lab.querySelector('.tree-toggle');
+      if (!innerToggle) return;
+      e.preventDefault();
+      window.toggleTreeNode(innerToggle);
+    });
+  }
 
   function renderBizTable() {
     var list = AppData.businesses || [];
@@ -3583,16 +3909,196 @@
   };
 
   function renderTimePeriods() {
+    var wrap = document.getElementById('bd-tp-body');
+    if (!wrap) return;
     var tps = AppData.timePeriods || [];
-    if (!tps.length) { document.getElementById('bd-tp-body').innerHTML = '<div class="empty-state">暂无时间段配置</div>'; return; }
-    document.getElementById('bd-tp-body').innerHTML = tps.map(function (tp) {
+    if (!tps.length) {
+      wrap.innerHTML = '<div class="empty-state">暂无时间段配置</div>';
+      return;
+    }
+    wrap.innerHTML = tps.map(function (tp) {
       var periods = [];
-      try { periods = JSON.parse(tp.periods_json || '[]'); } catch (e) {}
-      return '<div class="insight-card info" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">' +
-        '<div><strong>' + tp.code + '</strong> ' + tp.name + '<br/><span class="muted">' + periods.map(function (p) { return p.freq + '×' + p.length; }).join(' → ') + '</span></div>' +
-        '<button class="btn btn-sm btn-ghost" onclick="deleteTimePeriod(' + tp.id + ')">删除</button></div>';
+      try {
+        periods = JSON.parse(tp.periods_json || '[]');
+      } catch (e) {}
+      var flowHtml = periods
+        .map(function (p, i) {
+          var chip =
+            '<span class="bd-tp-chip" role="group" aria-label="' +
+            _sbEsc(String(p.length) + ' ' + p.freq) +
+            '">' +
+            '<span class="bd-tp-chip__n">' +
+            _sbEsc(String(p.length)) +
+            '</span><span class="bd-tp-chip__sep">×</span><span class="bd-tp-chip__u">' +
+            _sbEsc(p.freq) +
+            '</span></span>';
+          var arrow =
+            i < periods.length - 1
+              ? '<span class="bd-tp-flow__arrow" aria-hidden="true">→</span>'
+              : '';
+          return chip + arrow;
+        })
+        .join('');
+      if (!flowHtml) flowHtml = '<span class="muted" style="font-size:12px;">（无频率段）</span>';
+      return (
+        '<article class="bd-tp-card" data-tp-id="' +
+        tp.id +
+        '">' +
+        '<div class="bd-tp-card__head">' +
+        '<div class="bd-tp-card__titles">' +
+        '<span class="bd-tp-code">' +
+        _sbEsc(tp.code) +
+        '</span><h3 class="bd-tp-name">' +
+        _sbEsc(tp.name) +
+        '</h3></div>' +
+        '<div class="bd-tp-card__actions">' +
+        '<button type="button" class="btn btn-sm btn-ghost" onclick="editTimePeriod(' +
+        tp.id +
+        ')">编辑</button>' +
+        '<button type="button" class="btn btn-sm btn-ghost" onclick="deleteTimePeriod(' +
+        tp.id +
+        ')">删除</button>' +
+        '</div></div>' +
+        '<div class="bd-tp-flow" role="list">' +
+        flowHtml +
+        '</div>' +
+        '<p class="bd-tp-card__hint">串联递进：由近及远切换视图粒度；与「现金流预测」中的算法 / 大模型选项相互独立。</p>' +
+        '</article>'
+      );
     }).join('');
   }
+
+  function _tpJsonForTextarea(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function openTimePeriodEditor(isEdit, tp) {
+    var head = '';
+    var jsonDefault = '[{"freq":"天","length":7},{"freq":"月","length":3}]';
+    var nameVal = '';
+    if (isEdit && tp) {
+      head =
+        '<p class="muted" style="margin:0 0 12px;font-size:13px;line-height:1.55;">编码 <span class="mono">' +
+        _sbEsc(tp.code) +
+        '</span> 不可修改。</p>' +
+        '<input type="hidden" id="m-tp-id" value="' +
+        String(tp.id) +
+        '" />' +
+        '<input type="hidden" id="m-tp-code" value="' +
+        _sbEscAttr(tp.code) +
+        '" />';
+      nameVal = _sbEscAttr(tp.name || '');
+      jsonDefault = _tpJsonForTextarea(tp.periods_json || '[]');
+    }
+    var body =
+      head +
+      '<div class="form-group"><label>名称</label><input class="form-input" id="m-tp-name" placeholder="如：短期滚动（天14+月2）" value="' +
+      nameVal +
+      '" /></div>' +
+      '<div class="form-group"><label>频率配置（JSON）</label><textarea class="form-input" id="m-tp-json" rows="5" style="width:100%;font-family:var(--font-mono);font-size:12px;">' +
+      jsonDefault +
+      '</textarea></div>' +
+      '<p class="muted" style="font-size:12px;margin:0;line-height:1.55;">须按 <strong>天 → 周 → 月 → 季 → 年</strong> 顺序；每一段为下一档的窗口个数（串联递进），非同一账期重复叠加。</p>';
+    openModal(isEdit ? '编辑时间段配置' : '新增时间段配置', body, function () {
+      var nameEl = document.getElementById('m-tp-name');
+      var jsonEl = document.getElementById('m-tp-json');
+      var name = nameEl ? nameEl.value.trim() : '';
+      var json = jsonEl ? jsonEl.value.trim() : '';
+      if (!name) {
+        Toast.warn('请填写名称');
+        return;
+      }
+      try {
+        JSON.parse(json);
+      } catch (e) {
+        Toast.warn('JSON 格式有误');
+        return;
+      }
+      var idEl = document.getElementById('m-tp-id');
+      var codeEl = document.getElementById('m-tp-code');
+      if (isEdit && idEl && codeEl) {
+        var tid = parseInt(idEl.value, 10);
+        var code = codeEl.value;
+        if (backendOk) {
+          (async function () {
+            try {
+              await API.put('/api/time-periods/' + tid, {
+                code: code,
+                name: name,
+                periods_json: json,
+                valid: true,
+              });
+              await window.cfReloadBaseData();
+              Toast.success('时间段已更新');
+            } catch (e) {
+              console.warn(e);
+              Toast.warn('更新失败');
+            }
+            closeModal();
+            renderTimePeriods();
+          })();
+          return;
+        }
+        var row = (AppData.timePeriods || []).find(function (t) {
+          return t.id === tid;
+        });
+        if (row) {
+          row.name = name;
+          row.periods_json = json;
+        }
+        Toast.success('时间段已更新');
+        closeModal();
+        renderTimePeriods();
+        return;
+      }
+      if (backendOk) {
+        (async function () {
+          try {
+            var tps = await API.get('/api/time-periods');
+            var max = 0;
+            (tps || []).forEach(function (x) {
+              var m = /^TP(\d+)$/i.exec(String(x.code || '').trim());
+              if (m) max = Math.max(max, parseInt(m[1], 10));
+            });
+            var code = 'TP' + String(max + 1).padStart(4, '0');
+            await API.post('/api/time-periods', { code: code, name: name, periods_json: json, valid: true });
+            await window.cfReloadBaseData();
+            Toast.success('时间段创建成功');
+          } catch (e) {
+            console.warn(e);
+            Toast.warn('创建失败（编码冲突或频率 JSON 不符合规则）');
+          }
+          closeModal();
+          renderTimePeriods();
+        })();
+        return;
+      }
+      var maxId = (AppData.timePeriods || []).reduce(function (a, t) {
+        return Math.max(a, t.id || 0);
+      }, 0);
+      AppData.timePeriods.push({
+        id: maxId + 1,
+        code: 'TP' + String(maxId + 2).padStart(4, '0'),
+        name: name,
+        periods_json: json,
+        valid: true,
+      });
+      Toast.success('时间段创建成功');
+      closeModal();
+      renderTimePeriods();
+    });
+  }
+
+  window.editTimePeriod = function (id) {
+    var tp = (AppData.timePeriods || []).find(function (t) {
+      return t.id === id;
+    });
+    if (!tp) return;
+    openTimePeriodEditor(true, tp);
+  };
 
   window.deleteTimePeriod = function (id) {
     if (backendOk) {
@@ -3860,42 +4366,7 @@
   });
 
   _domOn('bd-btn-add-tp', 'click', function () {
-    openModal('新增时间段配置',
-      '<div class="form-group"><label>名称</label><input class="form-input" id="m-tp-name" placeholder="如: 月度滚动（月12）" /></div>' +
-      '<div class="form-group"><label>频率配置（JSON）</label><textarea class="form-input" id="m-tp-json" rows="4" style="width:100%;font-family:var(--font-mono);font-size:12px;">[{"freq":"天","length":7},{"freq":"月","length":3}]</textarea></div>' +
-      '<p class="muted" style="font-size:11px;">频率须按 天→周→月→季→年 顺序。</p>',
-      function () {
-        var name = document.getElementById('m-tp-name').value.trim();
-        var json = document.getElementById('m-tp-json').value.trim();
-        if (!name) { Toast.warn('请填写名称'); return; }
-        try { JSON.parse(json); } catch (e) { Toast.warn('JSON 格式有误'); return; }
-        if (backendOk) {
-          (async function () {
-            try {
-              var tps = await API.get('/api/time-periods');
-              var max = 0;
-              (tps || []).forEach(function (tp) {
-                var m = /^TP(\d+)$/i.exec(String(tp.code || '').trim());
-                if (m) max = Math.max(max, parseInt(m[1], 10));
-              });
-              var code = 'TP' + String(max + 1).padStart(4, '0');
-              await API.post('/api/time-periods', { code: code, name: name, periods_json: json, valid: true });
-              await window.cfReloadBaseData();
-              Toast.success('时间段创建成功');
-            } catch (e) {
-              console.warn(e);
-              Toast.warn('创建失败（编码冲突或频率 JSON 不符合规则）');
-            }
-            closeModal();
-            renderTimePeriods();
-          })();
-          return;
-        }
-        var maxId = (AppData.timePeriods || []).reduce(function (a, t) { return Math.max(a, t.id || 0); }, 0);
-        AppData.timePeriods.push({ id: maxId + 1, code: 'TP' + String(maxId + 2).padStart(4, '0'), name: name, periods_json: json, valid: true });
-        Toast.success('时间段创建成功');
-        closeModal(); renderTimePeriods();
-      });
+    openTimePeriodEditor(false, null);
   });
 
   _domOn('bd-btn-add-sbmap', 'click', function () {
@@ -3910,6 +4381,7 @@
     _renderRulesTable();
     _renderSyncLog();
     _renderTasksTable();
+    _intApplyIntSysState();
     _bindIntCards();
     _bindIntegrationWorkbench();
   }
@@ -4320,35 +4792,218 @@
       });
   });
 
+  var INT_SYS_META = {
+    tms: {
+      label: '资金管理系统（TMS）',
+      ruleKeys: ['资金管理系统'],
+      logKeys: ['资金管理系统'],
+      tip: '手动同步、定时任务默认拉取来源；入账后为「现金流事件」主数据。',
+    },
+    erp: {
+      label: 'ERP',
+      ruleKeys: ['ERP'],
+      logKeys: ['ERP'],
+      tip: '二期接入后将进入同一套映射与入账流程。',
+    },
+    bank: {
+      label: '银企直连',
+      ruleKeys: ['银企直连'],
+      logKeys: ['银企直连', '银行'],
+      tip: '对应下方「银企取数」；与 TMS 按权威优先级与单据号去重。',
+    },
+    bi: {
+      label: 'BI 看板',
+      ruleKeys: ['BI', 'BI 看板'],
+      logKeys: ['BI', 'BI 看板'],
+      tip: '指标推送为补充视图，不替代银行/TMS 流水作为主入账依据。',
+    },
+  };
+
+  function _intSysRuleMatch(rule, meta) {
+    if (!rule || rule.valid === false) return false;
+    var ss = String(rule.source_system || '');
+    var keys = meta.ruleKeys || [];
+    for (var i = 0; i < keys.length; i++) {
+      if (ss === keys[i] || ss.indexOf(keys[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function _intSysLogMatch(log, meta) {
+    if (!log) return false;
+    var s = String(log.system || '');
+    var keys = meta.logKeys || [];
+    for (var i = 0; i < keys.length; i++) {
+      if (s === keys[i] || s.indexOf(keys[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function _intCountRulesForSys(meta) {
+    return (AppData.mappingRules || []).filter(function (r) {
+      return _intSysRuleMatch(r, meta);
+    }).length;
+  }
+
+  function _intLatestSyncForSys(meta) {
+    var logs = (AppData.syncLogs || []).filter(function (l) {
+      return _intSysLogMatch(l, meta);
+    });
+    if (!logs.length) return '—';
+    return logs[logs.length - 1].time || '—';
+  }
+
+  function _intLoadCardState() {
+    try {
+      var raw = sessionStorage.getItem('cf_int_sys_cards');
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function _intSaveCardState(map) {
+    try {
+      sessionStorage.setItem('cf_int_sys_cards', JSON.stringify(map || {}));
+    } catch (e) {}
+  }
+
+  function _intApplyIntSysState() {
+    var st = _intLoadCardState();
+    document.querySelectorAll('#int-systems .integration-card[data-sys]').forEach(function (card) {
+      var sys = card.dataset.sys;
+      if (!sys || st[sys] !== 'connected') return;
+      var statusEl = card.querySelector('.integration-status');
+      if (!statusEl) return;
+      statusEl.className = 'integration-status integration-status--dot connected';
+      statusEl.textContent = '已连接';
+      card.classList.remove('integration-card--muted');
+    });
+  }
+
+  function _intEscModal(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function _intBindIntModalActions() {
+    var r = document.getElementById('int-modal-goto-rules');
+    var l = document.getElementById('int-modal-goto-logs');
+    var q = document.getElementById('int-modal-goto-liq');
+    if (r) {
+      r.onclick = function () {
+        closeModal();
+        var el = document.getElementById('int-card-rules');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+    }
+    if (l) {
+      l.onclick = function () {
+        closeModal();
+        var d = document.getElementById('int-anchor-sync-logs');
+        if (d) {
+          d.open = true;
+          d.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      };
+    }
+    if (q) {
+      q.onclick = function () {
+        closeModal();
+        if (window.Router && typeof Router.navigate === 'function') Router.navigate('liquidity');
+      };
+    }
+  }
+
+  function _intOpenSourceDetailModal(meta) {
+    var nRules = _intCountRulesForSys(meta);
+    var lastSync = _intLatestSyncForSys(meta);
+    var body =
+      '<p style="font-size:12px;line-height:1.65;color:var(--text-secondary);margin:0 0 12px;">' +
+      _intEscModal(meta.tip) +
+      '</p>' +
+      '<table class="data-table" style="font-size:13px;margin-bottom:12px;"><tbody>' +
+      '<tr><td style="font-weight:600;width:112px;vertical-align:top;">来源</td><td>' +
+      _intEscModal(meta.label) +
+      '</td></tr>' +
+      '<tr><td style="font-weight:600;vertical-align:top;">本源启用规则</td><td>' +
+      nRules +
+      ' 条（按映射规则「来源系统」匹配本卡片）</td></tr>' +
+      '<tr><td style="font-weight:600;vertical-align:top;">该来源最近同步</td><td>' +
+      _intEscModal(lastSync) +
+      '</td></tr>' +
+      '<tr><td style="font-weight:600;vertical-align:top;">与预测模型</td><td>无直接绑定。数据以现金流事件入库后，在「现金流预测」页单独选择滚动引擎 / 统计或<strong>大模型辅助</strong>等范式。</td></tr>' +
+      '</tbody></table>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;">' +
+      '<button type="button" class="btn btn-sm btn-primary" id="int-modal-goto-rules">定位映射规则</button>' +
+      '<button type="button" class="btn btn-sm" id="int-modal-goto-logs">展开同步日志</button>' +
+      '<button type="button" class="btn btn-sm" id="int-modal-goto-liq">打开现金流预测</button>' +
+      '</div>';
+    openModal(meta.label + ' · 接入详情', body, null, true);
+    setTimeout(_intBindIntModalActions, 0);
+  }
+
   function _bindIntCards() {
     document.querySelectorAll('#int-systems .integration-card').forEach(function (card) {
       if (card._bound) return;
       card._bound = true;
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', function () {
-        var name = card.querySelector('h4').textContent;
+      function activate() {
         var statusEl = card.querySelector('.integration-status');
         var sys = card.dataset.sys;
+        var mode = card.getAttribute('data-int-mode') || '';
+        var meta = INT_SYS_META[sys] || { label: sys, ruleKeys: [], logKeys: [], tip: '' };
+        var h4 = card.querySelector('h4');
+        var titleText = h4 ? h4.textContent.trim() : meta.label;
 
-        if (statusEl.classList.contains('connected')) {
-          openModal(name + ' — 系统详情',
-            '<table class="data-table" style="font-size:13px;"><tbody>' +
-            '<tr><td style="font-weight:600;width:100px;">系统名称</td><td>' + name + '</td></tr>' +
-            '<tr><td style="font-weight:600;">连接状态</td><td><span style="color:var(--success);">● 已连接</span></td></tr>' +
-            '<tr><td style="font-weight:600;">映射规则</td><td>' + (AppData.mappingRules || []).filter(function (r) { return r.valid; }).length + ' 条启用</td></tr>' +
-            '<tr><td style="font-weight:600;">最近同步</td><td>' + ((AppData.syncLogs || []).length ? AppData.syncLogs[AppData.syncLogs.length - 1].time : '-') + '</td></tr>' +
-            '</tbody></table>', null, true);
-        } else {
-          openModal('配置 ' + name,
-            '<p>是否启用 <strong>' + name + '</strong> 的数据连接？</p>' +
-            '<p class="muted" style="font-size:12px;">启用后系统将自动建立数据通道。</p>',
-            function () {
-              statusEl.classList.remove('pending');
-              statusEl.classList.add('connected');
-              statusEl.textContent = '● 已连接';
-              Toast.success(name + ' 已连接');
+        if (mode === 'roadmap') {
+          openModal(
+            'ERP · 二期接入说明',
+            '<p class="muted" style="font-size:13px;line-height:1.65;margin:0 0 10px;">此处为<strong>路线图</strong>，不提供虚假「一键接通」。正式接入后，合同 / 应收应付 / 账龄将经映射规则进入与银企、TMS 相同的<strong>权威性与去重</strong>链路。</p>' +
+              '<ul style="margin:0;padding-left:18px;font-size:12px;line-height:1.65;color:var(--text-secondary);">' +
+              '<li>优先级见下方「来源优先级与去重」表中 ERP 行。</li>' +
+              '<li>上线后本卡片将展示 ERP 专属启用规则数与最近同步时间。</li>' +
+              '</ul>',
+            null,
+            true
+          );
+          return;
+        }
+
+        var isConnected = statusEl && statusEl.classList.contains('connected');
+        if (isConnected || mode === 'detail') {
+          _intOpenSourceDetailModal(meta);
+          return;
+        }
+
+        openModal(
+          '启用「' + titleText + '」',
+          '<p style="font-size:13px;line-height:1.6;margin:0 0 8px;">演示环境：将本来源标记为<strong>已连接</strong>，便于联调下方映射规则与同步按钮；不涉及真实密钥配置。</p>' +
+            '<p class="muted" style="font-size:12px;margin:0;">启用后可在详情中查看<strong>按来源匹配的</strong>规则条数与同步时间，并跳转到映射规则或现金流预测。</p>',
+          function () {
+            if (!statusEl) {
               closeModal();
-            });
+              return;
+            }
+            statusEl.classList.remove('pending');
+            statusEl.classList.add('connected');
+            statusEl.textContent = '已连接';
+            card.classList.remove('integration-card--muted');
+            var st = _intLoadCardState();
+            if (sys) st[sys] = 'connected';
+            _intSaveCardState(st);
+            Toast.success(titleText + ' 已标记为已连接');
+            closeModal();
+            _intOpenSourceDetailModal(meta);
+          }
+        );
+      }
+      card.addEventListener('click', activate);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate();
         }
       });
     });

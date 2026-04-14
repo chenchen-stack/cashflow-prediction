@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css?v=202604103" />
-  <link rel="stylesheet" href="css/components.css?v=202604147" />
-  <link rel="stylesheet" href="css/pages.css?v=202604160" />
+  <link rel="stylesheet" href="css/components.css?v=202604178" />
+  <link rel="stylesheet" href="css/pages.css?v=202604180" />
   <link rel="stylesheet" href="css/embed.css" />
-  <link rel="stylesheet" href="css/copilot.css?v=202604159" />
+  <link rel="stylesheet" href="css/copilot.css?v=202604167" />
   <link rel="stylesheet" href="css/tour.css?v=202604153" />
   <script src="js/echarts.min.js"></script>
 </head>
@@ -75,11 +75,11 @@
         <details class="topbar-tour-menu" id="topbar-tour-wrap">
           <summary class="topbar-icon-btn topbar-tour-summary" id="topbar-tour" title="新手引导（聚光灯）" aria-label="新手引导">导</summary>
           <div class="topbar-tour-dropdown" role="menu">
-            <button type="button" class="topbar-tour-item" role="menuitem" onclick="window.__cfStartTour&amp;&amp;window.__cfStartTour('full');">全流程引导</button>
-            <button type="button" class="topbar-tour-item" role="menuitem" onclick="window.__cfStartTour&amp;&amp;window.__cfStartTour('quick');">快速引导</button>
+            <button type="button" class="topbar-tour-item" role="menuitem" onclick="window.__cfStartTour&&window.__cfStartTour('full');">全流程引导</button>
+            <button type="button" class="topbar-tour-item" role="menuitem" onclick="window.__cfStartTour&&window.__cfStartTour('quick');">快速引导</button>
           </div>
         </details>
-        <button type="button" class="topbar-icon-btn" id="topbar-ai-settings" title="AI 大模型 API Key 配置" aria-label="AI API 配置" onclick="window.__cfOpenAiSettings&amp;&amp;window.__cfOpenAiSettings(event); return false;">
+        <button type="button" class="topbar-icon-btn" id="topbar-ai-settings" title="AI 大模型 API Key 配置" aria-label="AI API 配置" onclick="window.__cfOpenAiSettings&&window.__cfOpenAiSettings(event); return false;">
           <span aria-hidden="true" style="font-size:18px;line-height:1;">⚙</span>
         </button>
         <button type="button" class="topbar-bell" id="topbar-bell" title="预警提醒（演示）" aria-label="预警">
@@ -109,23 +109,6 @@
         <div class="page-panel" id="page-dashboard">
           <div class="page-header"><h2>总览看板</h2><span class="page-desc">资金主管工作台 · 流动性安全与风险全景</span><span class="page-desc" id="dash-last-update" style="margin-left:auto;font-size:11px;"></span><button class="btn btn-sm" id="dash-btn-refresh">↻ 刷新数据</button></div>
           <div class="kpi-row kpi-clickable" id="dash-kpi"></div>
-          <div class="card agent-loop-card">
-            <div class="card-top">
-              <div class="card-title">闭环驱动（Agent + 主台）</div>
-              <span class="page-desc" style="font-size:11px;">对齐 PRD：基础数据 → 资金流 → 整合 → 现金流分析 → 现金流预测 → 计划</span>
-            </div>
-            <div class="card-body agent-loop-card__body">
-              <p class="agent-loop-card__hint muted">点选阶段将打开亿流 Work 并预填一句话，由 Agent 通过 JSON 指令自动跳转/同步/刷新；复杂表单仍可在主台操作。</p>
-              <div class="agent-loop-stages">
-                <button type="button" class="btn btn-sm agent-loop-chip" onclick="AgentLoop.presetChat('basdata')">1 基础数据</button>
-                <button type="button" class="btn btn-sm agent-loop-chip" onclick="AgentLoop.presetChat('cashflow')">2 资金流</button>
-                <button type="button" class="btn btn-sm agent-loop-chip" onclick="AgentLoop.presetChat('integration')">3 整合</button>
-                <button type="button" class="btn btn-sm agent-loop-chip" onclick="AgentLoop.presetChat('analysis')">4 现金流分析</button>
-                <button type="button" class="btn btn-sm agent-loop-chip" onclick="AgentLoop.presetChat('liquidity')">5 现金流预测</button>
-                <button type="button" class="btn btn-sm btn-primary agent-loop-chip" onclick="AgentLoop.presetChat('plan')">6 资金计划</button>
-              </div>
-            </div>
-          </div>
           <div class="grid-side">
             <div class="chart-box"><div class="chart-box-title">头寸趋势（近 30 天）</div><div id="chart-position-trend" style="height:340px;"></div></div>
             <div class="chart-box"><div class="chart-box-title">流入 / 流出构成</div><div id="chart-flow-pie" style="height:340px;"></div></div>
@@ -158,6 +141,62 @@
               <button class="btn" onclick="Router.navigate('liquidity')">📈 现金流预测</button>
               <button class="btn" onclick="Router.navigate('integration')">🔗 数据整合</button>
             </div>
+          </div>
+          <div class="card">
+            <details class="dash-cl-details">
+              <summary class="dash-cl-summary">
+                <span class="card-title">闭环与 API 对照</span>
+                <span class="page-desc dash-cl-summary-desc">数据链在同一后端与科目体系下已设计打通；是否算业务「完全闭环」取决于对账、审批、预测自动驱动执行等是否落地（工程上多为 partial）</span>
+              </summary>
+              <div class="card-body dash-cl-body">
+                <p class="dash-cl-lead">链路：<strong>整合 → 事件（流水）→ 分析 / 预测 → 计划回填</strong>。MVP 预测以读历史 + 出曲线与说明为主，<strong>不会自动把预测结果写回单据或强制改计划</strong>，除非走单独的产品动作（确认、计划回填接口等）。未接后端时页面多为演示数据，真实闭环需 <strong>接库 + 已确认流水</strong>。</p>
+                <div class="dash-cl-subtitle">环节对照</div>
+                <div class="dash-cl-table-wrap">
+                  <table class="dash-cl-table">
+                    <thead>
+                      <tr><th>环节</th><th>主入口 API</th><th>算闭环的条件</th><th>常见「未闭环」</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>数据整合拉取</td>
+                        <td><code>POST /api/integrations/fetch</code></td>
+                        <td>数据入库、批次可追溯</td>
+                        <td>深 ERP 联动、自动对账仍为 partial</td>
+                      </tr>
+                      <tr>
+                        <td>资金流单据</td>
+                        <td><code>GET/POST /api/records</code> 等</td>
+                        <td>状态为<strong>已确认</strong>的流水进入分析与预测</td>
+                        <td>仅演示/离线数据时下游非真实闭环</td>
+                      </tr>
+                      <tr>
+                        <td>现金流分析</td>
+                        <td><code>POST /api/analysis/run</code></td>
+                        <td>时间段与科目配置齐全，基于已确认数据跑矩阵与头寸递推</td>
+                        <td>审批流、更强管控、对账深度可按项目补</td>
+                      </tr>
+                      <tr>
+                        <td>现金流预测（流动性 MVP）</td>
+                        <td><code>POST /api/liquidity/mvp-forecast</code></td>
+                        <td>以 <code>cashflow_records</code> 等为输入出日级曲线与说明</td>
+                        <td>曲线为前瞻展示，非自动改单；与「分析页」引擎不同</td>
+                      </tr>
+                      <tr>
+                        <td>资金计划回填</td>
+                        <td><code>POST /api/plans/{id}/fill-from-cashflow</code>、<code>…/fill-from-analysis</code></td>
+                        <td>显式调用或产品内确认动作触发</td>
+                        <td>预测/分析结果不会静默回写计划</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="dash-cl-subtitle">「现金流分析」页 vs 「现金流预测」页</div>
+                <ul class="dash-cl-list">
+                  <li><strong>分析（侧栏）</strong>：复合时间段 × 科目矩阵、头寸递推、计划 vs 实际、多周期含未来时段格子；含计划执行对比、头寸走势、明细表、标题含「现金流分析」的 AI 报告。引擎：<code>calculator.build_analysis</code>。</li>
+                  <li><strong>预测（侧栏）</strong>：月度汇总驱动流动性 MVP，未来 N 天每日余额 vs 警戒线、预测模型等。引擎：<code>liquidity_engine.run_mvp_daily_forecast</code>。报告若写「可再去运行资金预测」即指跳转本页。</li>
+                </ul>
+              </div>
+            </details>
           </div>
         </div>
 
@@ -298,7 +337,7 @@
               </table>
             </div>
           </div>
-          <div class="chart-box"><div class="chart-box-title">头寸走势</div><div id="chart-analysis-position" style="height:300px;"></div></div>
+          <div class="chart-box"><div class="chart-box-title">头寸走势</div><div id="chart-analysis-position" style="height:300px;"></div><p class="page-desc muted" id="chart-analysis-position-hint" style="font-size:11px;margin:6px 0 0;line-height:1.55;"></p></div>
           <div class="card an-detail-table-card" style="margin-bottom:14px;">
             <div class="card-top an-detail-table-top">
               <div class="an-detail-table-title-wrap">
@@ -372,11 +411,12 @@
             <div class="card-top card-top--split">
               <div class="card-title">时间段列表</div>
               <div class="card-top-actions">
-                <button type="button" class="btn btn-sm bd-ai-oneclick" data-bd-tab="bd-timeperiods" title="打开亿流 Work，由 Agent 调用白名单接口自动处理本页">AI 一键执行</button>
+                <button type="button" class="btn btn-sm bd-ai-oneclick" data-bd-tab="bd-timeperiods" title="打开亿流 Work：仅针对「时间段」配置，Agent 可按白名单接口检查、新建或调整 JSON（与现金流页的预测模型选择无关）">AI 一键执行</button>
                 <button class="btn btn-primary btn-sm" id="bd-btn-add-tp">+ 新增时间段</button>
               </div>
             </div>
-            <div class="card-body" id="bd-tp-body"></div>
+            <p class="muted bd-tp-intro">定义分析用的<strong>频率串联</strong>（近细远粗、依次递进），供多维分析等模块引用；<strong>不是</strong>同一日历区间内的重复加总（例如「7 天」与「1 周」为不同档位，不会双计）。统计 / 大模型等预测范式请在「现金流预测」页选择。</p>
+            <div class="card-body bd-tp-stack" id="bd-tp-body"></div>
           </div>
           <div id="bd-sbmap" style="display:none;" class="card">
             <div class="card-top card-top--split">
@@ -413,22 +453,22 @@
             </summary>
             <div class="int-fold__body">
           <div class="grid-2 integration-systems-grid" id="int-systems">
-            <div class="integration-card" data-sys="tms">
+            <div class="integration-card integration-card--interactive" data-sys="tms" data-int-mode="detail" tabindex="0" role="button" aria-label="资金管理系统 TMS，已连接，点击查看详情">
               <div class="integration-icon integration-icon--sm">🏦</div>
               <div class="integration-info"><h4>资金管理系统（TMS）</h4><p class="integration-meta"><span class="int-src-tag int-src-tag--neutral">已确认流水</span><span class="int-src-tag int-src-tag--neutral">资金计划</span></p></div>
               <span class="integration-status integration-status--dot connected">已连接</span>
             </div>
-            <div class="integration-card integration-card--muted" data-sys="erp">
+            <div class="integration-card integration-card--interactive integration-card--muted" data-sys="erp" data-int-mode="roadmap" tabindex="0" role="button" aria-label="ERP 二期规划中，点击查看路线图">
               <div class="integration-icon integration-icon--sm">📒</div>
               <div class="integration-info"><h4>ERP <span class="badge badge-warn badge--sm">二期</span></h4><p class="integration-meta muted">计划接入：合同/收款、采购/付款、账龄表</p></div>
               <span class="integration-status integration-status--dot pending">规划中</span>
             </div>
-            <div class="integration-card" data-sys="bank">
+            <div class="integration-card integration-card--interactive" data-sys="bank" data-int-mode="connect" tabindex="0" role="button" aria-label="银企直连，待配置，点击启用或查看说明">
               <div class="integration-icon integration-icon--sm">🏛️</div>
               <div class="integration-info"><h4>银企直连</h4><p class="integration-meta muted">余额与流水</p></div>
               <span class="integration-status integration-status--dot pending">待配置</span>
             </div>
-            <div class="integration-card" data-sys="bi">
+            <div class="integration-card integration-card--interactive" data-sys="bi" data-int-mode="connect" tabindex="0" role="button" aria-label="BI 看板，待配置，点击启用或查看说明">
               <div class="integration-icon integration-icon--sm">📊</div>
               <div class="integration-info"><h4>BI 看板</h4><p class="integration-meta muted">指标推送</p></div>
               <span class="integration-status integration-status--dot pending">待配置</span>
@@ -444,7 +484,7 @@
               <ul class="int-integration-flow__ul">
                 <li><strong>数据导入 / 下方 Excel：</strong>选择 .xlsx/.xlsm，需<strong>后端可用</strong>时调用导入接口写入单据；重复单据号默认跳过，勾选「强制覆盖」可更新。与「取数映射规则」内 Excel 为同一入口。</li>
                 <li><strong>AI 解析：</strong>占位，当前不可用。</li>
-                <li><strong>系统卡片：</strong>「已连接」点击查看详情（启用规则条数、最近同步时间）；「待配置 / 规划中」可点选启用连接（演示环境为前端状态切换，非真实密钥配置）。</li>
+                <li><strong>系统卡片：</strong>「已连接」打开<strong>按来源匹配</strong>的规则条数、该来源最近同步，并说明与「现金流预测」模型选择<strong>无直接绑定</strong>；可一键定位映射规则 / 同步日志 / 预测页。「待配置」可演示标记为已连接（会话内记住）。「ERP · 规划中」仅查看二期路线，不模拟接通。</li>
                 <li><strong>手动同步 / 银企取数：</strong>须至少存在一条<strong>启用</strong>的映射规则，否则无法发起；分别对应来源「资金管理系统」「银企直连」，请求集成拉取接口；「强制覆盖」同时作用于拉取与 Excel。</li>
                 <li><strong>数据权威性表：</strong>说明多源优先级与去重规则（见折叠「规则说明」）；与强制覆盖审计、同步日志一致。</li>
                 <li><strong>同步日志：</strong>展示服务端审计（含覆盖前快照入口）与本会话本地记录。</li>
@@ -486,7 +526,7 @@
               <h3 class="int-section-title">取数与同步</h3>
               <p class="int-section-desc">维护规则后，可手动同步、银企取数或 Excel 导入；结果进入现金流事件。</p>
             </div>
-            <div class="card card--compact int-card-rules">
+            <div class="card card--compact int-card-rules" id="int-card-rules">
             <div class="card-top card-top--compact int-card-rules__top">
               <div class="int-card-rules__title-wrap">
                 <div class="card-title card-title--subtle">映射规则</div>
@@ -527,7 +567,7 @@
               <div class="card-top card-top--compact int-card-monitor__head"><div class="card-title card-title--subtle">定时任务</div><button class="btn btn-sm btn-primary" id="int-btn-add-task">+ 任务</button></div>
               <div class="card-body-flush"><table class="data-table data-table--dense data-table--zebra"><thead><tr><th>任务名</th><th>类型</th><th>调度</th><th>状态</th><th>操作</th></tr></thead><tbody id="int-tasks-body"></tbody></table></div>
             </div>
-            <details class="int-fold int-fold--logs card card--compact int-card-monitor">
+            <details class="int-fold int-fold--logs card card--compact int-card-monitor" id="int-anchor-sync-logs">
               <summary class="card-top card-top--compact int-log-fold-summary">
                 <div class="int-log-fold-summary__main">
                   <span class="card-title card-title--subtle">同步日志</span>
@@ -547,34 +587,52 @@
             <h2>现金流预测</h2>
             <span class="page-desc">状态机刷新 · 未来 7～90 日视图 · 风险识别（应收压力 · 付款集中 · 资金缺口）</span>
           </div>
-          <div class="liq-demo-toolbar card" style="margin-bottom:16px;padding:12px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
-            <div class="form-group" style="margin:0;"><label style="font-size:12px;">单位</label><select class="form-select" id="liq-mvp-unit" style="min-width:120px;"><option value="">全集团</option></select></div>
-            <div class="form-group" style="margin:0;"><label style="font-size:12px;">预测天数</label><select class="form-select" id="liq-horizon-demo" style="min-width:140px;"><option value="90" selected>未来约3个月（90天）</option><option value="30">未来1个月（30天）</option></select></div>
-            <button type="button" class="btn btn-primary" id="liq-btn-predict-demo">预测</button>
-            <button type="button" class="btn" id="liq-btn-rules-demo" title="规则说明">⚙ 预警规则</button>
-            <span class="muted" id="liq-mvp-hint" style="font-size:12px;">连接后端后，按已确认「现金流事件」月度汇总与流动性引擎滚动模型生成曲线。</span>
+          <div class="liq-predict-toolbar card">
+            <div class="liq-predict-toolbar__row">
+              <div class="liq-predict-toolbar__fields">
+                <div class="form-group liq-predict-field">
+                  <label for="liq-mvp-unit">单位</label>
+                  <select class="form-select" id="liq-mvp-unit"><option value="">全集团</option></select>
+                </div>
+                <div class="form-group liq-predict-field">
+                  <label for="liq-horizon-demo">预测天数</label>
+                  <select class="form-select" id="liq-horizon-demo">
+                    <option value="90" selected>未来约 3 个月（90 天）</option>
+                    <option value="30">未来 1 个月（30 天）</option>
+                  </select>
+                </div>
+                <div class="form-group liq-predict-field liq-predict-field--model">
+                  <label for="liq-forecast-model">预测模型</label>
+                  <select class="form-select" id="liq-forecast-model" title="滚动引擎为当前主路径；统计/深度学习/大模型选项在完整接入前与引擎说明一致标注">
+                    <option value="rolling_smart" selected>滚动引擎 · 智能增长（推荐）</option>
+                    <option value="rolling_manual">滚动引擎 · 固定增长（1.0）</option>
+                    <option value="arima">ARIMA（演示 · 规划中）</option>
+                    <option value="prophet">Prophet（演示 · 规划中）</option>
+                    <option value="lstm">LSTM / 深度学习（演示 · 规划中）</option>
+                    <option value="transformer">时序 Transformer（演示 · 规划中）</option>
+                    <option value="llm_assist">大模型辅助（解读与归因）</option>
+                  </select>
+                </div>
+              </div>
+              <div class="liq-predict-toolbar__actions">
+                <button type="button" class="btn btn-primary" id="liq-btn-predict-demo">预测</button>
+                <button type="button" class="btn" id="liq-btn-rules-demo" title="规则说明">预警规则</button>
+              </div>
+            </div>
+            <p class="liq-predict-toolbar__hint muted" id="liq-mvp-hint">连接后端后，按已确认「现金流事件」月度汇总与流动性引擎生成曲线；可选模型决定增长口径与说明（完整 ARIMA/LSTM 管线规划中）。</p>
           </div>
           <div class="card" style="margin-bottom:16px;">
             <div class="card-top"><div class="card-title">未来现金流预测</div><span class="page-desc" id="liq-mvp-subtitle" style="font-size:11px;">—</span></div>
             <div class="card-body">
-              <div class="chart-box"><div class="chart-box-title">预测余额 vs 安全警戒线（按天 · 未来 90 日可切换）</div><div id="chart-forecast-curve" style="height:320px;"></div></div>
-              <p class="muted" style="font-size:12px;margin:12px 0 8px 14px;">预测范围内月汇总 · 点左侧 <strong>▸</strong> 展开该月「关键日抽样」；点月份行查看科目金额明细</p>
-              <div class="card-body-flush">
-                <table class="data-table liq-month-table" id="liq-month-summary-table">
-                  <thead><tr><th class="liq-col-expand" aria-label="展开"></th><th>月份</th><th class="num">预计流入</th><th class="num">预计流出</th><th class="num">预测净额</th></tr></thead>
-                  <tbody id="liq-month-summary-body"><tr><td colspan="5" class="empty-state muted">加载中…</td></tr></tbody>
+              <div class="chart-box chart-box--forecast"><div class="chart-box-title">预测每日余额与安全警戒线</div><p class="chart-box-sub">横轴为日；切换预测天数后曲线与刻度自动更新。悬停查看具体金额。</p><div id="chart-forecast-curve" style="height:320px;"></div></div>
+              <p class="muted" style="font-size:12px;margin:12px 0 8px 14px;">点左列 <strong>▸</strong> 一次展开本月明细，用页签在<strong>关键日</strong>与<strong>单位预算</strong>之间切换；点<strong>月份行</strong>打开预测科目明细；在预算金额上点击可下钻科目（与资金计划口径一致）。</p>
+              <div class="card-body-flush liq-unified-table-wrap">
+                <table class="data-table liq-month-table liq-unified-matrix" id="liq-month-summary-table">
+                  <thead><tr><th class="liq-col-expand liq-col-expand--wide" aria-label="展开">展开</th><th>月份</th><th class="num">预计流入</th><th class="num">预计流出</th><th class="num">预测净额</th><th class="num">预算执行<br/><span style="font-weight:400;font-size:10px;color:var(--text-muted);">各单位合计</span></th></tr></thead>
+                  <tbody id="liq-month-summary-body"><tr><td colspan="6" class="empty-state muted">加载中…</td></tr></tbody>
                 </table>
               </div>
               <p class="muted" style="font-size:12px;margin:12px 0 0;line-height:1.6;" id="liq-rolling-ai-note"><strong>AI 滚动预测说明：</strong>结合已确认流水与执行偏差滚动修正未来净流出假设；头寸低于警戒线时在图中标红预警（演示）。</p>
-            </div>
-          </div>
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-top"><div class="card-title">预算预测</div><span class="page-desc" style="font-size:11px;">最近6个月动态列 · 点击月份单元格下钻科目明细（与资金计划/执行口径一致）</span></div>
-            <div class="card-body-flush">
-              <table class="data-table an-tree-table" id="liq-budget-forecast-table">
-                <thead id="liq-budget-forecast-head"><tr><th>单位</th></tr></thead>
-                <tbody id="liq-budget-forecast-body"><tr><td colspan="10" class="empty-state muted">加载中…</td></tr></tbody>
-              </table>
             </div>
           </div>
           <div class="card" style="margin-bottom:16px;">
@@ -704,7 +762,7 @@
             </div>
           </div>
           <div class="copilot-top-actions">
-            <button type="button" class="ai-drawer-close copilot-settings-btn" id="copilot-ai-settings" title="AI 大模型 API Key 配置" aria-label="AI API 配置" onclick="window.__cfOpenAiSettings&amp;&amp;window.__cfOpenAiSettings(event); return false;">⚙</button>
+            <button type="button" class="ai-drawer-close copilot-settings-btn" id="copilot-ai-settings" title="AI 大模型 API Key 配置" aria-label="AI API 配置" onclick="window.__cfOpenAiSettings&&window.__cfOpenAiSettings(event); return false;">⚙</button>
             <button type="button" class="ai-drawer-close copilot-close" id="ai-close-btn" aria-label="关闭">✕</button>
           </div>
         </header>
@@ -718,10 +776,10 @@
             <div class="copilot-chat-scroll">
               <div class="copilot-messages" id="copilot-messages">
                 <div class="copilot-welcome-minimal" id="copilot-welcome" role="status">
-                  <h3 class="copilot-q-guide-title">先说明业务目标，再让 Agent 落地</h3>
-                  <p class="copilot-welcome-line">业务顺序是：数据同源 → 现金流确认 → 看板判断 → 分析归因 → 预测预警。缺数会先引导你到「数据整合 / 现金流事件」，再自动跳转执行。</p>
-                  <div class="copilot-guide-track" aria-label="业务闭环">有据 <span class="copilot-guide-sep">→</span> 确认 <span class="copilot-guide-sep">→</span> 判断 <span class="copilot-guide-sep">→</span> 预案</div>
-                  <p class="copilot-guide-hint"><span class="copilot-guide-hint__label">例</span>我要做总部未来 90 天流动性预测，数据不够请告诉我要补哪一步；或直接问当前头寸与待处理预警。</p>
+                  <h3 class="copilot-q-guide-title">一句话说清目标</h3>
+                  <p class="copilot-welcome-lead" aria-label="业务闭环">有据 → 确认 → 判断 → 预案</p>
+                  <p class="copilot-welcome-line">缺数时提示补全；其余在对话中推进，无需逐个点菜单。</p>
+                  <p class="copilot-welcome-example">例：总部 90 天流动性预测，或直接问净头寸与待处理预警。</p>
                 </div>
               </div>
             </div>
@@ -777,15 +835,15 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=202604151"></script>
+  <script src="js/data.js?v=202604182"></script>
   <script src="js/auth.js"></script>
   <script src="js/toast.js"></script>
   <script src="js/router.js?v=202604151"></script>
-  <script src="js/charts.js?v=202604106"></script>
+  <script src="js/charts.js?v=202604171"></script>
   <script src="js/copilot.js?v=202604144"></script>
   <script src="js/agent-loop.js?v=202604151"></script>
-  <script src="js/ai.js?v=202604159"></script>
+  <script src="js/ai.js?v=202604166"></script>
   <script src="js/tour.js?v=202604153"></script>
-  <script src="js/app.js?v=202604151"></script>
+  <script src="js/app.js?v=202604183"></script>
 </body>
 </html>

@@ -2,60 +2,1069 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>资金预测智能体 · 演示稿入口</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>亿流 · 现金流预测 Agent — Keynote</title>
   <style>
     :root {
-      --void: #0a0a0a;
-      --text: #f4f4f3;
-      --dim: #a3a3a3;
-      --quiet: #737373;
-      --accent: #f36e21;
-      --line: rgba(255, 255, 255, 0.1);
+      --primary: #F26522;
+      --ink: #1D1D1F;
+      --muted: #86868B;
+      --light-bg: #FBFBFD;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     }
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
-      margin: 0; min-height: 100vh; background: var(--void); color: var(--text);
-      display: grid; place-items: center; padding: 2rem;
-      font-family: "Playfair Display", "Noto Serif SC", Georgia, serif;
+      font-family: var(--font);
+      background: #000;
+      color: #f5f5f7;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    .gate { text-align: center; max-width: 520px; }
-    h1 { font-size: clamp(1.45rem, 3.8vw, 1.85rem); font-weight: 500; margin: 0 0 2.25rem; letter-spacing: -0.02em; }
-    .links { display: flex; flex-direction: column; gap: 0.75rem; }
-    a {
-      display: block; padding: 1rem 1.2rem; border-radius: 6px;
-      text-decoration: none; color: var(--text); font-size: 1rem; font-weight: 500;
-      border: 1px solid var(--line);
-      transition: border-color 0.2s, background 0.2s;
+
+    /* ── Deck ── */
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
     }
-    a:hover {
-      border-color: rgba(243, 110, 33, 0.35);
-      background: rgba(243, 110, 33, 0.06);
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: clamp(40px, 6vw, 100px);
+      overflow: hidden;
     }
-    a span {
-      display: block; margin-top: 0.4rem; font-size: 0.72rem; font-weight: 400;
-      color: var(--quiet); font-family: system-ui, "PingFang SC", sans-serif; letter-spacing: 0.02em; line-height: 1.45;
+    .slide.active { display: flex; }
+
+    .slide-inner {
+      position: relative;
+      z-index: 2;
+      max-width: min(1100px, 92vw);
+      width: 100%;
     }
+
+    /* ── 幻灯片内直接嵌入原型（iframe，进入该页时惰性加载）── */
+    .slide.slide--embed {
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: clamp(12px, 2vw, 24px) clamp(10px, 1.5vw, 20px) clamp(10px, 1.5vw, 16px);
+      text-align: center;
+      overflow: hidden;
+    }
+    .slide--embed .slide-inner--embed {
+      max-width: min(1320px, 98vw);
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+    }
+    .slide-embed-header {
+      flex-shrink: 0;
+      margin-bottom: clamp(8px, 1.2vw, 14px);
+    }
+    .slide-embed-header .eyebrow {
+      margin-bottom: 6px;
+      font-size: clamp(11px, 1.1vw, 13px);
+    }
+    .slide-embed-header .headline {
+      font-size: clamp(22px, 3.2vw, 40px);
+      margin-bottom: 4px;
+      line-height: 1.12;
+    }
+    .slide-embed-header .subline {
+      margin-top: 0;
+      font-size: clamp(12px, 1.35vw, 15px);
+      line-height: 1.45;
+      max-width: 52em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .slide--ember .slide-embed-header .subline {
+      color: rgba(255, 255, 255, 0.62) !important;
+    }
+    .slide-embed-shell {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #E8E8ED;
+      background: #fff;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+    }
+    .slide--ember .slide-embed-shell {
+      border-color: rgba(255, 255, 255, 0.14);
+      background: #0e0e10;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    }
+    .slide-embed-fs {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 6;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid #E8E8ED;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+    .slide-embed-fs:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .slide--ember .slide-embed-fs {
+      color: #f5f5f7;
+      background: rgba(0, 0, 0, 0.55);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: none;
+    }
+    .slide--ember .slide-embed-fs:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .slide-embed-frame {
+      flex: 1;
+      width: 100%;
+      min-height: min(480px, 50vh);
+      border: 0;
+      background: #fff;
+    }
+
+    /* ── 叙事章节（幕间）── */
+    .slide--chapter {
+      justify-content: center;
+      text-align: center;
+    }
+    .slide--chapter .chapter-kicker {
+      font-size: clamp(12px, 1.3vw, 14px);
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: clamp(14px, 2vw, 22px);
+    }
+    .slide--void .chapter-kicker { color: rgba(242, 101, 34, 0.95); }
+    .slide--chapter .chapter-title {
+      font-size: clamp(26px, 4.5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      max-width: 18em;
+      margin: 0 auto;
+    }
+    .slide--chapter .chapter-lead {
+      margin-top: clamp(16px, 2.2vw, 26px);
+      font-size: clamp(15px, 1.75vw, 20px);
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 28em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .slide--paper.slide--chapter .chapter-lead {
+      color: #6E6E73;
+    }
+
+    /* ── Backgrounds ── */
+    .slide--void {
+      background: #000;
+      color: #fff;
+    }
+    .slide--void::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(242, 101, 34, 0.18), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255, 255, 255, 0.04), transparent 45%);
+      animation: breathe 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes breathe {
+      from { transform: scale(1) translate(0, 0); opacity: 1; }
+      to { transform: scale(1.05) translate(-2%, 1%); opacity: 0.92; }
+    }
+
+    .slide--paper {
+      background: var(--light-bg);
+      color: var(--ink);
+    }
+    .slide--paper .pillar-list li {
+      color: var(--ink);
+      border-bottom-color: #E8E8ED;
+    }
+
+    .slide--ink {
+      background: linear-gradient(165deg, #0d0d0f 0%, #1c1c20 45%, #0a0a0b 100%);
+      color: #f5f5f7;
+    }
+
+    .slide--ember {
+      background: linear-gradient(145deg, #1a0a04 0%, #2d1510 40%, #0f0806 100%);
+      color: #fff;
+    }
+    .slide--ember::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 120%, rgba(242, 101, 34, 0.35), transparent 55%);
+      pointer-events: none;
+    }
+
+    /* ── Typography (Keynote scale) ── */
+    .eyebrow {
+      font-size: clamp(13px, 1.4vw, 15px);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: clamp(16px, 2.5vw, 28px);
+    }
+    .slide--paper .eyebrow { color: var(--primary); }
+
+    .mega {
+      font-size: clamp(42px, 9vw, 112px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+    }
+    .mega--orange { color: var(--primary); }
+    .mega--thin { font-weight: 600; }
+
+    .headline {
+      font-size: clamp(28px, 4.2vw, 56px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .subline {
+      margin-top: clamp(18px, 2.5vw, 32px);
+      font-size: clamp(17px, 2vw, 24px);
+      font-weight: 400;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 38em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .slide--paper .subline { color: #6E6E73; }
+
+    .stat {
+      font-size: clamp(56px, 14vw, 160px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(180deg, #fff 20%, rgba(255, 255, 255, 0.55));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .slide--paper .stat {
+      background: linear-gradient(180deg, var(--primary) 0%, #c74a18 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .word-split {
+      display: block;
+      margin-top: 0.06em;
+    }
+
+    /* ── Lists (minimal, huge) ── */
+    .pillar-list {
+      list-style: none;
+      margin-top: clamp(32px, 4vw, 48px);
+      text-align: left;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .pillar-list li {
+      font-size: clamp(20px, 2.4vw, 30px);
+      font-weight: 600;
+      line-height: 1.35;
+      padding: clamp(14px, 2vw, 20px) 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: -0.02em;
+    }
+    .pillar-list li:last-child { border-bottom: none; }
+    .pillar-list em {
+      font-style: normal;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 2vw, 24px);
+      margin-top: clamp(28px, 4vw, 40px);
+      text-align: left;
+    }
+    @media (max-width: 820px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+    .feature-cell {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: clamp(20px, 3vw, 28px);
+    }
+    .slide--paper .feature-cell {
+      background: #fff;
+      border-color: #E8E8ED;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    }
+    .feature-cell h3 {
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .feature-cell p {
+      font-size: clamp(13px, 1.25vw, 15px);
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .slide--paper .feature-cell p { color: #6E6E73; }
+
+    /* ── Compare strip ── */
+    .compare-strip {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: clamp(16px, 3vw, 40px);
+      margin-top: clamp(28px, 4vw, 44px);
+      font-size: clamp(15px, 1.6vw, 20px);
+      font-weight: 600;
+    }
+    @media (max-width: 700px) {
+      .compare-strip { grid-template-columns: 1fr; text-align: center; }
+      .compare-strip .vs { display: none; }
+    }
+    .compare-strip .col {
+      padding: clamp(20px, 3vw, 28px);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .compare-strip .col.a { border-color: rgba(242, 101, 34, 0.45); }
+    .compare-strip .vs {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .compare-strip small {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.45;
+    }
+
+    /* ── Flow ribbon ── */
+    .flow-ribbon {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px 6px;
+      margin-top: clamp(24px, 3vw, 36px);
+      font-size: clamp(13px, 1.35vw, 16px);
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .flow-ribbon span {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .flow-ribbon .dot {
+      color: var(--primary);
+      border: none;
+      background: none;
+      padding: 0 4px;
+    }
+
+    /* ── Logo ── */
+    .logo-hero {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(72px, 12vw, 120px);
+      height: clamp(72px, 12vw, 120px);
+      background: var(--primary);
+      border-radius: 26%;
+      font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: clamp(24px, 4vw, 40px);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 24px 80px rgba(242, 101, 34, 0.35);
+    }
+
+    /* ── One more thing ── */
+    .omt-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 20px;
+    }
+    .omt-line {
+      font-size: clamp(32px, 5.5vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .omt-sub {
+      margin-top: 20px;
+      font-size: clamp(17px, 2vw, 22px);
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 500;
+    }
+    .triad {
+      margin-top: 28px;
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 600;
+      letter-spacing: 0.35em;
+    }
+    .triad span { color: var(--primary); }
+
+    /* ── Code whisper ── */
+    .whisper {
+      margin-top: clamp(24px, 3vw, 36px);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: clamp(11px, 1.1vw, 13px);
+      color: rgba(255, 255, 255, 0.35);
+      line-height: 1.7;
+    }
+
+    /* ── Reveal animation ── */
+    .slide:not(.active) .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    .slide.active .reveal {
+      animation: revealIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes revealIn {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .slide.active .d0 { animation-delay: 0s; }
+    .slide.active .d1 { animation-delay: 0.1s; }
+    .slide.active .d2 { animation-delay: 0.2s; }
+    .slide.active .d3 { animation-delay: 0.3s; }
+    .slide.active .d4 { animation-delay: 0.4s; }
+    .slide.active .d5 { animation-delay: 0.5s; }
+
+    /* ── Chrome ── */
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--primary);
+      z-index: 100;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px rgba(242, 101, 34, 0.5);
+    }
+    .slide-num {
+      position: fixed;
+      top: 22px;
+      right: 28px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      z-index: 50;
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .slide-num.on-light { color: rgba(0, 0, 0, 0.35); }
     .hint {
-      margin-top: 2.5rem; font-size: 0.7rem; line-height: 1.65; color: var(--quiet);
-      font-family: system-ui, "PingFang SC", sans-serif; text-align: left;
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.28);
+      z-index: 50;
     }
-    code { font-size: 0.68rem; background: rgba(255, 255, 255, 0.06); padding: 0.12rem 0.35rem; border-radius: 4px; }
+    .hint.on-light { color: rgba(0, 0, 0, 0.35); }
+
+    /* ── 全屏浮层（「全屏」按钮，对齐 frontend ?embed=1）── */
+    .proto-shell {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+    .proto-shell.is-open {
+      display: flex;
+    }
+    .proto-shell__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .proto-shell__panel {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      margin: min(2.5vh, 20px) min(2.5vw, 20px);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #0a0a0b;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 24px 80px rgba(0, 0, 0, 0.55);
+    }
+    .proto-shell__bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 16px 12px 20px;
+      background: linear-gradient(180deg, #1c1c1e 0%, #141416 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .proto-shell__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .proto-shell__logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .proto-shell__title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #f5f5f7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .proto-shell__hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      display: none;
+    }
+    @media (min-width: 640px) {
+      .proto-shell__hint { display: inline; }
+    }
+    .proto-shell__close {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #f5f5f7;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .proto-shell__close:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+    .proto-shell__frame {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      border: 0;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
-  <div class="gate">
-    <h1>资金预测智能体 · 演讲稿</h1>
-    <div class="links">
-      <a href="brief.html">精简版 <span>整屏翻页 · 主叙事 · 对外评审与短讲</span></a>
-      <a href="detailed.html">详细版 <span>整屏翻页 · 左栏对照 + 实机 · 全模块与交付追问</span></a>
-      <a href="internal-rhythm.html">内部节奏 <span>分工与节点 · 不进入对外故事线</span></a>
-      <a href="协作导读-产品与演示稿.html">协作导读 <span>给设计/售前：产品背景 + 截图说明 · 单页流式</span></a>
-    </div>
-    <p class="hint">演示：全屏后按 → / 空格翻页；按 <code>N</code> 显示讲稿；<code>?presenter=1</code> 默认展开讲稿。建议浏览器宽度 ≥1280px。iframe 若空白：在 <code>frontend</code> 运行 <code>serve-frontend.bat</code> 后把地址改为 <code>http://127.0.0.1:8875/app.html?embed=1…</code>；或将截图放入 <code>assets/</code> 同名 PNG。</p>
+  <div class="progress" id="progress"></div>
+  <span class="slide-num" id="slideNum" aria-live="polite"></span>
+  <div class="deck" id="deck">
+
+    <!-- 1 -->
+    <section class="slide slide--void active" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <div class="logo-hero reveal d1">CF</div>
+        <p class="eyebrow reveal d2">YILIU · CASHFLOW INTELLIGENCE</p>
+        <h1 class="mega reveal d3">亿流</h1>
+        <p class="subline reveal d4" style="margin-top:clamp(18px,2.5vw,28px);font-size:clamp(14px,1.55vw,18px);max-width:26em;">
+          一场四幕演讲：困境 → 转机 → 走进产品 → 收笔。<br />你听的不是功能清单，是一条完整叙事。
+        </p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <h1 class="mega reveal d1">现金流。</h1>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="subline reveal d1" style="font-size:clamp(22px,3.5vw,40px);font-weight:600;color:rgba(255,255,255,0.92);max-width:22em;">
+          它决定一家企业<br /><span class="word-split">能不能活到下一个季度。</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 4 第一幕 -->
+    <section class="slide slide--paper" data-slide data-theme="light">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第一幕 · 困境</p>
+        <h2 class="headline reveal d2" style="color:var(--ink);">故事的开头，总是很熟悉。</h2>
+        <p class="subline reveal d3">资金主管每天打开系统——看见的多半是昨天；而真正要命的那笔缺口，往往在明天才敲门。</p>
+      </div>
+    </section>
+
+    <!-- 5-7 三连击 -->
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d0" style="font-size:11px;margin-bottom:12px;opacity:0.75;">第一幕（续）</p>
+        <h1 class="mega reveal d1 mega--thin">数据，散落在各处。</h1>
+        <p class="subline reveal d2">TMS、银企、ERP、手工表各说各话——像一群人用不同方言描述同一场雨，却拼不出一把伞。</p>
+      </div>
+    </section>
+
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d0" style="font-size:11px;margin-bottom:12px;opacity:0.75;">第一幕（续）</p>
+        <h1 class="mega reveal d1 mega--thin">预测，总在滞后。</h1>
+        <p class="subline reveal d2">警报响起时，水已经漫过脚踝；你缺的是一段连续的未来，而不是又一张迟到的小时报表。</p>
+      </div>
+    </section>
+
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d0" style="font-size:11px;margin-bottom:12px;opacity:0.75;">第一幕（续）</p>
+        <h1 class="mega reveal d1 mega--thin">决策，困在黑盒里。</h1>
+        <p class="subline reveal d2">董事会问你「为什么」——若答不上来，数字再漂亮也只是运气；可审计、可复述，责任才站得住。</p>
+      </div>
+    </section>
+
+    <!-- 幕间 → 第二幕 -->
+    <section class="slide slide--void slide--chapter" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="chapter-kicker reveal d1">第二幕 · 转机</p>
+        <h2 class="chapter-title reveal d2" style="color:#fff;">如果我们改写规则呢？</h2>
+        <p class="chapter-lead reveal d3">先立一句承诺，再把它拆成一条链、三面盾牌——然后，请你亲眼走进产品里。</p>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第二幕（续）· 提问</p>
+        <h1 class="headline reveal d2" style="font-size:clamp(26px,4vw,44px);color:#fff;">
+          如果资金主管能像指挥交通一样——<br />看清未来 <span style="color:var(--primary);">九十</span> 天？
+        </h1>
+      </div>
+    </section>
+
+    <!-- 9 Introducing -->
+    <section class="slide slide--ember" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1" style="color:rgba(255,200,180,0.7);">第二幕 · 回答的形状</p>
+        <h1 class="mega reveal d2" style="font-size:clamp(36px,7vw,88px);">现金流预测 Agent</h1>
+        <p class="subline reveal d3">它不是多一块屏，而是多一条脊梁：数据进来，故事出去，决策有据。</p>
+      </div>
+    </section>
+
+    <!-- 10 品牌名 -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d0" style="margin-bottom:16px;">我们叫它</p>
+        <h1 class="mega reveal d1 mega--orange" style="font-size:clamp(56px,12vw,140px);">亿流</h1>
+        <p class="subline reveal d2">让流动性，可看见、可解释、可协作——像给资金装上一套叙事。</p>
+      </div>
+    </section>
+
+    <!-- 11 数字冲击 -->
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第二幕 · 时间尺度</p>
+        <div class="stat reveal d2">7–90</div>
+        <p class="subline reveal d3">天的日级视图：余额曲线与安全警戒线同框——像把未来摊在桌面上，而不是锁在单元格里。</p>
+      </div>
+    </section>
+
+    <!-- 12 链路 -->
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第二幕 · 一条链，一个真相</p>
+        <h2 class="headline reveal d2" style="color:#fff;">整合 → 事件 → 分析 / 预测 → 计划</h2>
+        <div class="flow-ribbon reveal d3">
+          <span>数据整合</span><span class="dot">→</span>
+          <span>现金流事件</span><span class="dot">→</span>
+          <span>已确认</span><span class="dot">→</span>
+          <span>分析</span><span class="dot">·</span>
+          <span>预测</span><span class="dot">→</span>
+          <span>回填（显式）</span>
+        </div>
+        <p class="whisper reveal d4">预测不会悄悄改你的单；回填必须经你点头——这是故事里「人」的位置。</p>
+      </div>
+    </section>
+
+    <!-- 13 三支柱 -->
+    <section class="slide slide--paper" data-slide data-theme="light">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第二幕 · 收束承诺</p>
+        <h2 class="headline reveal d2" style="color:var(--ink);">在这条路上，我们守护三件事</h2>
+        <ul class="pillar-list reveal d3" style="border-top:1px solid #E8E8ED;padding-top:8px;">
+          <li><em>可信</em> — 多源接入、优先级与去重；只有盖过章的流水，才配走进下一章。</li>
+          <li><em>可解释</em> — 矩阵递推与 AI 报告并肩；风险不是标签，要能点回那一笔事件。</li>
+          <li><em>可行动</em> — 日级前瞻、预警、大模型解读——讲清「所以接下来你该做什么」。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 幕间 → 第三幕（走进产品） -->
+    <section class="slide slide--paper slide--chapter" data-slide data-theme="light">
+      <div class="slide-inner">
+        <p class="chapter-kicker reveal d1">第三幕 · 走进产品</p>
+        <h2 class="chapter-title reveal d2" style="color:var(--ink);">跟着一笔钱，走完一条路。</h2>
+        <p class="chapter-lead reveal d3">我们不按菜单报菜名——按故事发生的顺序：先看全景，再把水接进来；单据盖章，复盘得失，最后才是向前眺望的那九十天。</p>
+      </div>
+    </section>
+
+    <!-- 第三幕（续）：内嵌真实界面 — 叙事顺序与 iframe 路由一致 -->
+    <section class="slide slide--paper slide--embed" data-slide data-theme="light">
+      <div class="slide-inner slide-inner--embed">
+        <div class="slide-embed-header reveal d1">
+          <p class="eyebrow">第三幕 · 第一站</p>
+          <h2 class="headline" style="color:var(--ink);">先登高：看见全局</h2>
+          <p class="subline" style="color:#6E6E73;">故事从这里开场——头寸往哪走、钱从哪来、雷在哪埋：一屏，就是主管的「开场镜头」。</p>
+        </div>
+        <div class="slide-embed-shell reveal d2">
+          <button type="button" class="slide-embed-fs" data-proto-route="dashboard" data-proto-title="总览看板" title="全屏演示">全屏</button>
+          <iframe class="slide-embed-frame" data-embed-route="dashboard" title="总览看板 · 亿流"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--paper slide--embed" data-slide data-theme="light">
+      <div class="slide-inner slide-inner--embed">
+        <div class="slide-embed-header reveal d1">
+          <p class="eyebrow">第三幕 · 第二站</p>
+          <h2 class="headline" style="color:var(--ink);">把水接进来</h2>
+          <p class="subline" style="color:#6E6E73;">多源汇入同一条管道：映射、同步、导入、日志与定时——没有这一步，后面全是「故事缺页」。</p>
+        </div>
+        <div class="slide-embed-shell reveal d2">
+          <button type="button" class="slide-embed-fs" data-proto-route="integration" data-proto-title="数据整合" title="全屏演示">全屏</button>
+          <iframe class="slide-embed-frame" data-embed-route="integration" title="数据整合 · 亿流"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--paper slide--embed" data-slide data-theme="light">
+      <div class="slide-inner slide-inner--embed">
+        <div class="slide-embed-header reveal d1">
+          <p class="eyebrow">第三幕 · 第三站</p>
+          <h2 class="headline" style="color:var(--ink);">盖上戳，才算数</h2>
+          <p class="subline" style="color:#6E6E73;">拉取、确认、留痕——「已确认」三个字，是剧情转折：没盖章的流水，不进分析与预测的台词。</p>
+        </div>
+        <div class="slide-embed-shell reveal d2">
+          <button type="button" class="slide-embed-fs" data-proto-route="cashflow" data-proto-title="现金流事件" title="全屏演示">全屏</button>
+          <iframe class="slide-embed-frame" data-embed-route="cashflow" title="现金流事件 · 亿流"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--paper slide--embed" data-slide data-theme="light">
+      <div class="slide-inner slide-inner--embed">
+        <div class="slide-embed-header reveal d1">
+          <p class="eyebrow">第三幕 · 第四站</p>
+          <h2 class="headline" style="color:var(--ink);">回头看：走得怎么样</h2>
+          <p class="subline" style="color:#6E6E73;">计划对实际、头寸起伏、明细对得上——AI 报告不是炫技，是帮你把「为什么」讲给董事会听。</p>
+        </div>
+        <div class="slide-embed-shell reveal d2">
+          <button type="button" class="slide-embed-fs" data-proto-route="analysis" data-proto-title="现金流分析" title="全屏演示">全屏</button>
+          <iframe class="slide-embed-frame" data-embed-route="analysis" title="现金流分析 · 亿流"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第三幕 · 高潮：向前看 -->
+    <section class="slide slide--ember slide--embed" data-slide data-theme="dark">
+      <div class="slide-inner slide-inner--embed">
+        <div class="slide-embed-header reveal d1">
+          <p class="eyebrow" style="color:rgba(255,220,200,0.75);">第三幕 · 高潮</p>
+          <h2 class="headline" style="color:#fff;">向前看：九十天的剧本</h2>
+          <p class="subline" style="color:rgba(255,255,255,0.62);">滚动引擎、日级余额与警戒线、引擎快照配上大模型共读——这是故事的「下一集预告」，而且是可操作的。</p>
+        </div>
+        <div class="slide-embed-shell reveal d2">
+          <button type="button" class="slide-embed-fs" data-proto-route="liquidity" data-proto-title="现金流预测" title="全屏演示">全屏</button>
+          <iframe class="slide-embed-frame" data-embed-route="liquidity" title="现金流预测 · 亿流"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第四幕：收笔、彩蛋、一句澄清 -->
+    <section class="slide slide--void slide--chapter" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="chapter-kicker reveal d1">第四幕 · 收笔</p>
+        <h2 class="chapter-title reveal d2" style="color:#fff;">故事讲完了吗？</h2>
+        <p class="chapter-lead reveal d3">技术与人，各归其位——下面三页：一句底层逻辑、一个彩蛋、一道常问的判断题。</p>
+      </div>
+    </section>
+
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第四幕 · 台下有人问引擎</p>
+        <p class="subline reveal d2" style="font-size:clamp(18px,2vw,22px);color:rgba(255,255,255,0.78);max-width:36em;">
+          「分析」和「预测」不是同一台机器在加班——<br />
+          复盘走 <span style="color:var(--primary);">build_analysis</span>；向前看走 <span style="color:var(--primary);">run_mvp_daily_forecast</span>。
+        </p>
+        <p class="whisper reveal d3">POST /api/liquidity/mvp-forecast — 与真实产品同源叙事，不是 PPT 另起炉灶。</p>
+      </div>
+    </section>
+
+    <!-- One more thing -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="omt-badge reveal d1">第四幕 · 彩蛋</p>
+        <p class="omt-line reveal d2">亿流 Work</p>
+        <p class="omt-sub reveal d3">侧栏 Agent：像多了一位夜班副手——白名单接口、基础数据一键、集成与预测场景随叫随到。</p>
+        <p class="triad reveal d4"><span>感知</span> · <span>决策</span> · <span>执行</span></p>
+      </div>
+    </section>
+
+    <section class="slide slide--ink" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">第四幕 · 常问的那句</p>
+        <h2 class="headline reveal d2" style="color:#fff;font-size:clamp(22px,3vw,36px);">「分析」和「预测」，到底差在哪？</h2>
+        <div class="compare-strip reveal d3">
+          <div class="col a">
+            现金流分析
+            <small>像读已经拍完的片子：科目矩阵、头寸递推、计划对实际——回答「我们刚才演得怎么样」。</small>
+          </div>
+          <div class="vs">VS</div>
+          <div class="col">
+            现金流预测
+            <small>像读下一季预告：流动性 MVP、日级前瞻、警戒与预警——回答「接下来会不会断档」。</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 尾声 -->
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d0" style="margin-bottom:14px;">尾声 · 落地</p>
+        <h1 class="mega reveal d1 mega--thin" style="font-size:clamp(32px,5.5vw,64px);">
+          故事停在幻灯片里；<br />
+          价值发生在 <span style="color:var(--primary);">接库</span> · <span style="color:var(--primary);">已确认</span> · <span style="color:var(--primary);">闭环</span>。
+        </h1>
+        <p class="subline reveal d2">亿流橙 #F26522，与《frontend/app.html》同一套 PRD——产品不是讲出来的，是用出来的。</p>
+      </div>
+    </section>
+
+    <section class="slide slide--void" data-slide data-theme="dark">
+      <div class="slide-inner">
+        <p class="eyebrow reveal d1">谢谢聆听</p>
+        <h1 class="mega reveal d2" style="font-size:clamp(40px,8vw,96px);">幕落。</h1>
+        <p class="subline reveal d3">亿流 · 现金流预测 Agent<br />产品共创 · 集成方案 · 私有化部署</p>
+      </div>
+    </section>
+
   </div>
+
+  <!-- 全屏产品原型：与 frontend/app.html?embed=1 同源，Hash 路由直达模块 -->
+  <div class="proto-shell" id="proto-shell" aria-hidden="true">
+    <div class="proto-shell__backdrop" id="proto-backdrop"></div>
+    <div class="proto-shell__panel" role="dialog" aria-modal="true" aria-labelledby="proto-title-text">
+      <header class="proto-shell__bar">
+        <div class="proto-shell__brand">
+          <span class="proto-shell__logo">CF</span>
+          <span class="proto-shell__title" id="proto-title-text">亿流 · 产品原型</span>
+          <span class="proto-shell__hint">在下方直接操作真实界面 · Esc 关闭返回演讲稿</span>
+        </div>
+        <button type="button" class="proto-shell__close" id="proto-close">关闭</button>
+      </header>
+      <iframe class="proto-shell__frame" id="proto-frame" title="亿流现金流预测 Agent 原型" tabindex="-1"></iframe>
+    </div>
+  </div>
+
+  <p class="hint" id="hint">← → 翻页 · 四幕叙事 · 第三幕内嵌可操作 · 「全屏」放大 · Esc 关闭浮层</p>
+
+  <script>
+    (function () {
+      var slides = [].slice.call(document.querySelectorAll("[data-slide]"));
+      var i = 0;
+      var progress = document.getElementById("progress");
+      var slideNum = document.getElementById("slideNum");
+      var hint = document.getElementById("hint");
+      var deck = document.getElementById("deck");
+      var protoShell = document.getElementById("proto-shell");
+      var protoFrame = document.getElementById("proto-frame");
+      var protoTitle = document.getElementById("proto-title-text");
+      var protoClose = document.getElementById("proto-close");
+      var protoBackdrop = document.getElementById("proto-backdrop");
+
+      /** 与 frontend/js/router.js 的 hash 路由一致；PPT 相对路径加载 app.html */
+      function protoUrl(route) {
+        var base = new URL("../frontend/app.html", window.location.href);
+        base.searchParams.set("embed", "1");
+        base.hash = route || "dashboard";
+        return base.toString();
+      }
+
+      function protoOpen() {
+        return protoShell && protoShell.classList.contains("is-open");
+      }
+
+      function openProto(route, titleText) {
+        if (!protoShell || !protoFrame) return;
+        protoFrame.src = protoUrl(route);
+        if (protoTitle) protoTitle.textContent = titleText ? "亿流 · " + titleText : "亿流 · 产品原型";
+        protoShell.classList.add("is-open");
+        protoShell.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        window.setTimeout(function () {
+          try {
+            protoFrame.focus();
+          } catch (err) {}
+        }, 120);
+      }
+
+      function closeProto() {
+        if (!protoShell || !protoFrame) return;
+        protoShell.classList.remove("is-open");
+        protoShell.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        try {
+          protoFrame.src = "about:blank";
+        } catch (err) {}
+      }
+
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-proto-route]");
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var route = btn.getAttribute("data-proto-route") || "dashboard";
+        var title = btn.getAttribute("data-proto-title") || "";
+        openProto(route, title);
+      });
+
+      if (protoClose) protoClose.addEventListener("click", function (e) {
+        e.stopPropagation();
+        closeProto();
+      });
+      if (protoBackdrop) protoBackdrop.addEventListener("click", function (e) {
+        e.stopPropagation();
+        closeProto();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (protoOpen() && e.key === "Escape") {
+          e.preventDefault();
+          closeProto();
+          return;
+        }
+        if (protoOpen()) return;
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault();
+          show(i + 1);
+        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault();
+          show(i - 1);
+        } else if (e.key === "Home") show(0);
+        else if (e.key === "End") show(slides.length - 1);
+      });
+
+      function themeAt(idx) {
+        var el = slides[idx];
+        return (el && el.getAttribute("data-theme")) || "dark";
+      }
+
+      /** 进入带内嵌 iframe 的幻灯片时首次设置 src，避免一次加载全部模块 */
+      function ensureEmbedLoaded(slideEl) {
+        if (!slideEl || !slideEl.classList.contains("slide--embed")) return;
+        var frames = slideEl.querySelectorAll("iframe.slide-embed-frame[data-embed-route]");
+        frames.forEach(function (frame) {
+          if (frame.getAttribute("data-embed-loaded") === "1") return;
+          var route = frame.getAttribute("data-embed-route") || "dashboard";
+          frame.src = protoUrl(route);
+          frame.setAttribute("data-embed-loaded", "1");
+        });
+      }
+
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach(function (s, idx) {
+          s.classList.toggle("active", idx === i);
+        });
+        progress.style.width = ((i + 1) / slides.length) * 100 + "%";
+        slideNum.textContent = String(i + 1).padStart(2, "0") + " — " + String(slides.length).padStart(2, "0");
+
+        var light = themeAt(i) === "light";
+        slideNum.classList.toggle("on-light", light);
+        hint.classList.toggle("on-light", light);
+
+        ensureEmbedLoaded(slides[i]);
+      }
+
+      deck.addEventListener("click", function (e) {
+        if (e.target.closest("[data-proto-route]")) return;
+        if (protoOpen()) return;
+        var w = window.innerWidth;
+        if (e.clientX > w / 2) show(i + 1);
+        else show(i - 1);
+      });
+
+      show(0);
+    })();
+  </script>
 </body>
 </html>

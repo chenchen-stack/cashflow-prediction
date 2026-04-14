@@ -192,6 +192,9 @@ window.AI = {
   _history: [],
   _maxHistory: 10,
 
+  /** 协作区：本轮用户输入（用于数据快照是否展示图表等） */
+  _lastCopilotUserMessage: '',
+
   _bodyEl: function () {
     return document.getElementById('copilot-messages') || document.getElementById('ai-body');
   },
@@ -405,6 +408,7 @@ window.AI = {
     if (!input) return;
     var msg = (input.value || '').trim();
     if (!msg) return;
+    this._lastCopilotUserMessage = msg;
     input.value = '';
     var welcomeEl = document.getElementById('copilot-welcome');
     if (welcomeEl) welcomeEl.remove();
@@ -1035,6 +1039,17 @@ window.AI = {
     return /净头寸|总流入|总流出|资金概况|现金流概况|待处理预警|资金计划/.test(t);
   },
 
+  /**
+   * 协作区：是否在快照中展示 ECharts（默认不展示，仅当用户明确要「图/占比/分布」等时展示）
+   */
+  _shouldShowCopilotSnapshotCharts: function (userQuery) {
+    if (!userQuery || typeof userQuery !== 'string') return false;
+    var t = String(userQuery);
+    return /占比|构成|饼图|环形|圆环|分布图|可视化|要图|看图|图表|图形化|比例|结构|画图|展示图|画个图|画一下|流入.*流出.*(比|占比)|资金计划.*(分布|占比)|按.*主体.*(分布|图)|donut|pie|chart|echarts|环形图|柱状|条形|趋势图/i.test(
+      t
+    );
+  },
+
   /** 与快照重复时去掉纯文本列表，避免同一屏堆两遍数字 */
   _stripRedundantCopilotStatsMarkdown: function (text) {
     var t = String(text);
@@ -1048,10 +1063,12 @@ window.AI = {
   _copilotVizSeq: 0,
 
   /**
-   * 协作区：数据快照（ECharts 双图 + 规范卡片；无 echarts 时 CSS 回退）
+   * 协作区：数据快照（可选 ECharts 双图 + 规范卡片；无 echarts 时 CSS 回退）
+   * @param {boolean} includeCharts 是否渲染流入/流出与计划环形图（由用户问法触发）
    */
-  _buildCopilotSnapshotHtml: function () {
+  _buildCopilotSnapshotHtml: function (includeCharts) {
     try {
+      var wantCharts = !!includeCharts;
       var s = AppData.stats || {};
       var inf = Number(s.total_inflow) || 0;
       var outf = Number(s.total_outflow) || 0;
@@ -1121,8 +1138,32 @@ window.AI = {
       var chartIoId = 'cfCopilotChartIO_' + vid;
       var chartPlId = 'cfCopilotChartPL_' + vid;
 
+      var chartGridHtml = '';
+      if (wantCharts) {
+        chartGridHtml =
+          '<div class="copilot-viz-chart-grid">' +
+          '<div class="copilot-viz-chart-cell">' +
+          '<div class="copilot-viz-chart-title">流入 / 流出</div>' +
+          '<div id="' +
+          chartIoId +
+          '" class="copilot-viz-echart" role="img" aria-label="流入流出占比图"></div>' +
+          '<div class="copilot-viz-chart-fallback" hidden>' +
+          barFallback +
+          '</div>' +
+          '</div>' +
+          '<div class="copilot-viz-chart-cell">' +
+          '<div class="copilot-viz-chart-title">资金计划 · 按主体</div>' +
+          '<div id="' +
+          chartPlId +
+          '" class="copilot-viz-echart" role="img" aria-label="计划主体分布"></div>' +
+          '</div>' +
+          '</div>';
+      }
+
       return (
-        '<div class="copilot-viz-snapshot copilot-viz-snapshot--pro" role="region" aria-label="数据快照" data-copilot-viz-root="1" data-viz-id="' +
+        '<div class="copilot-viz-snapshot copilot-viz-snapshot--pro" role="region" aria-label="数据快照" data-copilot-viz-root="1" data-copilot-viz-charts="' +
+        (wantCharts ? '1' : '0') +
+        '" data-viz-id="' +
         vid +
         '" data-io-in="' +
         inf +
@@ -1135,6 +1176,7 @@ window.AI = {
         '<span class="copilot-viz-snapshot__sub">主台缓存 · 与问数口径一致</span>' +
         '</div>' +
         '</div>' +
+        '<div class="copilot-viz-snapshot__body">' +
         '<div class="copilot-viz-kpi-row">' +
         '<div class="copilot-viz-net ' +
         netClass +
@@ -1144,38 +1186,27 @@ window.AI = {
         esc(netStr) +
         '</span>' +
         '</div>' +
-        '<div class="copilot-viz-chart-grid">' +
-        '<div class="copilot-viz-chart-cell">' +
-        '<div class="copilot-viz-chart-title">流入 / 流出</div>' +
-        '<div id="' +
-        chartIoId +
-        '" class="copilot-viz-echart" role="img" aria-label="流入流出占比图"></div>' +
-        '<div class="copilot-viz-chart-fallback" hidden>' +
-        barFallback +
-        '</div>' +
-        '</div>' +
-        '<div class="copilot-viz-chart-cell">' +
-        '<div class="copilot-viz-chart-title">资金计划 · 按主体</div>' +
-        '<div id="' +
-        chartPlId +
-        '" class="copilot-viz-echart" role="img" aria-label="计划主体分布"></div>' +
-        '</div>' +
-        '</div>' +
+        chartGridHtml +
         '</div>' +
         '<div class="copilot-viz-stats-row">' +
-        '<div class="copilot-viz-stat"><span class="copilot-viz-stat-label">资金流记录</span><strong>' +
+        '<div class="copilot-viz-stat copilot-viz-stat--flow">' +
+        '<span class="copilot-viz-stat-label">资金流记录</span>' +
+        '<span class="copilot-viz-stat-metric"><strong>' +
         (s.record_count != null ? esc(String(s.record_count)) : '—') +
-        '</strong><span class="copilot-viz-stat-sub">笔</span></div>' +
-        '<div class="copilot-viz-stat"><span class="copilot-viz-stat-label">资金计划</span><strong>' +
+        '</strong><span class="copilot-viz-stat-sub">笔</span></span></div>' +
+        '<div class="copilot-viz-stat copilot-viz-stat--plan">' +
+        '<span class="copilot-viz-stat-label">资金计划</span>' +
+        '<span class="copilot-viz-stat-metric"><strong>' +
         plans.length +
-        '</strong><span class="copilot-viz-stat-sub">个</span></div>' +
-        '<div class="copilot-viz-stat copilot-viz-stat--badge">' +
+        '</strong><span class="copilot-viz-stat-sub">个</span></span></div>' +
+        '<div class="copilot-viz-stat copilot-viz-stat--badge copilot-viz-stat--alert">' +
         alertsHtml +
         '</div>' +
         '</div>' +
         (plans.length
           ? '<ul class="copilot-viz-plan-list" aria-label="计划抽样">' + planChips + planMore + '</ul>'
           : '') +
+        '</div>' +
         '<p class="copilot-viz-foot">数据来源：浏览器 AppData；与后端实时库可能存在秒级差异，审批以主台为准。</p>' +
         '</div>'
       );
@@ -1187,6 +1218,7 @@ window.AI = {
   /** 挂载 ECharts；失败或无库时展示 CSS 条形回退 */
   _mountCopilotSnapshotCharts: function (snapEl) {
     if (!snapEl || !snapEl.getAttribute || snapEl.getAttribute('data-copilot-viz-root') !== '1') return;
+    if (snapEl.getAttribute('data-copilot-viz-charts') !== '1') return;
     var ioEl = snapEl.querySelector('.copilot-viz-echart[id^="cfCopilotChartIO_"]');
     var plEl = snapEl.querySelector('.copilot-viz-echart[id^="cfCopilotChartPL_"]');
     var fb = snapEl.querySelector('.copilot-viz-chart-fallback');
@@ -1238,8 +1270,8 @@ window.AI = {
       return;
     }
 
-    /* 快照内图表：低饱和、与极简 UI 一致 */
-    var palette = ['#5c6b66', '#8a9590', '#a8b0ab', '#c5cbc7', '#6e6e73', '#8e8e93', '#aeaeb2'];
+    /* 快照内图表：极简配色（低饱和、易区分） */
+    var palette = ['#6e6e73', '#86868b', '#aeaeb2', '#c7c7cc', '#34c759', '#0071e3'];
     var baseOpt = {
       textStyle: { fontFamily: 'inherit', fontSize: 10 },
       animation: true,
@@ -1262,7 +1294,7 @@ window.AI = {
         } else {
           chartIo.setOption(
             Object.assign({}, baseOpt, {
-              color: ['#6d7f74', '#c4a99e'],
+              color: ['#34C759', '#AEAEB2'],
               tooltip: {
                 trigger: 'item',
                 formatter: function (p) {
@@ -1282,12 +1314,12 @@ window.AI = {
                       return x.name + '\n' + pct + '%';
                     },
                     fontSize: 10,
-                    color: '#86868b',
+                    color: '#3c3c43',
                   },
                   labelLine: { length: 8, length2: 6 },
                   data: [
-                    { name: '流入', value: inf },
-                    { name: '流出', value: outf },
+                    { name: '流入', value: inf, itemStyle: { color: '#34C759' } },
+                    { name: '流出', value: outf, itemStyle: { color: '#AEAEB2' } },
                   ],
                 },
               ],
@@ -1392,7 +1424,9 @@ window.AI = {
       if (body.id === 'copilot-messages') {
         mdHtml = this._postprocessCopilotHtml(mdHtml);
         if (this._shouldShowCopilotSnapshot(srcText)) {
-          var snap = this._buildCopilotSnapshotHtml();
+          var userQ = typeof this._lastCopilotUserMessage === 'string' ? this._lastCopilotUserMessage : '';
+          var showSnapCharts = this._shouldShowCopilotSnapshotCharts(userQ);
+          var snap = this._buildCopilotSnapshotHtml(showSnapCharts);
           if (snap) mdHtml = snap + mdHtml;
         }
       }

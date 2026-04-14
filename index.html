@@ -8,10 +8,22 @@
     (function () {
       var q = location.search || '';
       var h = location.hash || '';
+      var host = location.hostname || '';
+      /* GitHub 用户站点根域：默认进发布会（含内嵌原型）；?app=1 进入登录/工作台 */
+      if (host === 'chenchen-stack.github.io') {
+        if (/[?&]app=1(?:&|$)/.test(q)) {
+          location.replace('frontend/index.html' + q + h);
+        } else {
+          location.replace('PPT/brief-v2.html' + q + h);
+        }
+        return;
+      }
       location.replace('frontend/index.html' + q + h);
     })();
   </script>
-  <noscript><meta http-equiv="refresh" content="0;url=frontend/index.html" /></noscript>
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=frontend/index.html" />
+  </noscript>
 </head>
 <body>
   <p style="font-family: system-ui, sans-serif; padding: 2rem;">

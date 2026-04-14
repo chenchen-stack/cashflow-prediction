@@ -596,7 +596,7 @@ window.refreshStats = function () {
     if (r.amount > 0) inflow += r.amount; else outflow += Math.abs(r.amount);
     if (r.status === '已确认') confirmed++;
     else if (r.status === '预测') predicted++;
-    else if (r.status === '未确认') unconfirmed++;
+    else if (r.status === '未确认' || r.status === '待确认') unconfirmed++;
     else if (r.status === '待审核') pendingReview++;
   });
   var fx = AppData.fxExposures || [];

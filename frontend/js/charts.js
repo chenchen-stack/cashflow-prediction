@@ -316,9 +316,172 @@ window.Charts = {
     });
   },
 
+  /**
+   * 现金流预测曲线：演示 / 后端共用配置（双系列图例、浅色网格、渐变面积、疏朗日期）
+   * 配色参考系统蓝 / 警示红，偏克制
+   */
+  _liquidityForecastChartOption: function (labels, balances, warnLine, markPointData) {
+    var n = (labels && labels.length) || 0;
+    var wl = typeof warnLine === 'number' && !isNaN(warnLine) ? warnLine : 1000000;
+    var warnSeries = labels.map(function () {
+      return wl;
+    });
+    var maxTicks = 10;
+    /** 类目轴用「数值型 interval」：隔 interval 个标签显示下一个（0=全显）。避免回调在不同 ECharts 版本语义不一致导致 90 日全部挤在一起。 */
+    var tickSkip = n <= maxTicks ? 0 : Math.max(0, Math.ceil(n / maxTicks) - 1);
+    var fmtWan = function (v) {
+      if (v == null || isNaN(v)) return '—';
+      return (Number(v) / 10000).toFixed(v >= 100000000 ? 0 : 1) + ' 万';
+    };
+    var appleBlue = '#007AFF';
+    var appleRed = '#FF453A';
+    var gridLine = 'rgba(60, 60, 67, 0.09)';
+
+    return {
+      color: [appleBlue, appleRed],
+      backgroundColor: 'transparent',
+      textStyle: {
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif',
+      },
+      tooltip: {
+        trigger: 'axis',
+        confine: true,
+        backgroundColor: 'rgba(255, 255, 255, 0.96)',
+        borderColor: 'rgba(60, 60, 67, 0.12)',
+        borderWidth: 1,
+        padding: [12, 14],
+        extraCssText: 'box-shadow:0 8px 24px rgba(0,0,0,0.08);border-radius:12px;',
+        textStyle: { fontSize: 12, color: '#1d1d1f' },
+        axisPointer: {
+          type: 'line',
+          lineStyle: { color: 'rgba(0, 122, 255, 0.35)', width: 1, type: 'solid' },
+          z: 0,
+        },
+        formatter: function (params) {
+          if (!params || !params.length) return '';
+          var date = params[0].axisValue || '';
+          var head = '<div style="font-weight:600;font-size:13px;margin-bottom:8px;letter-spacing:-0.02em;">' + date + '</div>';
+          var rows = '';
+          params.forEach(function (p) {
+            if (p.seriesName === '安全警戒线') {
+              rows +=
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:4px;padding-top:8px;border-top:1px solid rgba(60,60,67,0.1);font-size:11px;color:#6e6e73;">' +
+                '<span>' +
+                p.marker +
+                '安全警戒线</span><span style="font-weight:600;color:#1d1d1f;">' +
+                fmtWan(wl) +
+                '</span></div>';
+              return;
+            }
+            rows +=
+              '<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:4px;"><span style="color:#6e6e73;">' +
+              p.marker +
+              p.seriesName +
+              '</span><span style="font-weight:600;font-size:14px;">' +
+              fmtWan(p.value) +
+              '</span></div>';
+          });
+          return head + rows;
+        },
+      },
+      legend: {
+        data: ['预计每日余额', '安全警戒线'],
+        bottom: 6,
+        itemGap: 24,
+        itemWidth: 20,
+        itemHeight: 6,
+        icon: 'roundRect',
+        textStyle: { fontSize: 12, color: '#6e6e73', fontWeight: 500 },
+      },
+      grid: { top: 18, right: 14, bottom: 56, left: 4, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        boundaryGap: false,
+        axisLine: { lineStyle: { color: 'rgba(60, 60, 67, 0.2)' } },
+        axisTick: { show: false },
+        axisLabel: {
+          fontSize: 10,
+          color: '#86868b',
+          /** 与数值型 interval 配合：窄屏时再自动藏重叠 */
+          hideOverlap: true,
+          interval: tickSkip,
+          showMinLabel: true,
+          showMaxLabel: true,
+          formatter: function (v) {
+            if (!v || String(v).length < 8) return v;
+            var s = String(v).slice(5, 10);
+            return s.replace('-', '/');
+          },
+        },
+      },
+      yAxis: {
+        type: 'value',
+        scale: false,
+        splitLine: { lineStyle: { color: gridLine, type: 'solid', width: 1 } },
+        axisLabel: {
+          formatter: function (v) {
+            return (v / 10000).toFixed(0) + '万';
+          },
+          fontSize: 10,
+          color: '#86868b',
+        },
+      },
+      series: [
+        {
+          name: '预计每日余额',
+          type: 'line',
+          smooth: 0.35,
+          z: 3,
+          data: balances,
+          showSymbol: false,
+          symbol: 'circle',
+          symbolSize: 5,
+          itemStyle: { color: appleBlue },
+          lineStyle: { width: 2.5, cap: 'round', join: 'round' },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                { offset: 0, color: 'rgba(0, 122, 255, 0.22)' },
+                { offset: 1, color: 'rgba(0, 122, 255, 0)' },
+              ],
+            },
+          },
+          markPoint: markPointData && markPointData.length
+            ? {
+                symbol: 'pin',
+                symbolSize: 32,
+                itemStyle: { color: appleRed, shadowBlur: 6, shadowColor: 'rgba(255,69,58,0.35)' },
+                label: { show: true, formatter: '!', color: '#fff', fontSize: 11, fontWeight: 700 },
+                data: markPointData,
+              }
+            : undefined,
+        },
+        {
+          name: '安全警戒线',
+          type: 'line',
+          z: 2,
+          data: warnSeries,
+          showSymbol: false,
+          smooth: false,
+          itemStyle: { color: appleRed },
+          lineStyle: { width: 1.5, type: 'dashed', dashOffset: 0 },
+          emphasis: { disabled: true },
+        },
+      ],
+    };
+  },
+
   /** 资金流预测页：演示用日级余额 vs 警戒线 + 预警点 */
   liquidityForecastDemo: function (domId, horizonDays) {
-    var chart = this._get(domId); if (!chart) return;
+    var chart = this._get(domId);
+    if (!chart) return;
     var n = Math.min(Math.max(horizonDays || 90, 7), 120);
     var labels = [];
     var balance = [];
@@ -336,93 +499,34 @@ window.Charts = {
       balance.push(b);
     }
     var alertDays = [5, 22, 41];
-    var markData = alertDays.filter(function (idx) { return idx < n; }).map(function (idx) {
-      return { name: '预警', coord: [labels[idx], balance[idx]], value: '!' };
-    });
-    chart.setOption({
-      tooltip: { trigger: 'axis', textStyle: { fontSize: 12 } },
-      legend: { data: ['预计每日余额'], bottom: 4, textStyle: { fontSize: 11, color: '#6E6E73' } },
-      grid: { top: 36, right: 20, bottom: 48, left: 12, containLabel: true },
-      xAxis: {
-        type: 'category', data: labels,
-        axisLabel: { fontSize: 9, color: '#86868B', rotate: n > 30 ? 40 : 0, interval: Math.max(0, Math.floor(n / 12) - 1) },
-      },
-      yAxis: {
-        type: 'value',
-        splitLine: { lineStyle: { color: '#E8E8ED', type: 'dashed' } },
-        axisLabel: { formatter: function (v) { return (v / 10000).toFixed(0) + '万'; }, fontSize: 10, color: '#86868B' },
-      },
-      series: [
-        {
-          name: '预计每日余额', type: 'line', smooth: true, z: 3,
-          data: balance,
-          itemStyle: { color: '#2563EB' },
-          lineStyle: { width: 2.2 },
-          symbol: 'none',
-          markLine: {
-            silent: true, symbol: 'none',
-            lineStyle: { color: '#E53935', type: 'dashed', width: 1.5 },
-            data: [{ yAxis: warnY, label: { formatter: '100万', fontSize: 10 } }],
-          },
-          markPoint: {
-            symbol: 'pin', symbolSize: 36,
-            itemStyle: { color: '#E53935' },
-            label: { show: true, formatter: '!', color: '#fff', fontSize: 11, fontWeight: 700 },
-            data: markData,
-          },
-        },
-      ],
-    });
+    var markData = alertDays
+      .filter(function (idx) {
+        return idx < n;
+      })
+      .map(function (idx) {
+        return { name: '风险关注', coord: [labels[idx], balance[idx]], value: '!' };
+      });
+    chart.setOption(this._liquidityForecastChartOption(labels, balance, warnY, markData), { notMerge: true });
   },
 
   /** 资金流预测：后端 mvp-forecast 返回的日余额 + 警戒线 + 预警日索引 */
   liquidityForecastSeries: function (domId, labels, balances, warnLine, alertIndices) {
-    var chart = this._get(domId); if (!chart) return;
+    var chart = this._get(domId);
+    if (!chart) return;
     if (!labels || !labels.length || !balances || balances.length !== labels.length) {
       chart.setOption(this._emptyOpt('暂无预测数据'));
       return;
     }
     var n = labels.length;
     var wl = typeof warnLine === 'number' && !isNaN(warnLine) ? warnLine : 1000000;
-    var markData = (alertIndices || []).filter(function (idx) {
-      return idx >= 0 && idx < n;
-    }).map(function (idx) {
-      return { name: '预警', coord: [labels[idx], balances[idx]], value: '!' };
-    });
-    chart.setOption({
-      tooltip: { trigger: 'axis', textStyle: { fontSize: 12 } },
-      legend: { data: ['预计每日余额'], bottom: 4, textStyle: { fontSize: 11, color: '#6E6E73' } },
-      grid: { top: 36, right: 20, bottom: 48, left: 12, containLabel: true },
-      xAxis: {
-        type: 'category', data: labels,
-        axisLabel: { fontSize: 9, color: '#86868B', rotate: n > 30 ? 40 : 0, interval: Math.max(0, Math.floor(n / 12) - 1) },
-      },
-      yAxis: {
-        type: 'value',
-        splitLine: { lineStyle: { color: '#E8E8ED', type: 'dashed' } },
-        axisLabel: { formatter: function (v) { return (v / 10000).toFixed(0) + '万'; }, fontSize: 10, color: '#86868B' },
-      },
-      series: [
-        {
-          name: '预计每日余额', type: 'line', smooth: true, z: 3,
-          data: balances,
-          itemStyle: { color: '#2563EB' },
-          lineStyle: { width: 2.2 },
-          symbol: 'none',
-          markLine: {
-            silent: true, symbol: 'none',
-            lineStyle: { color: '#E53935', type: 'dashed', width: 1.5 },
-            data: [{ yAxis: wl, label: { formatter: '警戒线', fontSize: 10 } }],
-          },
-          markPoint: markData.length ? {
-            symbol: 'pin', symbolSize: 34,
-            itemStyle: { color: '#E53935' },
-            label: { show: true, formatter: '!', color: '#fff', fontSize: 11, fontWeight: 700 },
-            data: markData,
-          } : undefined,
-        },
-      ],
-    });
+    var markData = (alertIndices || [])
+      .filter(function (idx) {
+        return idx >= 0 && idx < n;
+      })
+      .map(function (idx) {
+        return { name: '风险关注', coord: [labels[idx], balances[idx]], value: '!' };
+      });
+    chart.setOption(this._liquidityForecastChartOption(labels, balances, wl, markData), { notMerge: true });
   },
 
   /** 分析下钻：单位日级计划 vs 实际（演示） */
